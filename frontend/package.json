@@ -1,0 +1,33 @@
+{
+  "name": "cms-frontend",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "dev:host": "vite --host",
+    "build": "vite build",
+    "build:test": "vue-tsc -b && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@auth0/auth0-vue": "^2.5.0",
+    "@iconify-json/lucide": "^1.2.80",
+    "@nuxt/ui": "^4.1.0",
+    "@nuxt/ui-pro": "^1.1.0",
+    "marked": "^15.0.0",
+    "openapi-fetch": "^0.15.0",
+    "pinia": "^3.0.4",
+    "vue": "^3.5.22",
+    "vue-router": "^4.6.3",
+    "zod": "^4.1.12"
+  },
+  "devDependencies": {
+    "@types/node": "^24.6.0",
+    "@vitejs/plugin-vue": "^6.0.1",
+    "@vue/tsconfig": "^0.8.1",
+    "typescript": "~5.9.3",
+    "vite": "^7.1.7",
+    "vue-tsc": "^3.1.0"
+  }
+}
