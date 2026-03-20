@@ -1,10 +1,8 @@
-using Application;
-using Api.Posts;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 
-namespace Api.Blogs;
+namespace Api.Endpoints.Blogs;
 
 public static class BlogEndpoints
 {

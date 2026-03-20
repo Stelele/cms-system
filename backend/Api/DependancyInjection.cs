@@ -1,6 +1,6 @@
-using Api.Blogs;
-using Api.Posts;
-using MediatR;
+using Api.Authentication;
+using Api.Endpoints.Blogs;
+using Api.Endpoints.Posts;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -41,7 +41,7 @@ public static class DependancyInjection
             .AddPermission(Permissions.ReadPosts)
             .AddPermission(Permissions.WritePosts);
 
-        builder.Services.AddSingleton<IAuthorizationHandler, HasScopeHandler>();
+        builder.Services.AddTransient<IAuthorizationHandler, HasScopeHandler>();
 
         builder.Services.AddCors(options =>
         {

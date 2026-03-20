@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 
-namespace Api;
+namespace Api.Authentication;
 
 public class HasScopeRequirement(string scope) : IAuthorizationRequirement
 {

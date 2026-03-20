@@ -1,9 +1,8 @@
-using Application;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 
-namespace Api.Posts;
+namespace Api.Endpoints.Posts;
 
 public static class PostEndpoints
 {
