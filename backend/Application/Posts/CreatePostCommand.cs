@@ -1,17 +1,32 @@
 using Application.Abstractions;
 using FluentValidation;
+using System.Text.Json.Serialization;
 
 namespace Application.Posts;
 
-public record CreatePostCommand(
-    Guid BlogId,
-    string Title,
-    string Slug,
-    string Content,
-    string Tag,
-    string? CoverImageUrl,
-    bool IsPublished
-) : ICommand<Guid>;
+public record CreatePostCommand : ICommand<Guid>
+{
+    [JsonPropertyName("blogId")]
+    public required Guid BlogId { get; init; }
+
+    [JsonPropertyName("title")]
+    public required string Title { get; init; }
+
+    [JsonPropertyName("slug")]
+    public required string Slug { get; init; }
+
+    [JsonPropertyName("content")]
+    public required string Content { get; init; }
+
+    [JsonPropertyName("tag")]
+    public required string Tag { get; init; }
+
+    [JsonPropertyName("coverImageUrl")]
+    public required string? CoverImageUrl { get; init; }
+
+    [JsonPropertyName("isPublished")]
+    public required bool IsPublished { get; init; }
+}
 
 public sealed class CreatePostCommandValidator : AbstractValidator<CreatePostCommand>
 {

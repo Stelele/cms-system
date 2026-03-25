@@ -14,7 +14,6 @@ public class Base
     public Base()
     {
         CreatedOn = DateTimeOffset.UtcNow;
-        UpdatedOn = DateTimeOffset.UtcNow;
     }
 
     public void AddDomainEvent(INotification eventItem)

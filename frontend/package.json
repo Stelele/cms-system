@@ -17,9 +17,12 @@
   "dependencies": {
     "@auth0/auth0-vue": "^2.5.0",
     "@nuxt/ui": "^4.5.1",
+    "dayjs": "^1.11.20",
+    "openapi-fetch": "^0.17.0",
     "pinia": "^3.0.4",
     "vue": "^3.5.29",
-    "vue-router": "^4.6.4"
+    "vue-router": "^4.6.4",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@tsconfig/node24": "^24.0.4",
@@ -33,6 +36,7 @@
     "eslint-plugin-vue": "~10.8.0",
     "jiti": "^2.6.1",
     "npm-run-all2": "^8.0.4",
+    "openapi-typescript": "^7.13.0",
     "oxlint": "~1.50.0",
     "prettier": "3.8.1",
     "typescript": "~5.9.3",

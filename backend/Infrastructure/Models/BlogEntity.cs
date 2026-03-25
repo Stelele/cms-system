@@ -13,6 +13,9 @@ public class BlogEntity : IEntityTypeConfiguration<Blog>
         builder.Property(b => b.Name)
             .IsRequired();
 
+        builder.HasIndex(b => b.Name)
+            .IsUnique();
+
         builder.Property(b => b.Slug)
             .IsRequired();
 

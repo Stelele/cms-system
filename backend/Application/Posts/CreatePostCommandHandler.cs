@@ -9,6 +9,12 @@ public class CreatePostCommandHandler(CmsDbContext db) : ICommandHandler<CreateP
 {
     public async Task<Guid> Handle(CreatePostCommand request, CancellationToken cancellationToken)
     {
+        var blogExists = await db.Blogs
+            .AnyAsync(b => b.Id == request.BlogId, cancellationToken);
+
+        if (!blogExists)
+            throw new KeyNotFoundException($"Blog with ID '{request.BlogId}' not found.");
+
         var slugExists = await db.Posts
             .AnyAsync(p => p.BlogId == request.BlogId && p.Slug == request.Slug, cancellationToken);
 

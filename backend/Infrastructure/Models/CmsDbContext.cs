@@ -28,6 +28,16 @@ public class CmsDbContext(DbContextOptions<CmsDbContext> options, IPublisher pub
             .SelectMany(e => e.DomainEvents)
             .ToList();
 
+        var modifiedEntries = ChangeTracker.Entries()
+            .Where(e => e.State == EntityState.Modified || e.State == EntityState.Added);
+        foreach (var entry in modifiedEntries)
+        {
+            if (entry.Entity is Base entity)
+            {
+                entity.UpdatedOn = DateTime.UtcNow;
+            }
+        }
+
         var result = await base.SaveChangesAsync(cancellationToken);
 
         foreach (var _event in events)

@@ -1,5 +1,6 @@
 using System.Net;
 using System.Text.Json;
+using FluentValidation;
 
 namespace Host.Middleware;
 
@@ -31,24 +32,54 @@ public class GlobalExceptionMiddleware
     {
         context.Response.ContentType = "application/json";
 
-        var response = new
+        object response = exception switch
         {
-            error = new
+            ValidationException validationEx => new
             {
-                message = exception.Message,
-                type = exception.GetType().Name
+                error = new
+                {
+                    message = "Validation failed",
+                    type = "ValidationException",
+                    errors = validationEx.Errors.Select(e => new
+                    {
+                        property = e.PropertyName,
+                        message = e.ErrorMessage
+                    })
+                }
+            },
+            JsonException => new
+            {
+                error = new
+                {
+                    message = "Invalid JSON format or missing required fields",
+                    type = exception.GetType().Name
+                }
+            },
+            _ => new
+            {
+                error = new
+                {
+                    message = exception.Message,
+                    type = exception.GetType().Name
+                }
             }
         };
 
         context.Response.StatusCode = exception switch
         {
+            ValidationException => (int)HttpStatusCode.BadRequest,
+            JsonException => (int)HttpStatusCode.BadRequest,
             InvalidOperationException => (int)HttpStatusCode.BadRequest,
             KeyNotFoundException => (int)HttpStatusCode.NotFound,
             UnauthorizedAccessException => (int)HttpStatusCode.Unauthorized,
             _ => (int)HttpStatusCode.InternalServerError
         };
 
-        var jsonResponse = JsonSerializer.Serialize(response);
+        var jsonResponse = JsonSerializer.Serialize(response, new JsonSerializerOptions
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
+        });
         await context.Response.WriteAsync(jsonResponse);
     }
 }
