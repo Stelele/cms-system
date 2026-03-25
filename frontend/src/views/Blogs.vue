@@ -1,5 +1,5 @@
 <template>
-  <UPageHeader title="Blogs" />
+  <UPageHeader title="Blogs" :links class="pe-4" />
   <div v-if="posts.length">
     <UBlogPosts :posts="posts" />
   </div>
