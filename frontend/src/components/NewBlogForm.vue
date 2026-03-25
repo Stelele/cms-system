@@ -29,7 +29,7 @@
       </UFormField>
 
       <div class="w-full flex justify-end">
-        <UButton type="button" class="hover:cursor-pointer" @click="onButtonClick"> Submit </UButton>
+        <UButton type="button" :disabled="!isValid" class="hover:cursor-pointer" @click="onButtonClick"> Submit </UButton>
       </div>
     </UForm>
   </div>
@@ -37,12 +37,19 @@
 
 <script setup lang="ts">
 import * as z from 'zod'
-import { computed, reactive } from 'vue'
+import { computed, reactive, ref } from 'vue'
 import type { components } from '@/services/backend/schema'
 import { useBlogStore } from '@/stores/blog-store'
 import { BackendApiSingleton } from '@/services/backend'
 
 const blogStore = useBlogStore()
+const toast = useToast()
+
+const emit = defineEmits<{
+  success: []
+}>()
+
+const isSubmitting = ref(false)
 
 const blogNames = computed(() => blogStore.blogs.map((blog) => blog.name))
 const blogSlugs = computed(() => blogStore.blogs.map((blog) => blog.slug))
@@ -71,8 +78,12 @@ const state = reactive<Schema>({
   slug: '',
   description: '',
 })
+const isValid = computed(() => schema.safeParse(state).success)
 
 async function onButtonClick() {
+  if (isSubmitting.value) return
+  isSubmitting.value = true
+
   const expense: CreateBlogCommand = {
     name: state.name,
     slug: state.slug,
@@ -82,8 +93,24 @@ async function onButtonClick() {
   const client = await BackendApiSingleton.getInstance()
   const result = await client.POST('/blogs', { body: expense })
 
-  if (result.data) {
+  if (result.response.ok) {
+    toast.add({ title: 'Blog created successfully', color: 'success' })
+    state.name = ''
+    state.slug = ''
+    state.description = ''
     await blogStore.update()
+    emit('success')
+    isSubmitting.value = false
+    return
   }
+
+  const errorData = result.data as { error?: { message?: string } }
+  toast.add({
+    title: 'Failed to create blog',
+    description: errorData?.error?.message ?? 'An unexpected error occurred.',
+    color: 'error',
+    duration: 8000
+  })
+  isSubmitting.value = false
 }
 </script>

@@ -1,6 +1,7 @@
 using System.Net;
 using System.Text.Json;
 using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 
 namespace Host.Middleware;
 
@@ -55,6 +56,15 @@ public class GlobalExceptionMiddleware
                     type = exception.GetType().Name
                 }
             },
+            DbUpdateException => new
+            {
+                error = new
+                {
+                    message = "A blog with this name or slug already exists.",
+                    type = "DuplicateKeyException",
+                    constraint = DetectConstraint(exception)
+                }
+            },
             _ => new
             {
                 error = new
@@ -70,6 +80,7 @@ public class GlobalExceptionMiddleware
             ValidationException => (int)HttpStatusCode.BadRequest,
             JsonException => (int)HttpStatusCode.BadRequest,
             InvalidOperationException => (int)HttpStatusCode.BadRequest,
+            DbUpdateException => (int)HttpStatusCode.Conflict,
             KeyNotFoundException => (int)HttpStatusCode.NotFound,
             UnauthorizedAccessException => (int)HttpStatusCode.Unauthorized,
             _ => (int)HttpStatusCode.InternalServerError
@@ -81,5 +92,13 @@ public class GlobalExceptionMiddleware
             DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
         });
         await context.Response.WriteAsync(jsonResponse);
+    }
+
+    private static string DetectConstraint(Exception exception)
+    {
+        var message = exception.InnerException?.Message ?? exception.Message;
+        if (message.Contains("Name", StringComparison.OrdinalIgnoreCase)) return "Name";
+        if (message.Contains("Slug", StringComparison.OrdinalIgnoreCase)) return "Slug";
+        return "Unknown";
     }
 }

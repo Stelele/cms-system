@@ -1,5 +1,5 @@
 <template>
-  <UPageHeader title="Blogs" :links class="pe-4" />
+  <UPageHeader title="Blogs" :links="links" class="pe-4" />
   <div v-if="posts.length">
     <UBlogPosts :posts="posts" />
   </div>
@@ -12,7 +12,7 @@
   </div>
   <UModal title="Create Blog" description="For adding a new blog" v-model:open="openNewBlogModal">
     <template #content>
-      <NewBlogForm />
+      <NewBlogForm @success="openNewBlogModal = false" />
     </template>
   </UModal>
 </template>
