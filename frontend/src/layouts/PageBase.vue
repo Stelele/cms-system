@@ -16,8 +16,6 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue'
-import type { NavigationMenuItem } from '@nuxt/ui'
 import { useNavStore } from '@/stores/nav-store'
 
 const navStore = useNavStore()
