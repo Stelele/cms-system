@@ -17,6 +17,7 @@
   "dependencies": {
     "@auth0/auth0-vue": "^2.5.0",
     "@nuxt/ui": "^4.5.1",
+    "@tiptap/markdown": "^3.20.5",
     "dayjs": "^1.11.20",
     "openapi-fetch": "^0.17.0",
     "pinia": "^3.0.4",

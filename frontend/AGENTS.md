@@ -78,6 +78,34 @@ type Schema = z.output<typeof schema>
 
 ## Vue Component Conventions
 
+### Component Structure
+Vue components should follow this structure (enforced by ESLint):
+1. `<template>` - HTML template at the top
+2. `<script setup lang="ts">` - Composition API script below template
+3. `<style>` - Styles at the very bottom (if needed)
+
+```vue
+<template>
+  <div class="example">
+    {{ message }}
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref, computed } from 'vue'
+import { useBlogStore } from '@/stores/blog-store'
+
+const blogStore = useBlogStore()
+const localState = ref('')
+</script>
+
+<style scoped>
+.example {
+  color: red;
+}
+</style>
+```
+
 ### Script Setup
 Use `<script setup lang="ts">` for all components:
 ```vue

@@ -25,6 +25,9 @@ export default defineConfigWithVueTs(
     files: ['**/*.vue'],
     rules: {
       'vue/multi-word-component-names': 'off',
+      'vue/block-order': ['error', {
+        order: ['template', 'script[setup]', 'style'],
+      }],
     },
   },
 
