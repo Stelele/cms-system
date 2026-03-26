@@ -39,29 +39,17 @@
 
       <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
         <UFormField label="Title" name="title" :required="true">
-          <UInput
-            v-model="state.title"
-            placeholder="Enter article title"
-            class="w-full"
-          />
+          <UInput v-model="state.title" placeholder="Enter article title" class="w-full" />
         </UFormField>
 
         <UFormField label="Slug" name="slug" :required="true">
-          <UInput
-            v-model="state.slug"
-            placeholder="article-slug"
-            class="w-full"
-          />
+          <UInput v-model="state.slug" placeholder="article-slug" class="w-full" />
         </UFormField>
       </div>
 
       <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
         <UFormField label="Tag" name="tag">
-          <UInput
-            v-model="state.tag"
-            placeholder="Category or tag"
-            class="w-full"
-          />
+          <UInput v-model="state.tag" placeholder="Category or tag" class="w-full" />
         </UFormField>
 
         <UFormField label="Cover Image URL" name="coverImageUrl">
@@ -88,7 +76,11 @@
             <div class="border-b border-default px-3 py-2">
               <div class="flex items-center justify-between">
                 <UEditorToolbar :editor="editor" :items="toolbarItems" />
-                <UPopover :open="isImageModalOpen" @update:open="isImageModalOpen = $event" class="w-96">
+                <UPopover
+                  :open="isImageModalOpen"
+                  @update:open="isImageModalOpen = $event"
+                  class="w-96"
+                >
                   <UButton
                     variant="ghost"
                     size="sm"
@@ -203,7 +195,10 @@ const existingPost = ref<PostResponse | null>(null)
 const editorContent = ref('')
 
 const schema = z.object({
-  blogId: z.refine((blog: any) => blogStore.blogs.some((b) => b.id === blog.id), 'Please select a blog'),
+  blogId: z.refine(
+    (blog: any) => blogStore.blogs.some((b) => b.id === blog.id),
+    'Please select a blog',
+  ),
   title: z.string().min(3, 'Title must be at least 3 characters'),
   slug: z
     .string()
@@ -245,10 +240,13 @@ watch(
 )
 
 const blogOptions = computed<SelectMenuItem[]>(() =>
-  blogStore.blogs.map((blog) => ({
-    label: blog.name,
-    id: blog.id,
-  } as SelectMenuItem)),
+  blogStore.blogs.map(
+    (blog) =>
+      ({
+        label: blog.name,
+        id: blog.id,
+      }) as SelectMenuItem,
+  ),
 )
 
 const toolbarItems = [
@@ -297,7 +295,6 @@ const canSave = computed(() => {
 
 async function savePost(isPublished: boolean) {
   const validation = schema.safeParse(state)
-  console.log({validation, state})
   if (!validation.success) {
     const path = validation.error.issues[0]?.path.join('.')
     const message = validation.error.issues[0]?.message ?? 'Please check your input'
@@ -323,6 +320,8 @@ async function savePost(isPublished: boolean) {
   } else {
     isSaving.value = true
   }
+
+  console.log({ state })
 
   try {
     const postData = {

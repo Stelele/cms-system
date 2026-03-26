@@ -1,0 +1,263 @@
+-- allium: 3
+-- cms-planned.allium
+--
+-- Scope: Planned future features for the CMS system.
+-- These are features identified from the existing codebase that are not yet implemented.
+-- Each feature has entity stubs, proposed rules, and open questions to resolve.
+--
+-- Features:
+--   - Media: attach images and files to posts
+--   - Users and Roles: local user management beyond Auth0 identity
+--   - Comments: public commenting on posts with moderation
+--   - Categories: replace tag strings with typed, hierarchical categories
+--
+-- Dependencies:
+--   - Media depends on cms/Post (complete)
+--   - Comments depend on cms/Post (complete)
+--   - Users/Roles stand alone
+--   - Categories replace Tags (breaking change — needs migration plan)
+
+module cms/planned
+
+use "./cms.allium" as cms
+
+------------------------------------------------------------
+-- Feature 1: Media Management
+------------------------------------------------------------
+--
+-- Currently: Write.vue references image upload with no backend API.
+-- Future: Upload media assets and attach them to posts as cover images or embeds.
+--
+-- Open questions:
+--   - Where are assets stored (S3, Cloudflare R2, local filesystem)?
+--   - Is there a maximum file size?
+--   - What file types are allowed?
+--   - Is there a virus/malware scan step?
+--   - Can the same asset be used across multiple posts?
+
+entity MediaAsset {
+    url: String
+    post: cms/Post?
+    uploader: cms/User
+    created_at: Timestamp
+
+    transitions status {
+        uploaded -> processed | failed
+        terminal: processed, failed
+    }
+}
+
+rule UploadMedia {
+    when: UploadMedia(uploader, file_data, mime_type)
+
+    requires: uploader.role in {admin, editor}
+
+    ensures: MediaAsset.created(
+        uploader: uploader,
+        status: uploaded
+    )
+}
+
+rule ProcessMedia {
+    when: ProcessMedia(asset)
+
+    requires: asset.status = uploaded
+
+    ensures: asset.status = processed
+    ensures: asset.url = generate_url(asset.id)
+}
+
+rule AttachCoverImage {
+    when: AttachCoverImage(post, asset)
+
+    requires: asset.status = processed
+    requires: asset.post = null
+
+    ensures: asset.post = post
+    ensures: post.cover_image_url = asset.url
+}
+
+------------------------------------------------------------
+-- Feature 2: Users and Roles
+------------------------------------------------------------
+--
+-- Currently: Auth0 provides identity, but there are no local user entities.
+-- Future: Local user management with roles and permissions.
+--
+-- Open questions:
+--   - Should user accounts be created automatically on first Auth0 login, or require admin approval?
+--   - What roles exist beyond admin/editor (author, contributor, subscriber)?
+--   - Can a user belong to multiple blogs with different roles?
+--   - Should there be a "super admin" role that can manage all blogs?
+
+entity BlogMembership {
+    user: cms/User
+    blog: cms/Blog
+    role: admin | editor | author
+    joined_at: Timestamp
+
+    invariant UniqueBlogMembership
+        for b in cms/Blogs:
+            for m1 in b.memberships:
+                for m2 in b.memberships:
+                    if m1 != m2: m1.user != m2.user
+}
+
+rule ProvisionUser {
+    when: ProvisionUser(auth0_subject, email)
+
+    requires: no cms/Users where auth0_subject = auth0_subject
+
+    ensures: cms/User.created(
+        auth0_subject: auth0_subject,
+        email: email,
+        role: viewer
+    )
+}
+
+rule AssignBlogRole {
+    when: AssignBlogRole(admin, user, blog, role)
+
+    requires: admin.role = admin
+    requires: blog.status = active
+    requires: no BlogMembership where user = user and blog = blog
+
+    ensures: BlogMembership.created(
+        user: user,
+        blog: blog,
+        role: role
+    )
+}
+
+------------------------------------------------------------
+-- Feature 3: Comments
+------------------------------------------------------------
+--
+-- Currently: No commenting system exists.
+-- Future: Readers can comment on published posts with moderation workflow.
+--
+-- Open questions:
+--   - Should commenting require authentication, or allow anonymous comments?
+--   - What is the moderation workflow (pre-moderation, post-moderation, no moderation)?
+--   - Can comments be nested (replies)?
+--   - Should there be rate limiting per IP or user?
+--   - Can comments be edited after posting?
+
+entity Comment {
+    post: cms/Post
+    author_name: String
+    author_email: String
+    content: String
+    status: pending | approved | spam | deleted
+    created_at: Timestamp
+    updated_at: Timestamp?
+    parent: Comment?
+
+    transitions status {
+        pending -> approved
+        pending -> spam
+        approved -> deleted
+        pending -> deleted
+        terminal: spam, deleted
+    }
+
+    approved_replies: Comment where parent = this and status = approved
+}
+
+rule SubmitComment {
+    when: SubmitComment(post, author_name, author_email, content, parent?)
+
+    requires: post.status = published
+    requires: post.blog.status = active
+    requires: parent.status = approved if parent != null
+
+    ensures: Comment.created(
+        post: post,
+        author_name: author_name,
+        author_email: author_email,
+        content: content,
+        status: pending,
+        parent: parent
+    )
+}
+
+rule ApproveComment {
+    when: ApproveComment(moderator, comment)
+
+    requires: moderator.role in {admin, editor}
+    requires: comment.status = pending
+
+    ensures: comment.status = approved
+}
+
+rule MarkCommentSpam {
+    when: MarkCommentSpam(moderator, comment)
+
+    requires: moderator.role in {admin, editor}
+    requires: comment.status = pending
+
+    ensures: comment.status = spam
+}
+
+rule DeleteComment {
+    when: DeleteComment(moderator, comment)
+
+    requires: moderator.role in {admin, editor}
+
+    ensures: comment.status = deleted
+}
+
+------------------------------------------------------------
+-- Feature 4: Categories
+------------------------------------------------------------
+--
+-- Currently: Posts use a free-form `tag: String` field.
+--             Tags are just strings with no validation or hierarchy.
+-- Future: Typed categories with optional hierarchy, replacing the tag system.
+--
+-- Open questions:
+--   - Should this replace tags entirely, or coexist alongside them?
+--   - What is the migration path for existing posts with tag values?
+--   - How deep can the category hierarchy go?
+--   - Can a post belong to multiple categories?
+
+entity Category {
+    name: String
+    slug: String
+    description: String?
+    parent: Category?
+    sort_order: Integer
+
+    posts: cms/Post with category = this
+
+    invariant UniqueSlug
+        for c1 in Categories:
+            for c2 in Categories:
+                if c1 != c2: c1.slug != c2.slug
+}
+
+rule CreateCategory {
+    when: CreateCategory(name, slug, description?, parent?)
+
+    requires: no Categories where slug = slug
+    requires: parent.slug != slug if parent != null
+
+    ensures: Category.created(
+        name: name,
+        slug: slug,
+        description: description,
+        parent: parent
+    )
+}
+
+rule AssignCategory {
+    when: AssignCategory(post, category)
+
+    requires: post.status = published
+    requires: category.parent = null or category.parent.status = active
+
+    ensures: post.category = category
+}
+
+-- Migration note: Posts with tag values should be migrated to categories.
+-- Tag values can become Category slugs; posts are reassigned automatically.

@@ -1,0 +1,233 @@
+-- allium: 3
+-- cms.allium
+--
+-- Scope: Core content management domain and API boundary contracts for the CMS system.
+-- Includes: Blog and Post entities, publishing workflow, slug uniqueness, and surface definitions.
+-- Excludes:
+--   - EF Core, SQLite, database schema (persistence mechanism)
+--   - FluentValidation (input validation is an implementation detail)
+--   - MediatR CQRS wiring (application layer infrastructure)
+--   - Domain events on Base entity
+--   - Soft delete (not currently implemented)
+--   - Media management (planned feature)
+--   - User roles and permissions (planned feature)
+
+module cms
+
+const read_blogs: String = "read:blogs"
+const write_blogs: String = "write:blogs"
+const read_posts: String = "read:posts"
+const write_posts: String = "write:posts"
+
+actor Editor {
+    identified_by: User
+}
+
+actor Visitor {
+    identified_by: User
+}
+
+entity User {
+    -- Represents an authenticated user identity from Auth0.
+}
+
+entity Blog {
+    name: String
+    slug: String
+    description: String
+
+    posts: Post with blog = this
+
+    transitions status {
+        active -> deleted
+        terminal: deleted
+    }
+
+    invariant UniqueSlug
+        for b1 in Blogs:
+            for b2 in Blogs:
+                if b1 != b2: b1.slug != b2.slug
+}
+
+entity Post {
+    blog: Blog
+    title: String
+    slug: String
+    content: String
+    tag: String
+    cover_image_url: String when status = published
+    published_on: Timestamp when status = published
+    status: draft | published
+
+    transitions status {
+        draft -> published
+        published -> draft
+        terminal: draft, published
+    }
+
+    invariant UniqueSlugInBlog
+        for blog in Blogs:
+            for p1 in blog.posts:
+                for p2 in blog.posts:
+                    if p1 != p2: p1.slug != p2.slug
+}
+
+rule CreateBlog {
+    when: CreateBlog(_, name, slug, description)
+
+    let conflicting = Blogs where slug = slug
+    requires: no conflicting
+
+    ensures: Blog.created(
+        name: name,
+        slug: slug,
+        description: description,
+        status: active
+    )
+}
+
+rule UpdateBlog {
+    when: UpdateBlog(_, blog, name, slug, description)
+
+    requires: blog.status = active
+    requires:
+        for b in Blogs where slug = slug:
+            b = blog
+
+    ensures: blog.name = name
+    ensures: blog.slug = slug
+    ensures: blog.description = description
+    ensures: blog.updated_on = now
+}
+
+rule DeleteBlog {
+    when: DeleteBlog(_, blog)
+
+    requires: blog.status = active
+
+    ensures: blog.status = deleted
+    ensures:
+        for post in blog.posts:
+            not exists post
+}
+
+rule CreatePost {
+    when: CreatePost(_, blog, title, slug, content, tag, cover_image_url?, publish_now)
+
+    requires: blog.status = active
+    let conflicting = blog.posts where slug = slug
+    requires: no conflicting
+
+    ensures: Post.created(
+        blog: blog,
+        title: title,
+        slug: slug,
+        content: content,
+        tag: tag,
+        cover_image_url: cover_image_url,
+        status: if publish_now then published else draft
+    )
+}
+
+rule PublishPost {
+    when: PublishPost(_, post)
+
+    requires: post.status = draft
+
+    ensures: post.status = published
+    ensures: post.published_on = now
+}
+
+rule UnpublishPost {
+    when: UnpublishPost(_, post)
+
+    requires: post.status = published
+
+    ensures: post.status = draft
+}
+
+rule UpdatePost {
+    when: UpdatePost(_, post, title, slug, content, tag, cover_image_url?, publish_now)
+
+    requires: post.status in {draft, published}
+    requires:
+        for p in post.blog.posts where slug = slug:
+            p = post
+
+    ensures: post.title = title
+    ensures: post.slug = slug
+    ensures: post.content = content
+    ensures: post.tag = tag
+    ensures: post.cover_image_url = cover_image_url
+    ensures: post.updated_on = now
+
+    ensures:
+        if publish_now and post.status = draft:
+            post.status = published
+            post.published_on = now
+        if not publish_now and post.status = published:
+            post.status = draft
+}
+
+rule DeletePost {
+    when: DeletePost(_, post)
+
+    requires: post.status in {draft, published}
+
+    ensures: not exists post
+}
+
+invariant BlogCascadeDelete
+    for blog in Blogs where blog.status = deleted:
+        no Posts where blog = blog
+
+open question "Should tags be normalized (lowercased, trimmed) on post create/update, or stored as-is?"
+open question "Should unpublished posts with a tag still appear in tag counts, or only published posts?"
+open question "Is there a maximum number of tags a post can have (currently one tag per post)?"
+
+------------------------------------------------------------
+-- Surfaces
+------------------------------------------------------------
+
+surface ContentManagerDashboard {
+    facing editor: Editor
+
+    context blog: Blog where status = active
+
+    exposes:
+        blog.name
+        blog.slug
+        blog.description
+        blog.posts
+
+    provides:
+        CreateBlog(editor, name, slug, description)
+            demands: write_blogs
+        UpdateBlog(editor, blog, name, slug, description)
+            demands: write_blogs
+        DeleteBlog(editor, blog)
+            demands: write_blogs
+        CreatePost(editor, blog, title, slug, content, tag, cover_image_url?, is_published)
+            demands: write_posts
+        for post in blog.posts:
+            UpdatePost(editor, post, title, slug, content, tag, cover_image_url?, is_published)
+                demands: write_posts
+            DeletePost(editor, post)
+                demands: write_posts
+            PublishPost(editor, post)
+                demands: write_posts
+            UnpublishPost(editor, post)
+                demands: write_posts
+}
+
+surface PublicBlog {
+    facing _: Visitor
+
+    context blog: Blog where status = active
+
+    exposes:
+        blog.name
+        blog.slug
+        blog.description
+        blog.posts
+}
