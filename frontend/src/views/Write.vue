@@ -218,7 +218,7 @@ const schema = z.object({
 type Schema = z.output<typeof schema>
 
 const state = reactive<Schema>({
-  blogId: { id: ' ', label: ' ' },
+  blogId: '',
   title: '',
   slug: '',
   tag: '',
