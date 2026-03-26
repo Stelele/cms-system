@@ -218,7 +218,7 @@ const schema = z.object({
 type Schema = z.output<typeof schema>
 
 const state = reactive<Schema>({
-  blogId: '',
+  blogId: { id: '', label: '' },
   title: '',
   slug: '',
   tag: '',
@@ -425,8 +425,18 @@ function handleEditorUpdate({ editor }: { editor: { getMarkdown: () => string } 
 onMounted(async () => {
   await blogStore.update()
 
-  if (isEditing.value) {
-    const post = articleStore.currentPost
+  if (!isEditing.value && route.query.blogId) {
+    const blogId = route.query.blogId as string
+    const blog = blogStore.blogs.find((b) => b.id === blogId)
+    if (blog) {
+      state.blogId = { id: blog.id ?? '', label: blog.name ?? '' }
+    }
+  }
+
+  if (isEditing.value && route.query.edit && route.query.blogId) {
+    const postId = route.query.edit as string
+    const blogId = route.query.blogId as string
+    const post = await articleStore.fetchPost(blogId, postId)
 
     if (post) {
       existingPost.value = post
@@ -437,7 +447,8 @@ onMounted(async () => {
         tag: post.tag ?? '',
         coverImageUrl: post.coverImageUrl ?? '',
       }
-      state.blogId = { id: post.blogId ?? '', label: '' }
+      const blog = blogStore.blogs.find((b) => b.id === post.blogId)
+      state.blogId = { id: post.blogId ?? '', label: blog?.name ?? '' }
       state.title = post.title ?? ''
       state.slug = post.slug ?? ''
       state.tag = post.tag ?? ''

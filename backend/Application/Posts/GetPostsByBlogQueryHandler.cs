@@ -17,10 +17,11 @@ public class GetPostsByBlogQueryHandler(CmsDbContext db) : IQueryHandler<GetPost
         if (request.IsPublished.HasValue)
             query = query.Where(p => p.IsPublished == request.IsPublished.Value);
 
-        var posts = await query
-            .OrderByDescending(p => p.UpdatedOn)
-            .ToListAsync(cancellationToken);
+        var posts = await query.ToListAsync(cancellationToken);
 
-        return posts.Select(PostResponse.FromDomain).ToList();
+        return posts
+            .OrderByDescending(p => p.UpdatedOn)
+            .Select(PostResponse.FromDomain)
+            .ToList();
     }
 }

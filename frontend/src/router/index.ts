@@ -4,6 +4,7 @@ import { authGuard } from '@auth0/auth0-vue'
 const Home = () => import('@/views/Home.vue')
 const Drafts = () => import('@/views/Drafts.vue')
 const Blogs = () => import('@/views/Blogs.vue')
+const BlogDetail = () => import('@/views/BlogDetail.vue')
 const Write = () => import('@/views/Write.vue')
 
 const routes: RouteRecordRaw[] = [
@@ -24,6 +25,12 @@ const routes: RouteRecordRaw[] = [
     name: 'blogs',
     beforeEnter: authGuard,
     component: Blogs,
+  },
+  {
+    path: '/blog/:slug',
+    name: 'blog-detail',
+    beforeEnter: authGuard,
+    component: BlogDetail,
   },
   {
     path: '/write',

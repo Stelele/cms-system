@@ -11,6 +11,25 @@ export const useArticleStore = defineStore('articleStore', () => {
   const currentPost = ref<PostResponse | null>(null)
   const isLoading = ref(false)
 
+  async function fetchPostsByBlog(blogId: string): Promise<PostResponse[]> {
+    isLoading.value = true
+    try {
+      const client = await BackendApiSingleton.getInstance()
+      const { data, error } = await client.GET('/blogs/{blogId}/posts', {
+        params: { path: { blogId } },
+      })
+
+      if (error) {
+        console.error('Failed to fetch posts:', error)
+        return []
+      }
+
+      return data ?? []
+    } finally {
+      isLoading.value = false
+    }
+  }
+
   async function fetchPost(blogId: string, postId: string): Promise<PostResponse | null> {
     isLoading.value = true
     try {
@@ -121,6 +140,7 @@ export const useArticleStore = defineStore('articleStore', () => {
   return {
     currentPost,
     isLoading,
+    fetchPostsByBlog,
     fetchPost,
     fetchPostBySlug,
     createPost,
