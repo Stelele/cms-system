@@ -6,6 +6,9 @@
         <p class="text-muted">Create compelling content for your blog</p>
       </div>
       <div class="flex gap-3">
+        <UButton v-if="showResetButton" color="neutral" variant="outline" @click="resetForm">
+          {{ resetButtonLabel }}
+        </UButton>
         <UButton
           color="neutral"
           variant="outline"
@@ -155,7 +158,6 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, reactive } from 'vue'
-import type { Editor } from '@tiptap/vue-3'
 import { useRoute, useRouter } from 'vue-router'
 import { useToast } from '@nuxt/ui/composables'
 import * as z from 'zod'
@@ -194,9 +196,14 @@ const isEditing = computed(() => !!route.query.edit)
 const existingPost = ref<PostResponse | null>(null)
 const editorContent = ref('')
 
+const blogIdSchema = z.object({
+  id: z.string(),
+  label: z.string(),
+})
+
 const schema = z.object({
-  blogId: z.refine(
-    (blog: any) => blogStore.blogs.some((b) => b.id === blog.id),
+  blogId: blogIdSchema.refine(
+    (blog: { id: string; label: string }) => blogStore.blogs.some((b) => b.id === blog.id),
     'Please select a blog',
   ),
   title: z.string().min(3, 'Title must be at least 3 characters'),
@@ -204,14 +211,14 @@ const schema = z.object({
     .string()
     .min(3, 'Slug must be at least 3 characters')
     .regex(/^[a-z0-9-]+$/, 'Slug can only contain lowercase letters, numbers, and dashes'),
-  tag: z.string().optional(),
+  tag: z.string().min(1, 'Tag is required'),
   coverImageUrl: z.string().url('Must be a valid URL').optional().or(z.literal('')),
 })
 
 type Schema = z.output<typeof schema>
 
 const state = reactive<Schema>({
-  blogId: '',
+  blogId: { id: ' ', label: ' ' },
   title: '',
   slug: '',
   tag: '',
@@ -220,6 +227,8 @@ const state = reactive<Schema>({
 
 const isSaving = ref(false)
 const isPublishing = ref(false)
+const originalState = ref<Schema | null>(null)
+const justPublished = ref(false)
 
 const generateSlug = (text: string): string => {
   return text
@@ -284,14 +293,37 @@ const toolbarItems = [
   ],
 ]
 
-const selectedBlogName = computed(() => {
-  const blog = blogStore.blogs.find((b) => b.id === state.blogId)
-  return blog?.name ?? ''
+const canSave = computed(() => {
+  return state.blogId.id && state.title && state.slug
 })
 
-const canSave = computed(() => {
-  return state.blogId && state.title && state.slug
-})
+const isDraftEdit = computed(
+  () => isEditing.value && existingPost.value && !existingPost.value.isPublished,
+)
+
+const showResetButton = computed(() => justPublished.value || isDraftEdit.value)
+
+const resetButtonLabel = computed(() => (justPublished.value ? 'New Post' : 'Reset'))
+
+function resetForm() {
+  if (isDraftEdit.value && originalState.value) {
+    Object.assign(state, JSON.parse(JSON.stringify(originalState.value)))
+  } else {
+    state.blogId = { id: '', label: '' }
+    state.title = ''
+    state.slug = ''
+    state.tag = ''
+    state.coverImageUrl = ''
+    editorContent.value = ''
+  }
+
+  if (justPublished.value) {
+    router.replace({ query: {} })
+    existingPost.value = null
+    originalState.value = null
+    justPublished.value = false
+  }
+}
 
 async function savePost(isPublished: boolean) {
   const validation = schema.safeParse(state)
@@ -325,7 +357,7 @@ async function savePost(isPublished: boolean) {
 
   try {
     const postData = {
-      blogId: state.blogId,
+      blogId: state.blogId.id,
       title: state.title,
       slug: state.slug,
       content: editorContent.value,
@@ -342,9 +374,9 @@ async function savePost(isPublished: boolean) {
         ...postData,
         id: existingPost.value.id!,
       }
-      success = await articleStore.updatePost(state.blogId, existingPost.value.id!, updateData)
+      success = await articleStore.updatePost(state.blogId.id, existingPost.value.id!, updateData)
     } else {
-      postId = await articleStore.createPost(state.blogId, postData)
+      postId = await articleStore.createPost(state.blogId.id, postData)
       success = !!postId
     }
 
@@ -365,7 +397,7 @@ async function savePost(isPublished: boolean) {
       }
 
       if (isPublished) {
-        router.push(`/blog/${selectedBlogName.value}`)
+        justPublished.value = true
       }
     } else {
       toast.add({
@@ -386,7 +418,7 @@ async function savePost(isPublished: boolean) {
   }
 }
 
-function handleEditorUpdate({ editor }: { editor: Editor }) {
+function handleEditorUpdate({ editor }: { editor: { getMarkdown: () => string } }) {
   editorContent.value = editor.getMarkdown()
 }
 
@@ -398,7 +430,14 @@ onMounted(async () => {
 
     if (post) {
       existingPost.value = post
-      state.blogId = post.blogId ?? ''
+      originalState.value = {
+        blogId: { id: post.blogId ?? '', label: '' },
+        title: post.title ?? '',
+        slug: post.slug ?? '',
+        tag: post.tag ?? '',
+        coverImageUrl: post.coverImageUrl ?? '',
+      }
+      state.blogId = { id: post.blogId ?? '', label: '' }
       state.title = post.title ?? ''
       state.slug = post.slug ?? ''
       state.tag = post.tag ?? ''

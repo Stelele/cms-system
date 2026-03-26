@@ -65,7 +65,7 @@ export const useArticleStore = defineStore('articleStore', () => {
         return null
       }
 
-      return data ?? null
+      return data?.id ?? null
     } finally {
       isLoading.value = false
     }
