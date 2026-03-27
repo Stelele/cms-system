@@ -387,10 +387,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        /** Format: uuid */
-                        id: string;
-                    };
+                    "application/json": string;
                 };
             };
             /** @description Bad Request */

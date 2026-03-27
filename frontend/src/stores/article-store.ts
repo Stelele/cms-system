@@ -10,13 +10,17 @@ export type PostResponse = components['schemas']['PostResponse']
 export const useArticleStore = defineStore('articleStore', () => {
   const currentPost = ref<PostResponse | null>(null)
   const isLoading = ref(false)
+  const publishingPostIds = ref(new Set<string>())
 
-  async function fetchPostsByBlog(blogId: string): Promise<PostResponse[]> {
+  async function fetchPostsByBlog(
+    blogId: string,
+    options?: { isPublished?: boolean; tag?: string },
+  ): Promise<PostResponse[]> {
     isLoading.value = true
     try {
       const client = await BackendApiSingleton.getInstance()
       const { data, error } = await client.GET('/blogs/{blogId}/posts', {
-        params: { path: { blogId } },
+        params: { path: { blogId }, query: { isPublished: options?.isPublished, tag: options?.tag } },
       })
 
       if (error) {
@@ -28,6 +32,35 @@ export const useArticleStore = defineStore('articleStore', () => {
     } finally {
       isLoading.value = false
     }
+  }
+
+  async function fetchDraftsByBlog(blogId: string): Promise<PostResponse[]> {
+    return fetchPostsByBlog(blogId, { isPublished: false })
+  }
+
+  async function fetchAllDrafts(): Promise<Map<string, PostResponse[]>> {
+    const { useBlogStore } = await import('@/stores/blog-store')
+    const blogStore = useBlogStore()
+    await blogStore.update()
+
+    const draftsByBlog = new Map<string, PostResponse[]>()
+
+    const results = await Promise.all(
+      blogStore.blogs
+        .filter((blog) => blog.id)
+        .map(async (blog) => {
+          const posts = await fetchDraftsByBlog(blog.id!)
+          return { blogId: blog.id!, posts }
+        }),
+    )
+
+    for (const { blogId, posts } of results) {
+      if (posts.length > 0) {
+        draftsByBlog.set(blogId, posts)
+      }
+    }
+
+    return draftsByBlog
   }
 
   async function fetchPost(blogId: string, postId: string): Promise<PostResponse | null> {
@@ -84,7 +117,7 @@ export const useArticleStore = defineStore('articleStore', () => {
         return null
       }
 
-      return data?.id ?? null
+      return data ?? null
     } finally {
       isLoading.value = false
     }
@@ -114,6 +147,15 @@ export const useArticleStore = defineStore('articleStore', () => {
     }
   }
 
+  async function quickPublish(postId: string, blogId: string): Promise<boolean> {
+    publishingPostIds.value.add(postId)
+    try {
+      return await updatePost(blogId, postId, { isPublished: true } as PostUpdateData)
+    } finally {
+      publishingPostIds.value.delete(postId)
+    }
+  }
+
   async function deletePost(blogId: string, postId: string): Promise<boolean> {
     isLoading.value = true
     try {
@@ -137,15 +179,24 @@ export const useArticleStore = defineStore('articleStore', () => {
     currentPost.value = null
   }
 
+  function isPublishing(postId: string): boolean {
+    return publishingPostIds.value.has(postId)
+  }
+
   return {
     currentPost,
     isLoading,
+    publishingPostIds,
     fetchPostsByBlog,
+    fetchDraftsByBlog,
+    fetchAllDrafts,
     fetchPost,
     fetchPostBySlug,
     createPost,
     updatePost,
+    quickPublish,
     deletePost,
     clearCurrentPost,
+    isPublishing,
   }
 })
