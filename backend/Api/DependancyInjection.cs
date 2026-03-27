@@ -1,5 +1,6 @@
 using Api.Authentication;
 using Api.Endpoints.Blogs;
+using Api.Endpoints.Files;
 using Api.Endpoints.Posts;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -18,7 +19,8 @@ public static class DependancyInjection
         app
             .MapBlogsEndpoints()
             .MapPostsEndpoints()
-            .MapTagsEndpoints();
+            .MapTagsEndpoints()
+            .MapFileEndpoints();
 
         app.UseCors("AllowFrontend");
 
@@ -39,7 +41,9 @@ public static class DependancyInjection
             .AddPermission(Permissions.ReadBlogs)
             .AddPermission(Permissions.WriteBlogs)
             .AddPermission(Permissions.ReadPosts)
-            .AddPermission(Permissions.WritePosts);
+            .AddPermission(Permissions.WritePosts)
+            .AddPermission(Permissions.ReadFiles)
+            .AddPermission(Permissions.WriteFiles);
 
         builder.Services.AddTransient<IAuthorizationHandler, HasScopeHandler>();
 

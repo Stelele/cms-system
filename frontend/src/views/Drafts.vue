@@ -117,8 +117,8 @@ function formatDate(dateStr: string | undefined | null): string {
   })
 }
 
-async function handlePublish(post: PostResponse, blogId: string) {
-  const success = await articleStore.quickPublish(post.id!, blogId)
+  async function handlePublish(post: PostResponse, blogId: string) {
+  const success = await articleStore.quickPublish(post)
   if (success) {
     const posts = draftsByBlog.value.get(blogId) ?? []
     const updated = posts.filter((p) => p.id !== post.id)

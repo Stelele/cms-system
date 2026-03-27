@@ -1,5 +1,6 @@
 import { ref } from 'vue'
 import type { Editor } from '@tiptap/vue-3'
+import { uploadFile } from '@/services/upload'
 
 export const useImageInsert = () => {
   const isImageModalOpen = ref(false)
@@ -14,9 +15,7 @@ export const useImageInsert = () => {
   }
 
   const insertImageUrl = (url: string) => {
-    console.log('insertImageUrl called', { currentEditor: !!currentEditor, url })
     if (currentEditor && url) {
-      console.log('Inserting image:', url)
       currentEditor.chain().focus().setImage({ src: url }).run()
       closeModal()
     }
@@ -29,19 +28,21 @@ export const useImageInsert = () => {
     }
   }
 
-  const insertImageFile = async () => {
-    if (!currentEditor || !selectedFile.value) return
+  const insertImageFile = async (): Promise<string | null> => {
+    if (!currentEditor || !selectedFile.value) return null
 
     isUploading.value = true
     try {
-      const reader = new FileReader()
-      reader.onload = () => {
-        if (currentEditor && reader.result) {
-          currentEditor.chain().focus().setImage({ src: reader.result as string }).run()
-          closeModal()
-        }
+      const result = await uploadFile(selectedFile.value)
+      const url = result.url
+      if (currentEditor && url) {
+        currentEditor.chain().focus().setImage({ src: url }).run()
+        closeModal()
       }
-      reader.readAsDataURL(selectedFile.value)
+      return url
+    } catch (err) {
+      console.error('Image upload failed:', err)
+      return null
     } finally {
       isUploading.value = false
     }

@@ -1,5 +1,6 @@
 using Domain.Abstractions;
 using Domain.Blogs;
+using Domain.Files;
 
 namespace Domain.Posts;
 
@@ -14,6 +15,8 @@ public class Post : Base
     public string? CoverImageUrl { get; set; }
     public DateTimeOffset? PublishedOn { get; set; }
     public bool IsPublished { get; set; }
+
+    public ICollection<FileItem> Files { get; set; } = [];
 
     public static Post Create(
         Guid blogId,

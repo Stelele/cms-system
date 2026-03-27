@@ -147,12 +147,22 @@ export const useArticleStore = defineStore('articleStore', () => {
     }
   }
 
-  async function quickPublish(postId: string, blogId: string): Promise<boolean> {
-    publishingPostIds.value.add(postId)
+  async function quickPublish(post: PostResponse): Promise<boolean> {
+    publishingPostIds.value.add(post.id!)
     try {
-      return await updatePost(blogId, postId, { isPublished: true } as PostUpdateData)
+      const postData: PostUpdateData = {
+        blogId: post.blogId!,
+        id: post.id!,
+        title: post.title ?? '',
+        slug: post.slug ?? '',
+        content: post.content ?? '',
+        tag: post.tag ?? '',
+        coverImageUrl: post.coverImageUrl ?? null,
+        isPublished: true,
+      }
+      return await updatePost(post.blogId!, post.id!, postData)
     } finally {
-      publishingPostIds.value.delete(postId)
+      publishingPostIds.value.delete(post.id!)
     }
   }
 

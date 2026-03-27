@@ -2,3 +2,7 @@
 **/nul
 frontend/nul
 nul
+**.err
+**.log
+**.tmp
+**/backend-openapi.json

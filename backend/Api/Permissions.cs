@@ -7,4 +7,7 @@ public static class Permissions
 
     public const string ReadPosts = "read:posts";
     public const string WritePosts = "write:posts";
+
+    public const string ReadFiles = "read:files";
+    public const string WriteFiles = "write:files";
 }

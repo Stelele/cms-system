@@ -1,5 +1,6 @@
 using Domain.Abstractions;
 using Domain.Blogs;
+using Domain.Files;
 using Domain.Posts;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -10,11 +11,13 @@ public class CmsDbContext(DbContextOptions<CmsDbContext> options, IPublisher pub
 {
     public DbSet<Blog> Blogs { get; set; }
     public DbSet<Post> Posts { get; set; }
+    public DbSet<FileItem> FileItems { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         new BlogEntity().Configure(modelBuilder.Entity<Blog>());
         new PostEntity().Configure(modelBuilder.Entity<Post>());
+        new FileEntity().Configure(modelBuilder.Entity<FileItem>());
     }
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

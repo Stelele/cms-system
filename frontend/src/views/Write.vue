@@ -165,6 +165,7 @@ import { useBlogStore } from '@/stores/blog-store'
 import { useArticleStore } from '@/stores/article-store'
 import type { PostResponse } from '@/stores/article-store'
 import { useImageInsert } from '@/composables/useImageInsert'
+import { associateFileWithPost } from '@/services/upload'
 import type { SelectMenuItem } from '@nuxt/ui/runtime/components/SelectMenu.vue.js'
 
 const route = useRoute()
@@ -180,9 +181,27 @@ const {
   openImageModal,
   insertImageUrl: insertImageUrlFromModal,
   handleFileSelect,
-  insertImageFile,
+  insertImageFile: insertImageFileFromModal,
   closeModal,
 } = useImageInsert()
+
+const uploadedFileIds = ref<Set<string>>(new Set())
+
+async function insertImageFile() {
+  const fileUrl = await insertImageFileFromModal()
+  if (fileUrl && existingPost.value?.id) {
+    const match = fileUrl.match(/\/uploads\/([^/]+)/)
+    if (match && match[1]) {
+      const fileId = match[1]
+      try {
+        await associateFileWithPost(fileId, existingPost.value.id!)
+        uploadedFileIds.value.add(fileId)
+      } catch (err) {
+        console.warn('Failed to associate image with post:', err)
+      }
+    }
+  }
+}
 
 const localImageUrl = ref('')
 
