@@ -237,7 +237,7 @@ const schema = z.object({
 type Schema = z.output<typeof schema>
 
 const state = reactive<Schema>({
-  blogId: { id: '', label: '' },
+  blogId: { id: blogStore.blogs[0]?.id || '', label: blogStore.blogs[0]?.name || '' },
   title: '',
   slug: '',
   tag: '',
@@ -328,7 +328,7 @@ function resetForm() {
   if (isDraftEdit.value && originalState.value) {
     Object.assign(state, JSON.parse(JSON.stringify(originalState.value)))
   } else {
-    state.blogId = { id: '', label: '' }
+    state.blogId = { id: blogStore.blogs[0]?.id || '', label: blogStore.blogs[0]?.name || '' }
     state.title = ''
     state.slug = ''
     state.tag = ''

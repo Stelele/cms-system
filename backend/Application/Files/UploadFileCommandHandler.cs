@@ -1,13 +1,14 @@
 using Application.Abstractions;
 using Domain.Files;
 using Infrastructure.Models;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 
 namespace Application.Files;
 
 public class UploadFileCommandHandler(
     CmsDbContext db,
-    string? uploadsBasePath = null
+    IWebHostEnvironment env
 ) : ICommandHandler<UploadFileCommand, FileResponse>
 {
     public async Task<FileResponse> Handle(UploadFileCommand request, CancellationToken cancellationToken)
@@ -31,7 +32,7 @@ public class UploadFileCommandHandler(
         var storagePath = $"uploads/{fileId}.{extension}";
         var url = $"/uploads/{fileId}.{extension}";
 
-        var basePath = uploadsBasePath ?? AppContext.BaseDirectory;
+        var basePath = env.ContentRootPath;
         var filePath = Path.Combine(basePath, storagePath);
         var directory = Path.GetDirectoryName(filePath);
         if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))

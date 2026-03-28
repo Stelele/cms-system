@@ -34,7 +34,7 @@ export const useImageInsert = () => {
     isUploading.value = true
     try {
       const result = await uploadFile(selectedFile.value)
-      const url = result.url
+      const url = `${import.meta.env.VITE_API_URL}${result.url}`
       if (currentEditor && url) {
         currentEditor.chain().focus().setImage({ src: url }).run()
         closeModal()

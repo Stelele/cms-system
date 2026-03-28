@@ -32,7 +32,14 @@ app.UseStaticFiles(new StaticFileOptions
     RequestPath = "/uploads",
     ContentTypeProvider = new FileExtensionContentTypeProvider
     {
-        Mappings = { [".png"] = "image/png", [".jpg"] = "image/jpeg", [".jpeg"] = "image/jpeg", [".gif"] = "image/gif", [".webp"] = "image/webp" },
+        Mappings = 
+        { 
+            [".png"] = "image/png", 
+            [".jpg"] = "image/jpeg", 
+            [".jpeg"] = "image/jpeg", 
+            [".gif"] = "image/gif", 
+            [".webp"] = "image/webp" 
+        },
     },
 });
 

@@ -1,12 +1,13 @@
 using Application.Abstractions;
 using Infrastructure.Models;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 
 namespace Application.Files;
 
 public class DeleteFileCommandHandler(
     CmsDbContext db,
-    string? uploadsBasePath = null
+    IWebHostEnvironment env
 ) : ICommandHandler<DeleteFileCommand, bool>
 {
     public async Task<bool> Handle(DeleteFileCommand request, CancellationToken cancellationToken)
@@ -25,7 +26,7 @@ public class DeleteFileCommandHandler(
             return false;
         }
 
-        var basePath = uploadsBasePath ?? AppContext.BaseDirectory;
+        var basePath = env.ContentRootPath;
         var filePath = Path.Combine(basePath, file.StoragePath);
         if (File.Exists(filePath))
         {
