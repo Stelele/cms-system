@@ -1,16 +1,17 @@
 import { ref } from 'vue'
 import type { Editor } from '@tiptap/vue-3'
-import { uploadFile } from '@/services/upload'
+import { useImageUpload } from './useImageUpload'
 
 export const useImageInsert = () => {
+  const { selectedFile, isUploading, handleFileSelect, uploadImage, clearFile, getPreviewUrl } =
+    useImageUpload()
+
   const isImageModalOpen = ref(false)
-  const selectedFile = ref<File | null>(null)
-  const isUploading = ref(false)
   let currentEditor: Editor | null = null
 
   const openImageModal = (editor: Editor) => {
     currentEditor = editor
-    selectedFile.value = null
+    clearFile()
     isImageModalOpen.value = true
   }
 
@@ -21,36 +22,20 @@ export const useImageInsert = () => {
     }
   }
 
-  const handleFileSelect = (event: Event) => {
-    const target = event.target as HTMLInputElement
-    if (target.files && target.files[0]) {
-      selectedFile.value = target.files[0]
-    }
-  }
-
   const insertImageFile = async (): Promise<string | null> => {
     if (!currentEditor || !selectedFile.value) return null
 
-    isUploading.value = true
-    try {
-      const result = await uploadFile(selectedFile.value)
-      const url = `${import.meta.env.VITE_API_URL}${result.url}`
-      if (currentEditor && url) {
-        currentEditor.chain().focus().setImage({ src: url }).run()
-        closeModal()
-      }
-      return url
-    } catch (err) {
-      console.error('Image upload failed:', err)
-      return null
-    } finally {
-      isUploading.value = false
+    const url = await uploadImage()
+    if (currentEditor && url) {
+      currentEditor.chain().focus().setImage({ src: url }).run()
+      closeModal()
     }
+    return url
   }
 
   const closeModal = () => {
     isImageModalOpen.value = false
-    selectedFile.value = null
+    clearFile()
     currentEditor = null
   }
 
@@ -63,5 +48,6 @@ export const useImageInsert = () => {
     handleFileSelect,
     insertImageFile,
     closeModal,
+    getPreviewUrl,
   }
 }

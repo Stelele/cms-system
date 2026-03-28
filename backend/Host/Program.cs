@@ -38,7 +38,15 @@ app.UseStaticFiles(new StaticFileOptions
             [".jpg"] = "image/jpeg", 
             [".jpeg"] = "image/jpeg", 
             [".gif"] = "image/gif", 
-            [".webp"] = "image/webp" 
+            [".webp"] = "image/webp",
+            [".svg"] = "image/svg+xml",
+            [".bmp"] = "image/bmp",
+            [".tiff"] = "image/tiff",
+            [".tif"] = "image/tiff",
+            [".ico"] = "image/x-icon",
+            [".apng"] = "image/apng",
+            [".avif"] = "image/avif",
+            [".xbm"] = "image/x-xbitmap",
         },
     },
 });

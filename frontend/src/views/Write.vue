@@ -55,12 +55,40 @@
           <UInput v-model="state.tag" placeholder="Category or tag" class="w-full" />
         </UFormField>
 
-        <UFormField label="Cover Image URL" name="coverImageUrl">
-          <UInput
-            v-model="state.coverImageUrl"
-            placeholder="https://example.com/image.jpg"
-            class="w-full"
-          />
+        <UFormField label="Cover Image" name="coverImageUrl">
+          <div class="flex gap-3">
+            <UInput
+              v-model="state.coverImageUrl"
+              placeholder="https://example.com/image.jpg"
+              class="w-full"
+            />
+            <UInput
+              type="file"
+              accept="image/jpeg,image/png,image/gif,image/webp,image/svg+xml,image/bmp,image/tiff,image/x-icon,image/apng,image/avif"
+              class="w-auto"
+              @change="handleCoverFileSelect"
+            />
+            <UButton
+              v-if="coverImageFile"
+              :loading="isCoverUploading"
+              @click="handleCoverUpload"
+            >
+              Upload
+            </UButton>
+            <UButton
+              v-if="coverImageFile || state.coverImageUrl"
+              variant="ghost"
+              icon="i-lucide-x"
+              @click="clearCover"
+            />
+          </div>
+          <div v-if="coverPreviewUrl" class="mt-3">
+            <img
+              :src="coverPreviewUrl"
+              alt="Cover preview"
+              class="h-40 w-full rounded-md object-cover"
+            />
+          </div>
         </UFormField>
       </div>
 
@@ -108,7 +136,7 @@
                         <UFormField label="Or Upload File" name="fileUpload">
                           <UInput
                             type="file"
-                            accept="image/*"
+                            accept="image/jpeg,image/png,image/gif,image/webp,image/svg+xml,image/bmp,image/tiff,image/x-icon,image/apng,image/avif"
                             class="w-full"
                             @change="handleFileSelect"
                           />
@@ -116,7 +144,7 @@
 
                         <div v-if="selectedFile" class="flex items-center gap-4">
                           <img
-                            :src="getFilePreviewUrl(selectedFile)"
+                            :src="getPreviewUrl()"
                             alt="Preview"
                             class="h-20 w-20 rounded-md object-cover"
                           />
@@ -165,6 +193,7 @@ import { useBlogStore } from '@/stores/blog-store'
 import { useArticleStore } from '@/stores/article-store'
 import type { PostResponse } from '@/stores/article-store'
 import { useImageInsert } from '@/composables/useImageInsert'
+import { useImageUpload } from '@/composables/useImageUpload'
 import { associateFileWithPost } from '@/services/upload'
 import type { SelectMenuItem } from '@nuxt/ui/runtime/components/SelectMenu.vue.js'
 
@@ -183,7 +212,17 @@ const {
   handleFileSelect,
   insertImageFile: insertImageFileFromModal,
   closeModal,
+  getPreviewUrl,
 } = useImageInsert()
+
+const {
+  selectedFile: coverImageFile,
+  isUploading: isCoverUploading,
+  handleFileSelect: handleCoverFileSelect,
+  uploadImage: uploadCoverImage,
+  clearFile: clearCoverImageFile,
+  getPreviewUrl: getCoverPreviewUrl,
+} = useImageUpload()
 
 const uploadedFileIds = ref<Set<string>>(new Set())
 
@@ -334,6 +373,7 @@ function resetForm() {
     state.tag = ''
     state.coverImageUrl = ''
     editorContent.value = ''
+    clearCoverImageFile()
   }
 
   if (justPublished.value) {
@@ -477,7 +517,23 @@ onMounted(async () => {
   }
 })
 
-function getFilePreviewUrl(file: File): string {
-  return URL.createObjectURL(file)
+const coverPreviewUrl = computed(() => {
+  if (coverImageFile.value) {
+    return getCoverPreviewUrl()
+  }
+  return state.coverImageUrl || undefined
+})
+
+async function handleCoverUpload() {
+  const url = await uploadCoverImage()
+  if (url) {
+    state.coverImageUrl = url
+    clearCoverImageFile()
+  }
+}
+
+function clearCover() {
+  state.coverImageUrl = ''
+  clearCoverImageFile()
 }
 </script>

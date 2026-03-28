@@ -10,6 +10,13 @@ public sealed class UploadFileCommandValidator : AbstractValidator<UploadFileCom
         "image/png",
         "image/gif",
         "image/webp",
+        "image/svg+xml",
+        "image/bmp",
+        "image/tiff",
+        "image/x-icon",
+        "image/apng",
+        "image/avif",
+        "image/x-xbitmap",
     ];
 
     private const long MaxFileSizeBytes = 10 * 1024 * 1024; // 10MB
