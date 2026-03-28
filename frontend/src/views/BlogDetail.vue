@@ -20,115 +20,40 @@
         <div v-if="draftPosts.length">
           <h2 class="mb-4 px-4 text-xl font-semibold">Drafts</h2>
           <div class="grid grid-cols-1 gap-6 px-4 md:grid-cols-2 lg:grid-cols-3">
-            <article
+            <ArticleCard
               v-for="post in draftPosts"
               :key="post.id"
-              class="group relative flex flex-col overflow-hidden rounded-lg border border-default bg-(--ui-bg-elevated) transition-colors hover:border-primary"
-            >
-              <div v-if="post.coverImageUrl" class="aspect-video overflow-hidden">
-                <img
-                  :src="post.coverImageUrl"
-                  :alt="post.title ?? ''"
-                  class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                />
-              </div>
-              <div class="flex flex-1 flex-col p-4">
-                <div class="mb-2 flex items-center justify-between">
-                  <UBadge color="neutral" variant="subtle" label="Draft" />
-                  <span class="text-xs text-muted">{{ formatDate(post.createdOn) }}</span>
-                </div>
-                <h3 class="mb-2 text-lg font-semibold leading-tight">
-                  <RouterLink
-                    :to="`/write?blogId=${blog.id}&edit=${post.id}`"
-                    class="hover:text-primary"
-                  >
-                    {{ post.title }}
-                  </RouterLink>
-                </h3>
-                <p class="mb-4 flex-1 text-sm text-muted line-clamp-3">
-                  {{ stripMarkdown(post.content ?? '') }}
-                </p>
-                <div class="mt-auto flex gap-2">
-                  <UButton
-                    size="sm"
-                    color="primary"
-                    :loading="articleStore.isPublishing(post.id!)"
-                    :disabled="articleStore.isPublishing(post.id!)"
-                    @click="handlePublish(post)"
-                  >
-                    Publish
-                  </UButton>
-                  <UButton
-                    size="sm"
-                    color="neutral"
-                    variant="outline"
-                    :to="`/write?blogId=${blog.id}&edit=${post.id}`"
-                  >
-                    Edit
-                  </UButton>
-                </div>
-              </div>
-            </article>
+              :post="post"
+              :blog-id="blog.id"
+              status="draft"
+              :is-publishing="articleStore.isPublishing(post.id!)"
+              @publish="handlePublish"
+            />
           </div>
         </div>
 
         <div v-if="publishedPosts.length" :class="draftPosts.length ? 'mt-12' : ''">
           <h2 class="mb-4 px-4 text-xl font-semibold">Published</h2>
           <div class="grid grid-cols-1 gap-6 px-4 md:grid-cols-2 lg:grid-cols-3">
-            <article
+            <ArticleCard
               v-for="post in publishedPosts"
               :key="post.id"
-              class="group relative flex flex-col overflow-hidden rounded-lg border border-default bg-(--ui-bg-elevated) transition-colors hover:border-primary"
-            >
-              <div v-if="post.coverImageUrl" class="aspect-video overflow-hidden">
-                <img
-                  :src="post.coverImageUrl"
-                  :alt="post.title ?? ''"
-                  class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                />
-              </div>
-              <div class="flex flex-1 flex-col p-4">
-                <div class="mb-2 flex items-center justify-between">
-                  <UBadge color="success" variant="subtle" label="Published" />
-                  <span class="text-xs text-muted">{{ formatDate(post.publishedOn) }}</span>
-                </div>
-                <h3 class="mb-2 text-lg font-semibold leading-tight">
-                  <RouterLink
-                    :to="`/write?blogId=${blog.id}&edit=${post.id}`"
-                    class="hover:text-primary"
-                  >
-                    {{ post.title }}
-                  </RouterLink>
-                </h3>
-                <p class="mb-4 flex-1 text-sm text-muted line-clamp-3">
-                  {{ stripMarkdown(post.content ?? '') }}
-                </p>
-                <div class="mt-auto">
-                  <UButton
-                    size="sm"
-                    color="neutral"
-                    variant="outline"
-                    :to="`/write?blogId=${blog.id}&edit=${post.id}`"
-                  >
-                    Edit
-                  </UButton>
-                </div>
-              </div>
-            </article>
+              :post="post"
+              :blog-id="blog.id"
+              status="published"
+            />
           </div>
         </div>
       </template>
 
-      <div v-else class="px-4 py-16 text-center">
-        <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-(--ui-bg-elevated)">
-          <UIcon name="i-lucide-file-text" class="h-8 w-8 text-muted" />
-        </div>
-        <h2 class="mb-2 text-xl font-semibold">No posts yet</h2>
-        <p class="text-muted">Create your first post for this blog.</p>
-        <UButton class="mt-6" color="primary" @click="router.push(`/write?blogId=${blog.id}`)">
-          Create Post
-        </UButton>
-      </div>
+      <EmptyState
+        v-else
+        title="No posts yet"
+        description="Create your first post for this blog."
+        icon="i-lucide-file-text"
+        action-label="Create Post"
+        @action="router.push(`/write?blogId=${blog.id}`)"
+      />
     </template>
 
     <div v-else class="p-8 text-center">
@@ -144,6 +69,8 @@ import { useToast } from '@nuxt/ui/composables'
 import { useBlogStore } from '@/stores/blog-store'
 import { useArticleStore } from '@/stores/article-store'
 import type { PostResponse } from '@/stores/article-store'
+import ArticleCard from '@/components/ArticleCard.vue'
+import EmptyState from '@/components/EmptyState.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -180,23 +107,6 @@ const publishedPosts = computed(() =>
 )
 
 const sortedPosts = computed(() => [...draftPosts.value, ...publishedPosts.value])
-
-function stripMarkdown(content: string | undefined | null): string {
-  const plainText = (content ?? '')
-    .replace(/[#*`_~[\]]/g, '')
-    .replace(/\n+/g, ' ')
-    .trim()
-  return plainText.length > 150 ? plainText.slice(0, 150) + '...' : plainText
-}
-
-function formatDate(dateStr: string | undefined | null): string {
-  if (!dateStr) return ''
-  return new Date(dateStr).toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  })
-}
 
 async function handlePublish(post: PostResponse) {
   if (!blog.value?.id) return
