@@ -1,7 +1,7 @@
 <template>
   <UBlogPost
     :title="post.title ?? ''"
-    :description="strippedContent"
+    :description="displayDescription"
     :image="post.coverImageUrl ?? undefined"
     :date="post[dateKey] ?? undefined"
     :badge="status === 'draft' ? { label: 'Draft', color: 'neutral', variant: 'subtle' } : { label: 'Published', color: 'success', variant: 'subtle' }"
@@ -52,4 +52,6 @@ const editLink = computed(() => `/write?blogId=${props.blogId ?? ''}&edit=${prop
 const dateKey = computed(() => props.status === 'draft' ? 'createdOn' : 'publishedOn')
 
 const strippedContent = computed(() => stripMarkdown(props.post.content ?? ''))
+
+const displayDescription = computed(() => props.post.description ?? strippedContent.value)
 </script>

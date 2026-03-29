@@ -1,3 +1,5 @@
+import dayjs from 'dayjs'
+
 export function stripMarkdown(content: string | undefined | null): string {
   const plainText = (content ?? '')
     .replace(/[#*`_~[\]]/g, '')
@@ -8,9 +10,5 @@ export function stripMarkdown(content: string | undefined | null): string {
 
 export function formatDate(dateStr: string | undefined | null): string {
   if (!dateStr) return ''
-  return new Date(dateStr).toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  })
+  return dayjs(dateStr).format('MMM D, YYYY')
 }

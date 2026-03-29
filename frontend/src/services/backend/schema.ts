@@ -100,6 +100,70 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/files/upload": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["UploadFile"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/files/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetFileById"];
+        put?: never;
+        post?: never;
+        delete: operations["DeleteFile"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/files/{fileId}/posts/{postId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["AssociateFileWithPost"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/posts/{postId}/files": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetFilesByPost"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -126,9 +190,21 @@ export interface components {
             title: string;
             slug: string;
             content: string;
+            description?: null | string;
             tag: string;
             coverImageUrl: null | string;
             isPublished: boolean;
+        };
+        FileResponse: {
+            /** Format: uuid */
+            id: string;
+            fileName: string;
+            url: string;
+            contentType: string;
+            /** Format: int64 */
+            size: number | string;
+            altText: null | string;
+            isNew: boolean;
         };
         HttpValidationProblemDetails: {
             type?: null | string;
@@ -141,6 +217,8 @@ export interface components {
                 [key: string]: string[];
             };
         };
+        /** Format: binary */
+        IFormFile: string;
         PostResponse: {
             /** Format: uuid */
             id?: string;
@@ -149,6 +227,7 @@ export interface components {
             title?: string;
             slug?: string;
             content?: string;
+            description?: null | string;
             tag?: string;
             coverImageUrl?: null | string;
             /** Format: date-time */
@@ -179,6 +258,7 @@ export interface components {
             title: string;
             slug: string;
             content: string;
+            description: null | string;
             tag: string;
             coverImageUrl: null | string;
             isPublished: boolean;
@@ -545,6 +625,152 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["TagResponse"][];
+                };
+            };
+        };
+    };
+    UploadFile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": {
+                    file: components["schemas"]["IFormFile"];
+                };
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FileResponse"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    GetFileById: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FileResponse"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    DeleteFile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AssociateFileWithPost: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                fileId: string;
+                postId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    GetFilesByPost: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                postId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FileResponse"][];
                 };
             };
         };

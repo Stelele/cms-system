@@ -50,6 +50,29 @@
         </UFormField>
       </div>
 
+      <UFormField label="Description" name="description">
+        <div class="flex gap-3">
+          <UInput
+            v-model="state.description"
+            placeholder="Brief summary of your article (max 300 characters)"
+            class="w-full"
+            :maxlength="300"
+          />
+          <UButton
+            v-if="settingsStore.aiSummarizationEnabled && editorContent && editorContent !== '<p></p>'"
+            :loading="isSummarizing"
+            :disabled="isSummarizing"
+            color="neutral"
+            variant="outline"
+            icon="i-lucide-sparkles"
+            @click="handleSummarize"
+          >
+            Summarize with AI
+          </UButton>
+        </div>
+        <p class="mt-1 text-xs text-muted">{{ state.description?.length ?? 0 }}/300 characters</p>
+      </UFormField>
+
       <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
         <UFormField label="Tag" name="tag">
           <UInput v-model="state.tag" placeholder="Category or tag" class="w-full" />
@@ -192,6 +215,9 @@ import * as z from 'zod'
 import { useBlogStore } from '@/stores/blog-store'
 import { useArticleStore } from '@/stores/article-store'
 import type { PostResponse } from '@/stores/article-store'
+import { useSettingsStore } from '@/stores/settings-store'
+import { useArticleSummarizer } from '@/composables/useArticleSummarizer'
+
 import { useImageInsert } from '@/composables/useImageInsert'
 import { useImageUpload } from '@/composables/useImageUpload'
 import { associateFileWithPost } from '@/services/upload'
@@ -202,6 +228,8 @@ const router = useRouter()
 const toast = useToast()
 const blogStore = useBlogStore()
 const articleStore = useArticleStore()
+const settingsStore = useSettingsStore()
+const { summarize: summarizeContent, isSummarizing } = useArticleSummarizer()
 
 const {
   isImageModalOpen,
@@ -269,6 +297,7 @@ const schema = z.object({
     .string()
     .min(3, 'Slug must be at least 3 characters')
     .regex(/^[a-z0-9-]+$/, 'Slug can only contain lowercase letters, numbers, and dashes'),
+  description: z.string().max(300).optional(),
   tag: z.string().min(1, 'Tag is required'),
   coverImageUrl: z.string().url('Must be a valid URL').optional().or(z.literal('')),
 })
@@ -279,6 +308,7 @@ const state = reactive<Schema>({
   blogId: { id: blogStore.blogs[0]?.id || '', label: blogStore.blogs[0]?.name || '' },
   title: '',
   slug: '',
+  description: '',
   tag: '',
   coverImageUrl: '',
 })
@@ -370,6 +400,7 @@ function resetForm() {
     state.blogId = { id: blogStore.blogs[0]?.id || '', label: blogStore.blogs[0]?.name || '' }
     state.title = ''
     state.slug = ''
+    state.description = ''
     state.tag = ''
     state.coverImageUrl = ''
     editorContent.value = ''
@@ -381,6 +412,37 @@ function resetForm() {
     existingPost.value = null
     originalState.value = null
     justPublished.value = false
+  }
+}
+
+async function handleSummarize() {
+  if (!editorContent.value || editorContent.value === '<p></p>') {
+    toast.add({
+      title: 'No Content',
+      description: 'Please write some content first before summarizing.',
+      color: 'warning',
+    })
+    return
+  }
+
+  isSummarizing.value = true
+  try {
+    const summary = await summarizeContent(editorContent.value)
+    state.description = summary
+    toast.add({
+      title: 'Summary Generated',
+      description: 'You can edit the description as needed.',
+      color: 'success',
+    })
+  } catch (err) {
+    console.error('Summarization error:', err)
+    toast.add({
+      title: 'Summarization Failed',
+      description: 'Could not generate summary. Please try again or write manually.',
+      color: 'error',
+    })
+  } finally {
+    isSummarizing.value = false
   }
 }
 
@@ -420,6 +482,7 @@ async function savePost(isPublished: boolean) {
       title: state.title,
       slug: state.slug,
       content: editorContent.value,
+      description: state.description || null,
       tag: state.tag || '',
       coverImageUrl: state.coverImageUrl || null,
       isPublished,
@@ -503,6 +566,7 @@ onMounted(async () => {
         blogId: { id: post.blogId ?? '', label: '' },
         title: post.title ?? '',
         slug: post.slug ?? '',
+        description: post.description ?? '',
         tag: post.tag ?? '',
         coverImageUrl: post.coverImageUrl ?? '',
       }
@@ -510,6 +574,7 @@ onMounted(async () => {
       state.blogId = { id: post.blogId ?? '', label: blog?.name ?? '' }
       state.title = post.title ?? ''
       state.slug = post.slug ?? ''
+      state.description = post.description ?? ''
       state.tag = post.tag ?? ''
       state.coverImageUrl = post.coverImageUrl ?? ''
       editorContent.value = post.content ?? ''

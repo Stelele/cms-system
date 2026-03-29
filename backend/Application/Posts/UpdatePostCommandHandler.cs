@@ -22,6 +22,7 @@ public class UpdatePostCommandHandler(CmsDbContext db) : ICommandHandler<UpdateP
         post.Title = request.Title;
         post.Slug = request.Slug;
         post.Content = request.Content;
+        post.Description = request.Description;
         post.Tag = request.Tag;
         post.CoverImageUrl = request.CoverImageUrl;
         post.UpdatedOn = DateTimeOffset.UtcNow;

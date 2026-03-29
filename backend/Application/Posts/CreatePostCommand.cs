@@ -18,6 +18,9 @@ public record CreatePostCommand : ICommand<Guid>
     [JsonPropertyName("content")]
     public required string Content { get; init; }
 
+    [JsonPropertyName("description")]
+    public string? Description { get; init; }
+
     [JsonPropertyName("tag")]
     public required string Tag { get; init; }
 

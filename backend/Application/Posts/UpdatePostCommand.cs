@@ -9,6 +9,7 @@ public record UpdatePostCommand(
     string Title,
     string Slug,
     string Content,
+    string? Description,
     string Tag,
     string? CoverImageUrl,
     bool IsPublished

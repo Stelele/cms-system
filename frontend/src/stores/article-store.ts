@@ -156,6 +156,7 @@ export const useArticleStore = defineStore('articleStore', () => {
         title: post.title ?? '',
         slug: post.slug ?? '',
         content: post.content ?? '',
+        description: post.description ?? null,
         tag: post.tag ?? '',
         coverImageUrl: post.coverImageUrl ?? null,
         isPublished: true,

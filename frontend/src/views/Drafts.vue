@@ -36,6 +36,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
+import dayjs from 'dayjs'
 import { useToast } from '@nuxt/ui/composables'
 import { useArticleStore } from '@/stores/article-store'
 import { useBlogStore } from '@/stores/blog-store'
@@ -55,8 +56,8 @@ const groupedDrafts = computed(() => {
     .map(([blogId, posts]) => ({
       blog: blogStore.blogs.find((b) => b.id === blogId)!,
       posts: posts.sort((a, b) => {
-        const dateA = a.createdOn ? new Date(a.createdOn).getTime() : 0
-        const dateB = b.createdOn ? new Date(b.createdOn).getTime() : 0
+        const dateA = a.createdOn ? dayjs(a.createdOn).valueOf() : 0
+        const dateB = b.createdOn ? dayjs(b.createdOn).valueOf() : 0
         return dateB - dateA
       }),
     }))

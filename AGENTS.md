@@ -25,6 +25,13 @@ cms-system/
 │   └── Host/         # Entry point and middleware
 ```
 
+## IMPORTANT: Port 5173
+
+The frontend MUST run on **port 5173 only**. Auth0 authentication is configured to accept callbacks only on this port. Using any other port will cause login failures.
+
+- If port 5173 is in use, the dev server is already running - just open the browser
+- Do NOT specify alternative ports with `npm run dev -- --port XXXX`
+
 ## Build Commands
 
 ### Frontend (Node.js >= 20.19.0)

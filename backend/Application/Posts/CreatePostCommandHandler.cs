@@ -26,6 +26,7 @@ public class CreatePostCommandHandler(CmsDbContext db) : ICommandHandler<CreateP
             request.Title,
             request.Slug,
             request.Content,
+            request.Description,
             request.Tag,
             request.CoverImageUrl);
 

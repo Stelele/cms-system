@@ -64,6 +64,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
+import dayjs from 'dayjs'
 import { useRoute, useRouter } from 'vue-router'
 import { useToast } from '@nuxt/ui/composables'
 import { useBlogStore } from '@/stores/blog-store'
@@ -90,8 +91,8 @@ const draftPosts = computed(() =>
   allPosts.value
     .filter((p) => !p.isPublished)
     .sort((a, b) => {
-      const dateA = a.createdOn ? new Date(a.createdOn).getTime() : 0
-      const dateB = b.createdOn ? new Date(b.createdOn).getTime() : 0
+      const dateA = a.createdOn ? dayjs(a.createdOn).valueOf() : 0
+      const dateB = b.createdOn ? dayjs(b.createdOn).valueOf() : 0
       return dateB - dateA
     }),
 )

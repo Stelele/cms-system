@@ -11,6 +11,7 @@ public class Post : Base
     public string Title { get; set; } = string.Empty;
     public string Slug { get; set; } = string.Empty;
     public string Content { get; set; } = string.Empty;
+    public string? Description { get; set; }
     public string Tag { get; set; } = string.Empty;
     public string? CoverImageUrl { get; set; }
     public DateTimeOffset? PublishedOn { get; set; }
@@ -23,6 +24,7 @@ public class Post : Base
         string title,
         string slug,
         string content,
+        string? description,
         string tag,
         string? coverImageUrl = null)
     {
@@ -33,6 +35,7 @@ public class Post : Base
             Title = title,
             Slug = slug,
             Content = content,
+            Description = description,
             Tag = tag,
             CoverImageUrl = coverImageUrl
         };

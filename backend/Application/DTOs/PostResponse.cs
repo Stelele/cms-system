@@ -20,6 +20,9 @@ public class PostResponse
     [JsonPropertyName("content")]
     public string Content { get; init; } = string.Empty;
 
+    [JsonPropertyName("description")]
+    public string? Description { get; init; }
+
     [JsonPropertyName("tag")]
     public string Tag { get; init; } = string.Empty;
 
@@ -47,6 +50,7 @@ public class PostResponse
             Title = post.Title,
             Slug = post.Slug,
             Content = post.Content,
+            Description = post.Description,
             Tag = post.Tag,
             CoverImageUrl = post.CoverImageUrl,
             PublishedOn = post.PublishedOn,

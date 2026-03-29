@@ -6,6 +6,13 @@
     // Extra safety for array and object lookups, but may have false positives.
     "noUncheckedIndexedAccess": true,
 
+     "lib": [
+      "ES2020",
+      "ES2022.Array",
+
+      "DOM",
+      "DOM.Iterable"
+    ],
     // Path mapping for cleaner imports.
     "paths": {
       "@/*": ["./src/*"],
