@@ -19,6 +19,7 @@
     "@nuxt/ui": "^4.5.1",
     "@tiptap/markdown": "^3.20.5",
     "dayjs": "^1.11.20",
+    "groq-sdk": "^1.1.2",
     "openapi-fetch": "^0.17.0",
     "pinia": "^3.0.4",
     "vue": "^3.5.29",

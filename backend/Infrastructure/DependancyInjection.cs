@@ -1,4 +1,5 @@
 using Infrastructure.Models;
+using Infrastructure.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -37,6 +38,8 @@ public static class DependancyInjection
                 "Data Source=cms.db";
             options.UseSqlite(connectionString);
         });
+
+        builder.Services.AddHttpClient<IGroqService, GroqService>();
 
         return builder;
     }

@@ -2,6 +2,7 @@ using Api.Authentication;
 using Api.Endpoints.Blogs;
 using Api.Endpoints.Files;
 using Api.Endpoints.Posts;
+using Api.Endpoints.Summarize;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -13,6 +14,8 @@ public static class DependancyInjection
 {
     public static WebApplication MapApi(this WebApplication app)
     {
+        app.UseCors("AllowFrontend");
+
         app.UseAuthentication();
         app.UseAuthorization();
 
@@ -20,9 +23,8 @@ public static class DependancyInjection
             .MapBlogsEndpoints()
             .MapPostsEndpoints()
             .MapTagsEndpoints()
-            .MapFileEndpoints();
-
-        app.UseCors("AllowFrontend");
+            .MapFileEndpoints()
+            .MapSummarizeEndpoints();
 
         return app;
     }
@@ -43,7 +45,8 @@ public static class DependancyInjection
             .AddPermission(Permissions.ReadPosts)
             .AddPermission(Permissions.WritePosts)
             .AddPermission(Permissions.ReadFiles)
-            .AddPermission(Permissions.WriteFiles);
+            .AddPermission(Permissions.WriteFiles)
+            .AddPermission(Permissions.SummarizeArticles);
 
         builder.Services.AddTransient<IAuthorizationHandler, HasScopeHandler>();
 

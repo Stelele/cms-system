@@ -10,4 +10,6 @@ public static class Permissions
 
     public const string ReadFiles = "read:files";
     public const string WriteFiles = "write:files";
+
+    public const string SummarizeArticles = "summarize:articles";
 }

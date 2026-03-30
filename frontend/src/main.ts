@@ -18,7 +18,7 @@ app.use(
       audience: import.meta.env.VITE_AUTH0_AUDIENCE,
       redirect_uri: window.location.origin,
       scope:
-        'openid profile email read:blogs read:posts write:blogs write:posts read:files write:files',
+        'openid profile email read:blogs read:posts write:blogs write:posts read:files write:files summarize:articles',
     },
   }),
 )

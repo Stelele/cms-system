@@ -132,6 +132,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/summarize": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["Summarize"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/files/{fileId}/posts/{postId}": {
         parameters: {
             query?: never;
@@ -219,6 +235,12 @@ export interface components {
         };
         /** Format: binary */
         IFormFile: string;
+        SummarizeCommand: {
+            content: string;
+        };
+        SummarizeResponse: {
+            summary: string;
+        };
         PostResponse: {
             /** Format: uuid */
             id?: string;
