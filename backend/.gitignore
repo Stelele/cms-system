@@ -60,3 +60,4 @@ nunit-*.xml
 # Uploaded files
 Host/uploads/
 uploads/
+drive-credentials.json

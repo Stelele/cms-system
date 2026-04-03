@@ -41,6 +41,11 @@ public static class DependancyInjection
 
         builder.Services.AddHttpClient<IGroqService, GroqService>();
 
+        builder.Services.AddSingleton<IDatabaseSyncService, DatabaseSyncService>();
+        builder.Services.AddHostedService(sp => (DatabaseSyncService)sp.GetRequiredService<IDatabaseSyncService>());
+
+        builder.Configuration["ContentRootPath"] = builder.Environment.ContentRootPath;
+
         return builder;
     }
 }
