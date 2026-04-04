@@ -1,0 +1,30 @@
+# Build artifacts
+bin/
+obj/
+
+# IDE
+.vs/
+.vscode/
+*.user
+*.suo
+
+# Git
+.git/
+.gitignore
+
+# Environment files (keep .env.example for reference)
+.env
+.env.*
+!.env.example
+
+# Database (will be created in volume)
+*.db
+*.db-shm
+*.db-wal
+
+# Logs
+*.log
+
+# OS
+Thumbs.db
+.DS_Store
