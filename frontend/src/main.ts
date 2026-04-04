@@ -16,7 +16,7 @@ app.use(
     clientId: import.meta.env.VITE_AUTH0_CLIENT_ID,
     authorizationParams: {
       audience: import.meta.env.VITE_AUTH0_AUDIENCE,
-      redirect_uri: window.location.origin,
+      redirect_uri: window.location.origin + (import.meta.env.VITE_APP_BASE || ''),
       scope:
         'openid profile email read:blogs read:posts write:blogs write:posts read:files write:files summarize:articles',
     },
