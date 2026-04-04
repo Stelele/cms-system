@@ -34,3 +34,4 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
     CMD bash -c '</dev/tcp/localhost/8000' || exit 1
 
 ENTRYPOINT ["dotnet", "Host.dll"]
+
