@@ -7,6 +7,7 @@ import ui from '@nuxt/ui/vite'
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: '/cms-system-frontend-build/',
   plugins: [
     vue(),
     vueDevTools(),

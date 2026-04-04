@@ -76,6 +76,7 @@ jobs:
           publish_dir: ./frontend/dist
           publish_branch: gh-pages
           external_repository: Stelele/cms-system-frontend-build
+          SPA: true
 
   backend:
     runs-on: ubuntu-latest
