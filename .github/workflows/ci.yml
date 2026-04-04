@@ -72,7 +72,7 @@ jobs:
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
-          github_token: ${{ secrets.GH_PAT }}
+          personal_token: ${{ secrets.GH_PAT }}
           publish_dir: ./frontend/dist
           publish_branch: gh-pages
           external_repository: Stelele/cms-system-frontend-build
