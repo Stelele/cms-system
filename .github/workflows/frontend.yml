@@ -41,6 +41,5 @@ jobs:
           github_token: ${{ secrets.GH_PAT }}
           publish_dir: ./frontend/dist
           publish_branch: gh-pages
-          destination_repo: Stelele/cms-system-frontend-build
-          destination_branch: main
+          external_repository: Stelele/cms-system-frontend-build
           keep_files: false
