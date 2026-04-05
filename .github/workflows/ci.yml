@@ -45,7 +45,7 @@ jobs:
   frontend:
     runs-on: ubuntu-latest
     needs: frontend-changes
-    # if: needs.frontend-changes.outputs.changed == 'true'
+    if: needs.frontend-changes.outputs.changed == 'true'
     permissions:
       contents: read
       pages: write
@@ -147,7 +147,7 @@ jobs:
               api:
                 image: stelele/cms-backend:latest
                 ports:
-                  - "8000:8000"
+                  - "8001:8000"
                 volumes:
                   - cms_data:/app/data
                 environment:
