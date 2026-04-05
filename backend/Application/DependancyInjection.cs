@@ -18,7 +18,10 @@ public static class DependancyInjection
     public static WebApplicationBuilder AddApplication(this WebApplicationBuilder builder)
     {
         var mediatRLicenseKey = builder.Configuration.GetValue<string>("MediatR:LicenseKey");
-        mediatRLicenseKey ??= Environment.GetEnvironmentVariable("MediatR__LicenseKey");
+        if (string.IsNullOrWhiteSpace(mediatRLicenseKey) || mediatRLicenseKey.Contains('<'))
+        {
+            mediatRLicenseKey = Environment.GetEnvironmentVariable("MediatR__LicenseKey");
+        }
 
         builder.Services.AddMediatR(cfg =>
         {
