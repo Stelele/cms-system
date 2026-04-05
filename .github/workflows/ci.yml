@@ -157,6 +157,9 @@ jobs:
             sudo docker volume create cms_data 2>/dev/null || true
             sudo docker run --rm -v cms_data:/app/data alpine chown -R 1654:1654 /app/data 2>/dev/null || true
 
+            # Pull latest image
+            sudo docker compose pull
+
             # Start container with inline environment variables
             cd /opt/cms
             AUTH0_DOMAIN=${{ secrets.AUTH0_DOMAIN }} \
