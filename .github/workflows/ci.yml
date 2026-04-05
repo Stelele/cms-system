@@ -131,6 +131,15 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+      - name: Copy docker-compose.yml to droplet
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.DROPLET_HOST }}
+          username: ${{ secrets.DROPLET_USER }}
+          key: ${{ secrets.DROPLET_SSH_KEY }}
+          source: backend/docker-compose.yml
+          target: /opt/cms/docker-compose.yml
+
       - name: Deploy to droplet
         uses: appleboy/ssh-action@v1
         with:
@@ -138,48 +147,33 @@ jobs:
           username: ${{ secrets.DROPLET_USER }}
           key: ${{ secrets.DROPLET_SSH_KEY }}
           script: |
-            # Create directory for CMS
+            # Create directory if it doesn't exist
             sudo mkdir -p /opt/cms
 
-            # Create docker-compose.yml with environment variables
-            sudo cat > /opt/cms/docker-compose.yml << 'EOF'
-            services:
-              api:
-                image: stelele/cms-backend:latest
-                ports:
-                  - "8001:8000"
-                volumes:
-                  - cms_data:/app/data
-                environment:
-                  - ASPNETCORE_ENVIRONMENT=Production
-                  - ASPNETCORE_URLS=http://+:8000
-                  - ConnectionStrings__Sqlite=Data Source=/app/data/cms.db
-                  - Auth0__Domain=${{ secrets.AUTH0_DOMAIN }}
-                  - Auth0__Audience=${{ secrets.AUTH0_AUDIENCE }}
-                  - GoogleDrive__ClientID=${{ secrets.GOOGLE_DRIVE_CLIENT_ID }}
-                  - GoogleDrive__ClientSecret=${{ secrets.GOOGLE_DRIVE_CLIENT_SECRET }}
-                  - GoogleDrive__RefreshToken=${{ secrets.GOOGLE_DRIVE_REFRESH_TOKEN }}
-                  - GoogleDrive__FolderId=${{ secrets.GOOGLE_DRIVE_FOLDER_ID }}
-                  - GoogleDrive__SyncIntervalMinutes=${{ secrets.GOOGLE_DRIVE_SYNC_INTERVAL }}
-                restart: unless-stopped
+            # Stop existing container if running
+            sudo docker compose -f /opt/cms/docker-compose.yml down 2>/dev/null || true
 
-            volumes:
-              cms_data:
-                name: cms_data
-            EOF
+            # Ensure volume has correct permissions (app runs as UID 1654)
+            sudo docker volume create cms_data 2>/dev/null || true
+            sudo docker run --rm -v cms_data:/app/data alpine chown -R 1654:1654 /app/data 2>/dev/null || true
 
-            # Pull latest image and start container
+            # Start container with inline environment variables
             cd /opt/cms
-            sudo docker compose pull
+            AUTH0_DOMAIN=${{ secrets.AUTH0_DOMAIN }} \
+            AUTH0_AUDIENCE=${{ secrets.AUTH0_AUDIENCE }} \
+            MEDIATR_LICENSE_KEY=${{ secrets.MEDIATR_LICENSE_KEY }} \
+            GOOGLE_DRIVE_CLIENT_ID=${{ secrets.GOOGLE_DRIVE_CLIENT_ID }} \
+            GOOGLE_DRIVE_CLIENT_SECRET=${{ secrets.GOOGLE_DRIVE_CLIENT_SECRET }} \
+            GOOGLE_DRIVE_REFRESH_TOKEN=${{ secrets.GOOGLE_DRIVE_REFRESH_TOKEN }} \
+            GOOGLE_DRIVE_FOLDER_ID=${{ secrets.GOOGLE_DRIVE_FOLDER_ID }} \
+            GOOGLE_DRIVE_SYNC_INTERVAL=${{ secrets.GOOGLE_DRIVE_SYNC_INTERVAL }} \
+            GROQ_API_KEY=${{ secrets.GROQ_API_KEY }} \
             sudo docker compose up -d
 
-            # Wait for container to be healthy
+            # Wait for container to start
             sleep 10
 
             # Verify container is running
             sudo docker ps | grep cms-backend
-
-            # Clean up docker-compose.yml to remove secrets from disk
-            sudo rm -f /opt/cms/docker-compose.yml
 
             echo "Deployment complete"
