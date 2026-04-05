@@ -139,6 +139,7 @@ jobs:
           key: ${{ secrets.DROPLET_SSH_KEY }}
           source: backend/docker-compose.yml
           target: /opt/cms/docker-compose.yml
+          rm: true
 
       - name: Deploy to droplet
         uses: appleboy/ssh-action@v1
@@ -149,6 +150,9 @@ jobs:
           script: |
             # Create directory if it doesn't exist
             sudo mkdir -p /opt/cms
+
+            # Remove existing docker-compose.yml (file or directory) to ensure clean copy
+            sudo rm -rf /opt/cms/docker-compose.yml
 
             # Stop existing container if running
             sudo docker compose -f /opt/cms/docker-compose.yml down 2>/dev/null || true
