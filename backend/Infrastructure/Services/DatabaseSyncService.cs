@@ -135,11 +135,11 @@ var connectionString = _configuration.GetValue<string>("ConnectionStrings:Sqlite
                 }
             }
 
-            _logger.LogInformation("Database sync completed successfully");
+            _logger.LogInformation("Database sync completed successfully.");
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to sync database to Google Drive");
+            _logger.LogError(ex, "Failed to sync database to Google Drive.");
             throw;
         }
         finally
