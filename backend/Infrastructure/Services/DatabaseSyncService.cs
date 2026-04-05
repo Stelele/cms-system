@@ -23,10 +23,8 @@ public class DatabaseSyncService : BackgroundService, IDatabaseSyncService
     {
         _logger = logger;
         _configuration = configuration;
-        _databasePath = Path.Combine(
-            _configuration["ContentRootPath"] ?? Directory.GetCurrentDirectory(),
-            "cms.db"
-        );
+var connectionString = _configuration.GetValue<string>("ConnectionStrings:Sqlite") ?? "Data Source=cms.db";
+        _databasePath = connectionString.Replace("Data Source=", "");
         _serviceAccountJson = _configuration["GoogleDrive:ServiceAccountJson"];
         _folderId = _configuration["GoogleDrive:FolderId"];
 
