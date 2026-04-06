@@ -7,7 +7,7 @@ services:
     volumes:
       - cms_data:/app/data
     env_file:
-      - /opt/cms/.env
+      - /opt/cms/backend/.env
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_URLS=http://+:8000
