@@ -161,7 +161,7 @@ jobs:
           username: ${{ secrets.DROPLET_USER }}
           key: ${{ secrets.DROPLET_SSH_KEY }}
           source: .env
-          target: /opt/cms
+          target: /opt/cms/backend
 
       - name: Deploy to droplet
         uses: appleboy/ssh-action@v1
@@ -170,18 +170,15 @@ jobs:
           username: ${{ secrets.DROPLET_USER }}
           key: ${{ secrets.DROPLET_SSH_KEY }}
           script: |
+            cd /opt/cms/backend
+            
             # Stop existing container if running
-            sudo docker compose -f /opt/cms/docker-compose.yml down 2>/dev/null || true
-
-            # Ensure volume has correct permissions (app runs as UID 1654)
-            sudo docker volume create cms_data 2>/dev/null || true
-            sudo docker run --rm -v cms_data:/app/data alpine chown -R 1654:1654 /app/data 2>/dev/null || true
+            sudo docker compose down
 
             # Pull latest image
             sudo docker compose pull
 
             # Start container (env vars read from .env file)
-            cd /opt/cms
             sudo docker compose up -d
 
             # Wait for container to start
