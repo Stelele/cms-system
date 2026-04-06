@@ -6,12 +6,19 @@ services:
       - "8002:8000"
     volumes:
       - cms_data:/app/data
-    env_file:
-      - /opt/cms/backend/.env
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_URLS=http://+:8000
       - ConnectionStrings__Sqlite=Data Source=/app/data/cms.db
+      - Auth0__Domain={{AUTH0_DOMAIN}}
+      - Auth0__Audience={{AUTH0_AUDIENCE}}
+      - GROQ__ApiKey={{GROQ_APIKEY}}
+      - MediatR__LicenseKey={{MEDIATR_LICENSEKEY}}
+      - GoogleDrive__ClientID={{GOOGLEDRIVE_CLIENTID}}
+      - GoogleDrive__ClientSecret={{GOOGLEDRIVE_CLIENTSECRET}}
+      - GoogleDrive__RefreshToken={{GOOGLEDRIVE_REFRESHTOKEN}}
+      - GoogleDrive__FolderId={{GOOGLEDRIVE_FOLDERID}}
+      - GoogleDrive__SyncIntervalMinutes={{GOOGLEDRIVE_SYNCINTERVAL}}
     restart: unless-stopped
 
 volumes:
