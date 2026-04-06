@@ -165,9 +165,6 @@ jobs:
           target: /opt/cms/.env
           rm: true
 
-      - name: Cleanup .env file
-        run: rm -f .env
-
       - name: Deploy to droplet
         uses: appleboy/ssh-action@v1
         with:
@@ -175,12 +172,6 @@ jobs:
           username: ${{ secrets.DROPLET_USER }}
           key: ${{ secrets.DROPLET_SSH_KEY }}
           script: |
-            # Create directory if it doesn't exist
-            sudo mkdir -p /opt/cms
-
-            # Remove existing docker-compose.yml (file or directory) to ensure clean copy
-            sudo rm -rf /opt/cms/docker-compose.yml
-
             # Stop existing container if running
             sudo docker compose -f /opt/cms/docker-compose.yml down 2>/dev/null || true
 
@@ -194,9 +185,6 @@ jobs:
             # Start container (env vars read from .env file)
             cd /opt/cms
             sudo docker compose up -d
-
-            # Restrict .env file permissions
-            sudo chmod 600 /opt/cms/.env
 
             # Wait for container to start
             sleep 10
