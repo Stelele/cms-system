@@ -139,7 +139,6 @@ jobs:
           key: ${{ secrets.DROPLET_SSH_KEY }}
           source: backend/docker-compose.yml
           target: /opt/cms
-          rm: true
 
       - name: Create .env file
         run: |
@@ -163,7 +162,6 @@ jobs:
           key: ${{ secrets.DROPLET_SSH_KEY }}
           source: .env
           target: /opt/cms
-          rm: true
 
       - name: Deploy to droplet
         uses: appleboy/ssh-action@v1
