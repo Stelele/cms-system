@@ -4,18 +4,15 @@ using Host.Middleware;
 using Infrastructure;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.FileProviders;
-using Microsoft.Extensions.Logging;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
-
-var loggerFactory = LoggerFactory.Create(loggingBuilder => loggingBuilder.AddConsole());
 
 builder.Services.AddOpenApi();
 
 builder
     .AddApi()
-    .AddApplication(loggerFactory)
+    .AddApplication()
     .AddInfrastructure();
 
 var app = builder.Build();

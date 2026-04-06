@@ -15,11 +15,9 @@ public static class DependancyInjection
         return app;
     }
 
-    public static WebApplicationBuilder AddApplication(this WebApplicationBuilder builder, ILoggerFactory loggerFactory)
+    public static WebApplicationBuilder AddApplication(this WebApplicationBuilder builder)
     {
-        var logger = loggerFactory.CreateLogger("Application");
         var mediatRLicenseKey = builder.Configuration["MediatR:LicenseKey"];
-        logger.LogInformation("MediatR License Key: {LicenseKey}", mediatRLicenseKey);
 
         builder.Services.AddMediatR(cfg =>
         {
