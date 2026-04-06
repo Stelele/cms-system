@@ -17,3 +17,4 @@ services:
 volumes:
   cms_data:
     name: cms_data
+    external: true
