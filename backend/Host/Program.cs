@@ -1,6 +1,7 @@
 using Api;
 using Application;
 using Host.Middleware;
+using Host.OpenApi;
 using Infrastructure;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.FileProviders;
@@ -8,7 +9,10 @@ using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddOpenApi();
+builder.Services.AddOpenApi(options =>
+{
+    options.AddDocumentTransformer<BearerSecuritySchemeTransformer>();
+});
 
 builder
     .AddApi()
