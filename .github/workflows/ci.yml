@@ -195,8 +195,8 @@ jobs:
             cd /opt/cms
             sudo docker compose up -d
 
-            # Cleanup .env file after container starts
-            sudo rm -rf /opt/cms/.env
+            # Restrict .env file permissions
+            sudo chmod 600 /opt/cms/.env
 
             # Wait for container to start
             sleep 10
