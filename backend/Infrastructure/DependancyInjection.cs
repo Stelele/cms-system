@@ -32,6 +32,9 @@ public static class DependancyInjection
 
     public static WebApplicationBuilder AddInfrastructure(this WebApplicationBuilder builder)
     {
+        builder.Services.AddSingleton<GoogleDriveService>();
+        builder.Services.AddHostedService<DatabaseRestoreService>();
+
         builder.Services.AddDbContext<CmsDbContext>(options =>
         {
             var connectionString = builder.Configuration.GetConnectionString("Sqlite") ??
