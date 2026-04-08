@@ -33,7 +33,10 @@ public static class DependancyInjection
     public static WebApplicationBuilder AddInfrastructure(this WebApplicationBuilder builder)
     {
         builder.Services.AddSingleton<GoogleDriveService>();
-        builder.Services.AddHostedService<DatabaseRestoreService>();
+
+        var googleDrive = new GoogleDriveService(builder.Configuration);
+        var logger = builder.Services.BuildServiceProvider().GetRequiredService<ILogger<DatabaseRestoreService>>();
+        DatabaseRestoreService.EnsureDatabaseExists(googleDrive, builder.Configuration, logger);
 
         builder.Services.AddDbContext<CmsDbContext>(options =>
         {
