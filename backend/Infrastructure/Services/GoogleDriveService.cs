@@ -1,3 +1,4 @@
+using System;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Flows;
 using Google.Apis.Auth.OAuth2.Responses;
@@ -10,31 +11,61 @@ namespace Infrastructure.Services;
 public class GoogleDriveService
 {
     private readonly IConfiguration _configuration;
+    private readonly IGoogleTokenProvider _tokenProvider;
     private readonly string _databasePath;
     private readonly string? _folderId;
     private readonly string? _clientId;
     private readonly string? _clientSecret;
-    private readonly string? _refreshToken;
 
     public string DatabasePath => _databasePath;
     public string? FolderId => _folderId;
+    public string? ClientId => _clientId;
 
-    public GoogleDriveService(IConfiguration configuration)
+    public GoogleDriveService(IConfiguration configuration, IGoogleTokenProvider tokenProvider)
     {
         _configuration = configuration;
+        _tokenProvider = tokenProvider;
         var connectionString = _configuration.GetValue<string>("ConnectionStrings:Sqlite") ?? "Data Source=cms.db";
         _databasePath = connectionString.Replace("Data Source=", "");
         _folderId = _configuration["GoogleDrive:FolderId"];
         _clientId = _configuration["GoogleDrive:ClientID"];
         _clientSecret = _configuration["GoogleDrive:ClientSecret"];
-        _refreshToken = _configuration["GoogleDrive:RefreshToken"];
+    }
+
+    public string GetAuthorizationUrl(string redirectUri)
+    {
+        var clientId = _clientId ?? throw new ArgumentNullException("ClientId is missing");
+        var clientSecret = _clientSecret ?? throw new ArgumentNullException("ClientSecret is missing");
+
+        var flow = new GoogleAuthorizationCodeFlow(new GoogleAuthorizationCodeFlow.Initializer
+        {
+            ClientSecrets = new ClientSecrets { ClientId = clientId, ClientSecret = clientSecret }
+        });
+
+        var request = flow.CreateAuthorizationCodeRequest(redirectUri);
+        request.Scope = "https://www.googleapis.com/auth/drive.file";
+        
+        return request.Build().AbsoluteUri + "&prompt=consent";
+    }
+
+    public async Task<TokenResponse> ExchangeCodeForTokensAsync(string code, string redirectUri, CancellationToken ct)
+    {
+        var clientId = _clientId ?? throw new ArgumentNullException("ClientId is missing");
+        var clientSecret = _clientSecret ?? throw new ArgumentNullException("ClientSecret is missing");
+
+        var flow = new GoogleAuthorizationCodeFlow(new GoogleAuthorizationCodeFlow.Initializer
+        {
+            ClientSecrets = new ClientSecrets { ClientId = clientId, ClientSecret = clientSecret }
+        });
+
+        return await flow.ExchangeCodeForTokenAsync("user", code, redirectUri, ct);
     }
 
     public DriveService CreateDriveService(string applicationName)
     {
         var clientId = _clientId ?? throw new ArgumentNullException("ClientId is missing");
         var clientSecret = _clientSecret ?? throw new ArgumentNullException("ClientSecret is missing");
-        var refreshToken = _refreshToken ?? throw new ArgumentNullException("RefreshToken is missing");
+        var refreshToken = _tokenProvider.CurrentToken ?? throw new ArgumentNullException("RefreshToken is missing");
 
         var credential = new UserCredential(
             new GoogleAuthorizationCodeFlow(new GoogleAuthorizationCodeFlow.Initializer
@@ -42,7 +73,11 @@ public class GoogleDriveService
                 ClientSecrets = new ClientSecrets { ClientId = clientId, ClientSecret = clientSecret }
             }),
             "user",
-            new TokenResponse { RefreshToken = refreshToken });
+            new TokenResponse
+            {
+                RefreshToken = refreshToken,
+                ExpiresInSeconds = 0
+            });
 
         return new DriveService(new BaseClientService.Initializer
         {
@@ -100,4 +135,32 @@ public class GoogleDriveService
             await createRequest.UploadAsync(ct);
         }
     }
+
+    public async Task<bool> ValidateTokenAsync(CancellationToken ct, TimeSpan? timeout = null)
+    {
+        if (!_tokenProvider.HasToken)
+            return false;
+
+        using var cts = CancellationTokenSource.CreateLinkedTokenSource(ct);
+        cts.CancelAfter(timeout ?? TimeSpan.FromSeconds(60));
+
+        try
+        {
+            var driveService = CreateDriveService("CMS");
+            var aboutRequest = driveService.About.Get();
+            aboutRequest.Fields = "user";
+            await aboutRequest.ExecuteAsync(cts.Token);
+            return true;
+        }
+        catch (OperationCanceledException) when (!ct.IsCancellationRequested)
+        {
+            return false;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    public string? RefreshToken => _tokenProvider.CurrentToken;
 }

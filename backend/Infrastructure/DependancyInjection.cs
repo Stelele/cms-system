@@ -32,11 +32,55 @@ public static class DependancyInjection
 
     public static WebApplicationBuilder AddInfrastructure(this WebApplicationBuilder builder)
     {
-        builder.Services.AddSingleton<GoogleDriveService>();
+        var loggerFactory = builder.Services.BuildServiceProvider()
+            .GetRequiredService<ILoggerFactory>();
+        var tokenProviderLogger = loggerFactory.CreateLogger<GoogleTokenProvider>();
 
-        var googleDrive = new GoogleDriveService(builder.Configuration);
-        var logger = builder.Services.BuildServiceProvider().GetRequiredService<ILogger<DatabaseRestoreService>>();
-        DatabaseRestoreService.EnsureDatabaseExists(googleDrive, builder.Configuration, logger);
+        var tokenProvider = new GoogleTokenProvider(tokenProviderLogger);
+        var contentRoot = builder.Environment.ContentRootPath;
+        tokenProvider.LoadFromConfigurationAsync(builder.Configuration, contentRoot).GetAwaiter().GetResult();
+
+        GoogleDriveService? googleDrive = null;
+
+        if (!tokenProvider.HasToken)
+        {
+            var mainLogger = loggerFactory.CreateLogger("GoogleDriveAuth");
+            mainLogger.LogInformation("No Google Drive token found. Starting authentication...");
+            var authLogger = loggerFactory.CreateLogger<GoogleDriveAuthService>();
+            var authService = new GoogleDriveAuthService(builder.Configuration, tokenProvider, authLogger);
+            authService.StartAuthFlowAsync(CancellationToken.None, builder.Configuration, contentRoot).GetAwaiter().GetResult();
+        }
+        else
+        {
+            googleDrive = new GoogleDriveService(builder.Configuration, tokenProvider);
+            var isValid = googleDrive.ValidateTokenAsync(
+                CancellationToken.None,
+                TimeSpan.FromSeconds(10)
+            ).GetAwaiter().GetResult();
+
+            if (!isValid)
+            {
+                var mainLogger = loggerFactory.CreateLogger("GoogleDriveAuth");
+                mainLogger.LogWarning("Google Drive token invalid or expired. Re-authenticating...");
+                var authLogger = loggerFactory.CreateLogger<GoogleDriveAuthService>();
+                var authService = new GoogleDriveAuthService(builder.Configuration, tokenProvider, authLogger);
+                authService.StartAuthFlowAsync(CancellationToken.None, builder.Configuration, contentRoot).GetAwaiter().GetResult();
+            }
+            else
+            {
+                var mainLogger = loggerFactory.CreateLogger("GoogleDriveAuth");
+                mainLogger.LogInformation("Google Drive token is valid.");
+            }
+        }
+
+        googleDrive ??= new GoogleDriveService(builder.Configuration, tokenProvider);
+
+        builder.Services.AddSingleton<IGoogleTokenProvider>(tokenProvider);
+        builder.Services.AddSingleton(googleDrive);
+
+        var dbRestoreLogger = builder.Services.BuildServiceProvider()
+            .GetRequiredService<ILogger<DatabaseRestoreService>>();
+        DatabaseRestoreService.EnsureDatabaseExists(googleDrive, builder.Configuration, dbRestoreLogger);
 
         builder.Services.AddDbContext<CmsDbContext>(options =>
         {
