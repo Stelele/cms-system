@@ -10,9 +10,9 @@ public static class BlogEndpoints
 {
     public static WebApplication MapBlogsEndpoints(this WebApplication app)
     {
-        app.MapGet("/blogs", async (IMediator mediator) =>
+        app.MapGet("/blogs", async (IMediator mediator, string[]? slugs = null) =>
         {
-            var blogs = await mediator.Send(new GetBlogsQuery());
+            var blogs = await mediator.Send(new GetBlogsQuery(slugs));
             return Results.Ok(blogs);
         })
         .WithName("GetBlogs")
