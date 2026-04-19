@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Endpoints.Posts;
 
@@ -8,7 +9,7 @@ public static class PostEndpoints
 {
     public static WebApplication MapPostsEndpoints(this WebApplication app)
     {
-        app.MapGet("/blogs/{blogId:guid}/posts", async (Guid blogId, string? tag, bool? isPublished, ISender mediator) =>
+        app.MapGet("/blogs/{blogId:guid}/posts", async (Guid blogId, [FromQuery] string? tag, [FromQuery] bool? isPublished, ISender mediator) =>
         {
             var posts = await mediator.Send(new Application.Posts.GetPostsByBlogQuery(blogId, tag, isPublished));
             return Results.Ok(posts);

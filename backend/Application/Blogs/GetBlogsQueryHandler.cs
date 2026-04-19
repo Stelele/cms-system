@@ -14,7 +14,7 @@ public class GetBlogsQueryHandler(CmsDbContext db) : IQueryHandler<GetBlogsQuery
             .OrderBy(b => b.Name);
 
         List<Blog> blogsList = [];
-        if (request.Slugs is not null)
+        if (request.Slugs is not null && request.Slugs.Length > 0)
         {
             blogsList = await blogs
                 .Where(b => request.Slugs.Contains(b.Slug)).ToListAsync(cancellationToken);

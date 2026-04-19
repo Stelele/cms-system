@@ -51,7 +51,7 @@ public class DatabaseRestoreService(
 
                 if (existingFile is null)
                 {
-                    logger.LogWarning("No backup found in Google Drive, creating new database");
+                    logger.LogWarning("No backup found in Google Drive: {FileName}, creating new database", fileName);
                     return;
                 }
 
@@ -111,7 +111,7 @@ public class DatabaseRestoreService(
 
                 if (existingFile is null)
                 {
-                    _logger.LogWarning("No backup found in Google Drive, creating new database");
+                    _logger.LogWarning("No backup found in Google Drive: {FileName}, creating new database", fileName);
                     return;
                 }
 

@@ -3,6 +3,7 @@ using Application.DTOs;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Endpoints.Blogs;
 
@@ -10,7 +11,7 @@ public static class BlogEndpoints
 {
     public static WebApplication MapBlogsEndpoints(this WebApplication app)
     {
-        app.MapGet("/blogs", async (IMediator mediator, string[]? slugs = null) =>
+        app.MapGet("/blogs", async (IMediator mediator, [FromQuery] string[]? slugs = null) =>
         {
             var blogs = await mediator.Send(new GetBlogsQuery(slugs));
             return Results.Ok(blogs);
