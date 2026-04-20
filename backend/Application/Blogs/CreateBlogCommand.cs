@@ -6,7 +6,8 @@ namespace Application.Blogs;
 public record CreateBlogCommand(
     string Name,
     string Slug,
-    string Description
+    string Description,
+    string Icon
 ) : ICommand<Guid>;
 
 public sealed class CreateBlogCommandValidator : AbstractValidator<CreateBlogCommand>
@@ -23,5 +24,10 @@ public sealed class CreateBlogCommandValidator : AbstractValidator<CreateBlogCom
 
         RuleFor(x => x.Description)
             .NotEmpty();
+
+        RuleFor(x => x.Icon)
+            .NotEmpty()
+            .Matches(@"^i-[a-z0-9-]+$")
+            .WithMessage("Icon must be a valid Iconify class (e.g., i-heroicons-book-open)");
     }
 }
