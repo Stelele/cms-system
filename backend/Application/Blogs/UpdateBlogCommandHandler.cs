@@ -22,6 +22,7 @@ public class UpdateBlogCommandHandler(CmsDbContext db) : ICommandHandler<UpdateB
         blog.Name = request.Name;
         blog.Slug = request.Slug;
         blog.Description = request.Description;
+        blog.Icon = request.Icon;
         blog.UpdatedOn = DateTimeOffset.UtcNow;
 
         await db.SaveChangesAsync(cancellationToken);
