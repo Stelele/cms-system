@@ -6,6 +6,9 @@
 
     <template v-else-if="blog">
       <UPageHeader :title="blog.name" :description="blog.description" class="pe-4">
+        <template #icon>
+          <UIcon :name="blog.icon" class="text-2xl" />
+        </template>
         <template #links>
           <UButton
             label="New Post"
