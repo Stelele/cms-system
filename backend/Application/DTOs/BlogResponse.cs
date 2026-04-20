@@ -17,6 +17,9 @@ public class BlogResponse
     [JsonPropertyName("description")]
     public string Description { get; init; } = string.Empty;
 
+    [JsonPropertyName("icon")]
+    public string Icon { get; init; } = string.Empty;
+
     [JsonPropertyName("createdOn")]
     public DateTimeOffset CreatedOn { get; init; }
 
@@ -31,6 +34,7 @@ public class BlogResponse
             Name = blog.Name,
             Slug = blog.Slug,
             Description = blog.Description,
+            Icon = blog.Icon,
             CreatedOn = blog.CreatedOn,
             UpdatedOn = blog.UpdatedOn
         };
