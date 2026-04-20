@@ -30,6 +30,7 @@ const posts = computed<BlogPostProps[]>(() =>
         title: blog.name,
         description: blog.description,
         to: `/blog/${blog.slug}`,
+        icon: blog.icon,
       }) as BlogPostProps,
   ),
 )
