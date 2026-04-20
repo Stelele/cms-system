@@ -15,7 +15,7 @@ public class CreateBlogCommandHandler(CmsDbContext db) : ICommandHandler<CreateB
         if (slugExists)
             throw new InvalidOperationException($"A blog with slug '{request.Slug}' already exists.");
 
-        var blog = Blog.Create(request.Name, request.Slug, request.Description);
+        var blog = Blog.Create(request.Name, request.Slug, request.Description, request.Icon);
 
         await db.Blogs.AddAsync(blog, cancellationToken);
         await db.SaveChangesAsync(cancellationToken);
