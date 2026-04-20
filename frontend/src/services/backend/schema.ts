@@ -190,6 +190,7 @@ export interface components {
             name?: string;
             slug?: string;
             description?: string;
+            icon?: string;
             /** Format: date-time */
             createdOn?: string;
             /** Format: date-time */
@@ -199,6 +200,7 @@ export interface components {
             name: string;
             slug: string;
             description: string;
+            icon: string;
         };
         CreatePostCommand: {
             /** Format: uuid */
@@ -271,6 +273,7 @@ export interface components {
             name: string;
             slug: string;
             description: string;
+            icon: string;
         };
         UpdatePostCommand: {
             /** Format: uuid */
