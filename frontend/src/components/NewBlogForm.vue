@@ -28,6 +28,15 @@
         <UTextarea v-model="state.description" class="w-full" :rows="6" />
       </UFormField>
 
+      <UFormField
+        label="Icon"
+        name="icon"
+        :required="true"
+        description="Choose an icon or enter a custom Iconify class."
+      >
+        <IconPicker v-model="state.icon" />
+      </UFormField>
+
       <div class="w-full flex justify-end">
         <UButton type="button" :disabled="!isValid" class="hover:cursor-pointer" @click="onButtonClick"> Submit </UButton>
       </div>
@@ -41,6 +50,7 @@ import { computed, reactive, ref } from 'vue'
 import type { components } from '@/services/backend/schema'
 import { useBlogStore } from '@/stores/blog-store'
 import { BackendApiSingleton } from '@/services/backend'
+import IconPicker from '@/components/IconPicker.vue'
 
 const blogStore = useBlogStore()
 const toast = useToast()
@@ -70,6 +80,7 @@ const schema = z.object({
       message: 'Blog slug already exists',
     }),
   description: z.string(),
+  icon: z.string().min(1),
 })
 type Schema = z.output<typeof schema>
 
@@ -77,6 +88,7 @@ const state = reactive<Schema>({
   name: '',
   slug: '',
   description: '',
+  icon: 'i-heroicons-book-open',
 })
 const isValid = computed(() => schema.safeParse(state).success)
 
@@ -88,6 +100,7 @@ async function onButtonClick() {
     name: state.name,
     slug: state.slug,
     description: state.description,
+    icon: state.icon,
   }
 
   const client = await BackendApiSingleton.getInstance()
@@ -98,6 +111,7 @@ async function onButtonClick() {
     state.name = ''
     state.slug = ''
     state.description = ''
+    state.icon = 'i-heroicons-book-open'
     await blogStore.update()
     emit('success')
     isSubmitting.value = false
