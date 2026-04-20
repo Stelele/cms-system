@@ -8,6 +8,10 @@ import ui from '@nuxt/ui/vite'
 // https://vite.dev/config/
 export default defineConfig({
   base: '/cms-system-frontend-build/',
+  server: {
+    port: 5174,
+    strictPort: true,
+  },
   plugins: [
     vue(),
     vueDevTools(),
