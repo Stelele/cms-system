@@ -6,7 +6,7 @@
         :key="icon"
         :icon="icon"
         :variant="modelValue === icon ? 'solid' : 'outline'"
-        :color="modelValue === icon ? 'primary' : 'gray'"
+        :color="modelValue === icon ? 'primary' : 'neutral'"
         size="sm"
         @click="$emit('update:modelValue', icon)"
       />
