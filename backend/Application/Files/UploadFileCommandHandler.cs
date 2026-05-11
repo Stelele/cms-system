@@ -31,8 +31,8 @@ public class UploadFileCommandHandler(
         var extension = Path.GetExtension(request.File.FileName).TrimStart('.').ToLowerInvariant();
         var key = $"{fileId}.{extension}";
 
-        using var uploadStream = new MemoryStream(bytes);
-        await r2.UploadAsync(r2.PublicBucket, key, uploadStream, request.File.ContentType, cancellationToken);
+        memoryStream.Position = 0;
+        await r2.UploadAsync(r2.PublicBucket, key, memoryStream, request.File.ContentType, cancellationToken);
 
         var url = $"{r2.PublicBucketUrl}/{key}";
 
