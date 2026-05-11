@@ -1,14 +1,14 @@
 using Application.Abstractions;
 using Domain.Files;
 using Infrastructure.Models;
-using Microsoft.AspNetCore.Hosting;
+using Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace Application.Files;
 
 public class UploadFileCommandHandler(
     CmsDbContext db,
-    IWebHostEnvironment env
+    IR2StorageService r2
 ) : ICommandHandler<UploadFileCommand, FileResponse>
 {
     public async Task<FileResponse> Handle(UploadFileCommand request, CancellationToken cancellationToken)
@@ -29,18 +29,12 @@ public class UploadFileCommandHandler(
 
         var fileId = Guid.NewGuid();
         var extension = Path.GetExtension(request.File.FileName).TrimStart('.').ToLowerInvariant();
-        var storagePath = $"uploads/{fileId}.{extension}";
-        var url = $"/uploads/{fileId}.{extension}";
+        var key = $"{fileId}.{extension}";
 
-        var basePath = env.ContentRootPath;
-        var filePath = Path.Combine(basePath, storagePath);
-        var directory = Path.GetDirectoryName(filePath);
-        if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
-        {
-            Directory.CreateDirectory(directory);
-        }
+        using var uploadStream = new MemoryStream(bytes);
+        await r2.UploadAsync(r2.PublicBucket, key, uploadStream, request.File.ContentType, cancellationToken);
 
-        await File.WriteAllBytesAsync(filePath, bytes, cancellationToken);
+        var url = $"{r2.PublicBucketUrl}/{key}";
 
         var fileItem = new FileItem
         {
@@ -49,7 +43,7 @@ public class UploadFileCommandHandler(
             Extension = extension,
             ContentType = request.File.ContentType,
             Size = request.File.Length,
-            StoragePath = storagePath,
+            StoragePath = key,
             Url = url,
             ContentHash = contentHash,
             AltText = request.AltText,
