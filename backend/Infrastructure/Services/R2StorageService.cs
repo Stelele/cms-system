@@ -70,7 +70,7 @@ public class R2StorageService : IR2StorageService
         await _s3Client.DeleteObjectAsync(request, ct);
     }
 
-    public bool ObjectExists(string bucket, string key)
+    public async Task<bool> ObjectExistsAsync(string bucket, string key, CancellationToken ct = default)
     {
         try
         {
@@ -80,7 +80,7 @@ public class R2StorageService : IR2StorageService
                 Key = key,
             };
 
-            var response = _s3Client.GetObjectMetadataAsync(request).GetAwaiter().GetResult();
+            var response = await _s3Client.GetObjectMetadataAsync(request, ct);
             return response.HttpStatusCode == System.Net.HttpStatusCode.OK;
         }
         catch (Amazon.S3.AmazonS3Exception ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
