@@ -1,13 +1,13 @@
 using Application.Abstractions;
 using Infrastructure.Models;
-using Microsoft.AspNetCore.Hosting;
+using Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace Application.Files;
 
 public class DeleteFileCommandHandler(
     CmsDbContext db,
-    IWebHostEnvironment env
+    IR2StorageService r2
 ) : ICommandHandler<DeleteFileCommand, bool>
 {
     public async Task<bool> Handle(DeleteFileCommand request, CancellationToken cancellationToken)
@@ -26,12 +26,7 @@ public class DeleteFileCommandHandler(
             return false;
         }
 
-        var basePath = env.ContentRootPath;
-        var filePath = Path.Combine(basePath, file.StoragePath);
-        if (File.Exists(filePath))
-        {
-            File.Delete(filePath);
-        }
+        await r2.DeleteAsync(r2.PublicBucket, file.StoragePath, cancellationToken);
 
         db.FileItems.Remove(file);
         await db.SaveChangesAsync(cancellationToken);
