@@ -32,9 +32,10 @@ public static class DependancyInjection
 
     public static WebApplicationBuilder AddInfrastructure(this WebApplicationBuilder builder)
     {
-        var dbRestoreLogger = builder.Services.BuildServiceProvider()
-            .GetRequiredService<ILogger<DatabaseRestoreService>>();
-        DatabaseRestoreService.EnsureDatabaseExists(builder.Configuration, dbRestoreLogger);
+        var sp = builder.Services.BuildServiceProvider();
+        var dbRestoreLogger = sp.GetRequiredService<ILogger<DatabaseRestoreService>>();
+        var r2 = sp.GetRequiredService<IR2StorageService>();
+        DatabaseRestoreService.EnsureDatabaseExists(r2, builder.Configuration, dbRestoreLogger);
 
         builder.Services.AddDbContext<CmsDbContext>(options =>
         {
