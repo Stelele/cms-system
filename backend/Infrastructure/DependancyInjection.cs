@@ -32,9 +32,12 @@ public static class DependancyInjection
 
     public static WebApplicationBuilder AddInfrastructure(this WebApplicationBuilder builder)
     {
-        var sp = builder.Services.BuildServiceProvider();
-        var dbRestoreLogger = sp.GetRequiredService<ILogger<DatabaseRestoreService>>();
-        var r2 = sp.GetRequiredService<IR2StorageService>();
+        builder.Services.AddSingleton<IR2StorageService, R2StorageService>();
+
+        var r2 = builder.Services.BuildServiceProvider()
+            .GetRequiredService<IR2StorageService>();
+        var dbRestoreLogger = builder.Services.BuildServiceProvider()
+            .GetRequiredService<ILogger<DatabaseRestoreService>>();
         DatabaseRestoreService.EnsureDatabaseExists(r2, builder.Configuration, dbRestoreLogger);
 
         builder.Services.AddDbContext<CmsDbContext>(options =>
@@ -46,8 +49,8 @@ public static class DependancyInjection
 
         builder.Services.AddHttpClient<IGroqService, GroqService>();
 
-        builder.Services.AddSingleton<IDatabaseSyncService, DatabaseSyncService>();
-        builder.Services.AddHostedService(sp => (DatabaseSyncService)sp.GetRequiredService<IDatabaseSyncService>());
+        builder.Services.AddSingleton<DatabaseSyncService>();
+        builder.Services.AddHostedService(sp => sp.GetRequiredService<DatabaseSyncService>());
 
         builder.Configuration["ContentRootPath"] = builder.Environment.ContentRootPath;
 
