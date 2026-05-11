@@ -138,11 +138,13 @@ jobs:
             -e 's|{{AUTH0_AUDIENCE}}|${{ secrets.AUTH0_AUDIENCE }}|g' \
             -e 's|{{GROQ_APIKEY}}|${{ secrets.GROQ_API_KEY }}|g' \
             -e 's|{{MEDIATR_LICENSEKEY}}|${{ secrets.MEDIATR_LICENSE_KEY }}|g' \
-            -e 's|{{GOOGLEDRIVE_CLIENTID}}|${{ secrets.GOOGLE_DRIVE_CLIENT_ID }}|g' \
-            -e 's|{{GOOGLEDRIVE_CLIENTSECRET}}|${{ secrets.GOOGLE_DRIVE_CLIENT_SECRET }}|g' \
-            -e 's|{{GOOGLEDRIVE_REFRESHTOKEN}}|${{ secrets.GOOGLE_DRIVE_REFRESH_TOKEN }}|g' \
-            -e 's|{{GOOGLEDRIVE_FOLDERID}}|${{ secrets.GOOGLE_DRIVE_FOLDER_ID }}|g' \
-            -e 's|{{GOOGLEDRIVE_SYNCINTERVAL}}|${{ secrets.GOOGLE_DRIVE_SYNC_INTERVAL }}|g' \
+            -e 's|{{R2_ACCOUNT_ID}}|${{ secrets.R2_ACCOUNT_ID }}|g' \
+            -e 's|{{R2_ACCESS_KEY_ID}}|${{ secrets.R2_ACCESS_KEY_ID }}|g' \
+            -e 's|{{R2_SECRET_ACCESS_KEY}}|${{ secrets.R2_SECRET_ACCESS_KEY }}|g' \
+            -e 's|{{R2_PUBLIC_BUCKET_NAME}}|${{ secrets.R2_PUBLIC_BUCKET_NAME }}|g' \
+            -e 's|{{R2_PUBLIC_BUCKET_URL}}|${{ secrets.R2_PUBLIC_BUCKET_URL }}|g' \
+            -e 's|{{R2_BACKUP_BUCKET_NAME}}|${{ secrets.R2_BACKUP_BUCKET_NAME }}|g' \
+            -e 's|{{R2_SYNC_INTERVAL}}|${{ secrets.R2_SYNC_INTERVAL }}|g' \
             backend/docker-compose.yml
 
       - name: Copy docker-compose.yml to droplet
