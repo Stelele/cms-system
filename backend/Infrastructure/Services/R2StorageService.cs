@@ -29,7 +29,6 @@ public class R2StorageService : IR2StorageService
         var config = new AmazonS3Config
         {
             ServiceURL = $"https://{accountId}.r2.cloudflarestorage.com",
-            RegionEndpoint = RegionEndpoint.USEast1,
         };
 
         _s3Client = new AmazonS3Client(accessKeyId, secretAccessKey, config);
@@ -46,6 +45,8 @@ public class R2StorageService : IR2StorageService
             Key = key,
             InputStream = content,
             ContentType = contentType,
+            DisablePayloadSigning = true,
+            DisableDefaultChecksumValidation = true,
         };
 
         await _s3Client.PutObjectAsync(request, ct);

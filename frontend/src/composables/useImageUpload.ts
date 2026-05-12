@@ -20,7 +20,7 @@ export const useImageUpload = () => {
     
     try {
       const result = await uploadFile(selectedFile.value)
-      url = `${import.meta.env.VITE_API_URL}${result.url}`
+      url = result.url
     } catch (err) {
       console.error('Image upload failed:', err)
     } finally {
