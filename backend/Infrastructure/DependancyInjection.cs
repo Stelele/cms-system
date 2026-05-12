@@ -52,6 +52,11 @@ public static class DependancyInjection
         builder.Services.AddSingleton<DatabaseSyncService>();
         builder.Services.AddHostedService(sp => sp.GetRequiredService<DatabaseSyncService>());
 
+        builder.Services.AddScoped<FileReferenceService>();
+
+        builder.Services.AddSingleton<FileCleanupService>();
+        builder.Services.AddHostedService(sp => sp.GetRequiredService<FileCleanupService>());
+
         builder.Configuration["ContentRootPath"] = builder.Environment.ContentRootPath;
 
         return builder;

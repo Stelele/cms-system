@@ -1,10 +1,11 @@
 using Application.Abstractions;
 using Infrastructure.Models;
+using Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace Application.Posts;
 
-public class DeletePostCommandHandler(CmsDbContext db) : ICommandHandler<DeletePostCommand, bool>
+public class DeletePostCommandHandler(CmsDbContext db, FileReferenceService fileRefService) : ICommandHandler<DeletePostCommand, bool>
 {
     public async Task<bool> Handle(DeletePostCommand request, CancellationToken cancellationToken)
     {
@@ -15,6 +16,8 @@ public class DeletePostCommandHandler(CmsDbContext db) : ICommandHandler<DeleteP
 
         db.Posts.Remove(post);
         await db.SaveChangesAsync(cancellationToken);
+
+        await fileRefService.MarkOrphanedFilesAsync(cancellationToken);
 
         return true;
     }

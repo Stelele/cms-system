@@ -12,6 +12,7 @@ public class FileItem : Abstractions.Base
     public string Url { get; set; } = string.Empty;
     public string ContentHash { get; set; } = string.Empty;
     public string? AltText { get; set; }
+    public DateTimeOffset? MarkedForDeletionAt { get; set; }
 
     public ICollection<Post> Posts { get; set; } = [];
 }

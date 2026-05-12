@@ -20,6 +20,7 @@ public class FileEntity : IEntityTypeConfiguration<FileItem>
         builder.Property(f => f.AltText).HasMaxLength(500);
 
         builder.HasIndex(f => f.ContentHash).IsUnique();
+        builder.HasIndex(f => f.MarkedForDeletionAt);
 
         builder.HasMany(f => f.Posts)
                .WithMany(p => p.Files)

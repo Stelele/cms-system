@@ -206,4 +206,137 @@ public class FileHandlerTests : IDisposable
 
         Assert.False(result);
     }
+
+    [Fact]
+    public async Task ReconcilePostFiles_AddsNewAssociation()
+    {
+        var blog = new Domain.Blogs.Blog { Id = Guid.NewGuid(), Name = "B", Slug = "b", Description = "D" };
+        var post = new Domain.Posts.Post { Id = Guid.NewGuid(), BlogId = blog.Id, Title = "T", Content = "C", Slug = "s" };
+        var file = new FileItem
+        {
+            Id = Guid.NewGuid(),
+            Url = "https://pub-xxx.r2.dev/cms-app/local/images/test.jpg",
+            FileName = "test.jpg",
+            Extension = "jpg",
+            ContentType = "image/jpeg",
+            Size = 100,
+            StoragePath = "path",
+            ContentHash = "HASH",
+        };
+        _db.Blogs.Add(blog);
+        _db.Posts.Add(post);
+        _db.FileItems.Add(file);
+        await _db.SaveChangesAsync();
+
+        var service = new FileReferenceService(_db, _r2Mock.Object);
+        await service.ReconcilePostFilesAsync(post.Id, "![img](https://pub-xxx.r2.dev/cms-app/local/images/test.jpg)", null, default);
+
+        var postReloaded = await _db.Posts.Include(p => p.Files).FirstAsync(p => p.Id == post.Id);
+        Assert.Single(postReloaded.Files);
+        Assert.Equal(file.Id, postReloaded.Files.First().Id);
+    }
+
+    [Fact]
+    public async Task ReconcilePostFiles_RemovesStaleAssociation_AndMarksForDeletion()
+    {
+        var blog = new Domain.Blogs.Blog { Id = Guid.NewGuid(), Name = "B", Slug = "b", Description = "D" };
+        var post = new Domain.Posts.Post { Id = Guid.NewGuid(), BlogId = blog.Id, Title = "T", Content = "C", Slug = "s" };
+        var file = new FileItem
+        {
+            Id = Guid.NewGuid(),
+            Url = "https://pub-xxx.r2.dev/cms-app/local/images/test.jpg",
+            FileName = "test.jpg",
+            Extension = "jpg",
+            ContentType = "image/jpeg",
+            Size = 100,
+            StoragePath = "path",
+            ContentHash = "HASH",
+        };
+        file.Posts.Add(post);
+        _db.Blogs.Add(blog);
+        _db.Posts.Add(post);
+        _db.FileItems.Add(file);
+        await _db.SaveChangesAsync();
+
+        var service = new FileReferenceService(_db, _r2Mock.Object);
+        await service.ReconcilePostFilesAsync(post.Id, "content with no images", null, default);
+
+        var fileReloaded = await _db.FileItems.Include(f => f.Posts).FirstAsync(f => f.Id == file.Id);
+        Assert.Empty(fileReloaded.Posts);
+        Assert.NotNull(fileReloaded.MarkedForDeletionAt);
+    }
+
+    [Fact]
+    public async Task ReconcilePostFiles_ReReferencedFile_ClearsDeletionMark()
+    {
+        var blog = new Domain.Blogs.Blog { Id = Guid.NewGuid(), Name = "B", Slug = "b", Description = "D" };
+        var post = new Domain.Posts.Post { Id = Guid.NewGuid(), BlogId = blog.Id, Title = "T", Content = "C", Slug = "s" };
+        var file = new FileItem
+        {
+            Id = Guid.NewGuid(),
+            Url = "https://pub-xxx.r2.dev/cms-app/local/images/test.jpg",
+            FileName = "test.jpg",
+            Extension = "jpg",
+            ContentType = "image/jpeg",
+            Size = 100,
+            StoragePath = "path",
+            ContentHash = "HASH",
+            MarkedForDeletionAt = DateTimeOffset.UtcNow.AddHours(1),
+        };
+        _db.Blogs.Add(blog);
+        _db.Posts.Add(post);
+        _db.FileItems.Add(file);
+        await _db.SaveChangesAsync();
+
+        var service = new FileReferenceService(_db, _r2Mock.Object);
+        await service.ReconcilePostFilesAsync(post.Id, "![img](https://pub-xxx.r2.dev/cms-app/local/images/test.jpg)", null, default);
+
+        var fileReloaded = await _db.FileItems.FirstAsync(f => f.Id == file.Id);
+        Assert.Null(fileReloaded.MarkedForDeletionAt);
+    }
+}
+
+public class ImageUrlExtractorTests
+{
+    private const string PublicBucketUrl = "https://pub-xxx.r2.dev";
+
+    [Fact]
+    public void ExtractImageUrls_MarkdownImages_ReturnsUrls()
+    {
+        var content = "Text ![alt](https://pub-xxx.r2.dev/cms-app/local/images/a.jpg) more ![alt2](https://pub-xxx.r2.dev/cms-app/local/images/b.png)";
+        var result = ImageUrlExtractor.ExtractImageUrls(content, null, PublicBucketUrl);
+        Assert.Equal(2, result.Count);
+        Assert.Contains("https://pub-xxx.r2.dev/cms-app/local/images/a.jpg", result);
+        Assert.Contains("https://pub-xxx.r2.dev/cms-app/local/images/b.png", result);
+    }
+
+    [Fact]
+    public void ExtractImageUrls_ExternalUrls_Ignored()
+    {
+        var content = "Text ![alt](https://external.com/img.jpg)";
+        var result = ImageUrlExtractor.ExtractImageUrls(content, null, PublicBucketUrl);
+        Assert.Empty(result);
+    }
+
+    [Fact]
+    public void ExtractImageUrls_HtmlImages_ReturnsUrls()
+    {
+        var content = "<img src=\"https://pub-xxx.r2.dev/cms-app/local/images/a.jpg\" />";
+        var result = ImageUrlExtractor.ExtractImageUrls(content, null, PublicBucketUrl);
+        Assert.Single(result);
+    }
+
+    [Fact]
+    public void ExtractImageUrls_CoverImageUrl_ReturnsUrl()
+    {
+        var result = ImageUrlExtractor.ExtractImageUrls(null, "https://pub-xxx.r2.dev/cms-app/local/images/cover.jpg", PublicBucketUrl);
+        Assert.Single(result);
+    }
+
+    [Fact]
+    public void ExtractImageUrls_NullContent_ReturnsEmpty()
+    {
+        var result = ImageUrlExtractor.ExtractImageUrls(null, null, PublicBucketUrl);
+        Assert.Empty(result);
+    }
 }

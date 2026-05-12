@@ -1,10 +1,11 @@
 using Application.Abstractions;
 using Infrastructure.Models;
+using Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace Application.Posts;
 
-public class UpdatePostCommandHandler(CmsDbContext db) : ICommandHandler<UpdatePostCommand, bool>
+public class UpdatePostCommandHandler(CmsDbContext db, FileReferenceService fileRefService) : ICommandHandler<UpdatePostCommand, bool>
 {
     public async Task<bool> Handle(UpdatePostCommand request, CancellationToken cancellationToken)
     {
@@ -33,6 +34,8 @@ public class UpdatePostCommandHandler(CmsDbContext db) : ICommandHandler<UpdateP
             post.Unpublish();
 
         await db.SaveChangesAsync(cancellationToken);
+
+        await fileRefService.ReconcilePostFilesAsync(post.Id, post.Content, post.CoverImageUrl, cancellationToken);
 
         return true;
     }

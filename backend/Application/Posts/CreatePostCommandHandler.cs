@@ -1,11 +1,12 @@
 using Application.Abstractions;
 using Domain.Posts;
+using Infrastructure.Services;
 using Infrastructure.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Application.Posts;
 
-public class CreatePostCommandHandler(CmsDbContext db) : ICommandHandler<CreatePostCommand, Guid>
+public class CreatePostCommandHandler(CmsDbContext db, FileReferenceService fileRefService) : ICommandHandler<CreatePostCommand, Guid>
 {
     public async Task<Guid> Handle(CreatePostCommand request, CancellationToken cancellationToken)
     {
@@ -35,6 +36,8 @@ public class CreatePostCommandHandler(CmsDbContext db) : ICommandHandler<CreateP
 
         await db.Posts.AddAsync(post, cancellationToken);
         await db.SaveChangesAsync(cancellationToken);
+
+        await fileRefService.ReconcilePostFilesAsync(post.Id, post.Content, post.CoverImageUrl, cancellationToken);
 
         return post.Id;
     }
