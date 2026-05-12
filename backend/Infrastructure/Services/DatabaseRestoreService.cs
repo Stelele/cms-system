@@ -11,8 +11,6 @@ public class DatabaseRestoreService(
     IConfiguration configuration
 ) : IHostedService
 {
-    private readonly int _maxRetries = configuration.GetValue<int?>("R2:RestoreMaxRetries") ?? 3;
-
     public static void EnsureDatabaseExists(IR2StorageService r2, IConfiguration configuration, ILogger<DatabaseRestoreService> logger)
     {
         var connectionString = configuration.GetConnectionString("Sqlite") ?? "Data Source=cms.db";
@@ -28,7 +26,7 @@ public class DatabaseRestoreService(
 
         var fileName = Path.GetFileName(databasePath);
         var backupKey = $"cms-app/{r2.Environment}/database/{fileName}";
-        var maxRetries = configuration.GetValue<int?>("R2:RestoreMaxRetries") ?? 3;
+        var maxRetries = 3;
         var cancellationToken = CancellationToken.None;
 
         try
