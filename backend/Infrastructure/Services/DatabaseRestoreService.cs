@@ -27,12 +27,13 @@ public class DatabaseRestoreService(
         logger.LogInformation("No database found at {Path}, attempting restore from R2", databasePath);
 
         var fileName = Path.GetFileName(databasePath);
+        var backupKey = $"cms-app/{r2.Environment}/database/{fileName}";
         var maxRetries = configuration.GetValue<int?>("R2:RestoreMaxRetries") ?? 3;
         var cancellationToken = CancellationToken.None;
 
         try
         {
-            var task = RestoreDatabaseAsyncInternal(r2, fileName, maxRetries, databasePath, logger, cancellationToken);
+            var task = RestoreDatabaseAsyncInternal(r2, backupKey, maxRetries, databasePath, logger, cancellationToken);
             task.Wait(cancellationToken);
         }
         catch (Exception ex)
@@ -41,21 +42,22 @@ public class DatabaseRestoreService(
         }
     }
 
-    private static async Task RestoreDatabaseAsyncInternal(IR2StorageService r2, string fileName, int maxRetries, string databasePath, ILogger<DatabaseRestoreService> logger, CancellationToken cancellationToken)
+    private static async Task RestoreDatabaseAsyncInternal(IR2StorageService r2, string backupKey, int maxRetries, string databasePath, ILogger<DatabaseRestoreService> logger, CancellationToken cancellationToken)
     {
+        var fileName = Path.GetFileName(databasePath);
         for (int attempt = 1; attempt <= maxRetries; attempt++)
         {
             try
             {
                 logger.LogInformation("Attempting to restore database (attempt {Attempt}/{MaxRetries})", attempt, maxRetries);
 
-                if (!await r2.ObjectExistsAsync(r2.BackupBucket, fileName, cancellationToken))
+                if (!await r2.ObjectExistsAsync(r2.BackupBucket, backupKey, cancellationToken))
                 {
                     logger.LogWarning("No backup found in R2: {FileName}, creating new database", fileName);
                     return;
                 }
 
-                var stream = await r2.DownloadAsync(r2.BackupBucket, fileName, cancellationToken);
+                var stream = await r2.DownloadAsync(r2.BackupBucket, backupKey, cancellationToken);
                 await using var memoryStream = new MemoryStream();
                 await stream.CopyToAsync(memoryStream, cancellationToken);
 

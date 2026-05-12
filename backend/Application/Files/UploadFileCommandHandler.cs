@@ -29,7 +29,8 @@ public class UploadFileCommandHandler(
 
         var fileId = Guid.NewGuid();
         var extension = Path.GetExtension(request.File.FileName).TrimStart('.').ToLowerInvariant();
-        var key = $"{fileId}.{extension}";
+        var typeFolder = R2StorageService.GetTypeFolder(request.File.ContentType);
+        var key = $"cms-app/{r2.Environment}/{typeFolder}/{fileId}.{extension}";
 
         memoryStream.Position = 0;
         await r2.UploadAsync(r2.PublicBucket, key, memoryStream, request.File.ContentType, cancellationToken);

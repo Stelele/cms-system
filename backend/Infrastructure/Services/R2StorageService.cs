@@ -15,6 +15,7 @@ public class R2StorageService : IR2StorageService
     public string PublicBucket => _publicBucket;
     public string BackupBucket => _backupBucket;
     public string PublicBucketUrl => _publicBucketUrl;
+    public string Environment { get; }
 
     public R2StorageService(IConfiguration configuration)
     {
@@ -32,6 +33,9 @@ public class R2StorageService : IR2StorageService
         };
 
         _s3Client = new AmazonS3Client(accessKeyId, secretAccessKey, config);
+
+        var aspnetEnv = System.Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+        Environment = string.Equals(aspnetEnv, "Production", StringComparison.OrdinalIgnoreCase) ? "prod" : "local";
     }
 
     public async Task UploadAsync(string bucket, string key, Stream content, string contentType, CancellationToken ct = default)
@@ -87,5 +91,22 @@ public class R2StorageService : IR2StorageService
         {
             return false;
         }
+    }
+
+    public static string GetTypeFolder(string contentType)
+    {
+        if (string.IsNullOrEmpty(contentType))
+            return "other";
+
+        if (contentType.StartsWith("video/", StringComparison.OrdinalIgnoreCase))
+            return "videos";
+
+        if (string.Equals(contentType, "image/gif", StringComparison.OrdinalIgnoreCase))
+            return "gifs";
+
+        if (contentType.StartsWith("image/", StringComparison.OrdinalIgnoreCase))
+            return "images";
+
+        return "other";
     }
 }

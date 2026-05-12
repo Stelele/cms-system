@@ -62,8 +62,9 @@ public class DatabaseSyncService(
             }
 
             var dbFileName = Path.GetFileName(databasePath);
+            var key = $"cms-app/{r2.Environment}/database/{dbFileName}";
             await using var fileStream = new FileStream(tempDbPath, FileMode.Open, FileAccess.Read);
-            await r2.UploadAsync(r2.BackupBucket, dbFileName, fileStream, "application/vnd.sqlite3", cancellationToken);
+            await r2.UploadAsync(r2.BackupBucket, key, fileStream, "application/vnd.sqlite3", cancellationToken);
 
             logger.LogInformation("Database sync completed successfully");
         }
