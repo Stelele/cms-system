@@ -1,15 +1,10 @@
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 namespace Infrastructure.Services;
 
-public class DatabaseRestoreService(
-    ILogger<DatabaseRestoreService> logger,
-    IR2StorageService r2,
-    IConfiguration configuration
-) : IHostedService
+public class DatabaseRestoreService : IHostedService
 {
     public static void EnsureDatabaseExists(IR2StorageService r2, IConfiguration configuration, ILogger<DatabaseRestoreService> logger)
     {
