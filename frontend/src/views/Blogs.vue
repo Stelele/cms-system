@@ -12,7 +12,7 @@
   </div>
   <UModal title="Create Blog" description="For adding a new blog" v-model:open="openNewBlogModal">
     <template #content>
-      <NewBlogForm @success="openNewBlogModal = false" />
+      <BlogForm mode="create" @success="openNewBlogModal = false" />
     </template>
   </UModal>
 </template>
@@ -21,6 +21,7 @@
 import type { BlogPostProps, ButtonProps } from '@nuxt/ui'
 import { computed, ref } from 'vue'
 import { useBlogStore } from '@/stores/blog-store'
+import BlogForm from '@/components/BlogForm.vue'
 
 const blogStore = useBlogStore()
 const posts = computed<BlogPostProps[]>(() =>

@@ -17,5 +17,13 @@ export const useBlogStore = defineStore('blogStore', () => {
     await client.POST('/blogs', { body: data })
   }
 
-  return { blogs, update, createBlog }
+  async function updateBlog(id: string, data: components['schemas']['UpdateBlogCommand']) {
+    const client = await BackendApiSingleton.getInstance()
+    await client.PUT('/blogs/{id}', {
+      params: { path: { id } },
+      body: data,
+    })
+  }
+
+  return { blogs, update, createBlog, updateBlog }
 })

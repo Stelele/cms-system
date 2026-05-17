@@ -16,6 +16,13 @@
             color="primary"
             @click="router.push(`/write?blogId=${blog.id}`)"
           />
+          <UButton
+            label="Edit"
+            icon="i-lucide-pencil"
+            color="neutral"
+            variant="subtle"
+            @click="openEditModal = true"
+          />
         </template>
       </UPageHeader>
 
@@ -63,6 +70,11 @@
       <p class="text-muted">Blog not found</p>
     </div>
   </div>
+  <UModal title="Edit Blog" description="Update blog details" v-model:open="openEditModal">
+    <template #content>
+      <BlogForm mode="edit" :blog-id="blog?.id" :initial-data="blog" @success="openEditModal = false" />
+    </template>
+  </UModal>
 </template>
 
 <script setup lang="ts">
@@ -75,6 +87,7 @@ import { useArticleStore } from '@/stores/article-store'
 import type { PostResponse } from '@/stores/article-store'
 import ArticleCard from '@/components/ArticleCard.vue'
 import EmptyState from '@/components/EmptyState.vue'
+import BlogForm from '@/components/BlogForm.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -84,6 +97,7 @@ const toast = useToast()
 
 const isLoading = ref(true)
 const allPosts = ref<PostResponse[]>([])
+const openEditModal = ref(false)
 
 const blog = computed(() => {
   const slug = route.params.slug as string

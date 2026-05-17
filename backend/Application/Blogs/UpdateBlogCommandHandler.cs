@@ -13,14 +13,7 @@ public class UpdateBlogCommandHandler(CmsDbContext db) : ICommandHandler<UpdateB
 
         if (blog == null) return false;
 
-        var slugExists = await db.Blogs
-            .AnyAsync(b => b.Slug == request.Slug && b.Id != request.Id, cancellationToken);
-
-        if (slugExists)
-            throw new InvalidOperationException($"A blog with slug '{request.Slug}' already exists.");
-
         blog.Name = request.Name;
-        blog.Slug = request.Slug;
         blog.Description = request.Description;
         blog.Icon = request.Icon;
         blog.UpdatedOn = DateTimeOffset.UtcNow;

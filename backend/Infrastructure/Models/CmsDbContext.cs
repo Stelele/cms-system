@@ -4,6 +4,7 @@ using Domain.Files;
 using Domain.Posts;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Infrastructure.Models;
 
@@ -18,6 +19,23 @@ public class CmsDbContext(DbContextOptions<CmsDbContext> options, IPublisher pub
         new BlogEntity().Configure(modelBuilder.Entity<Blog>());
         new PostEntity().Configure(modelBuilder.Entity<Post>());
         new FileEntity().Configure(modelBuilder.Entity<FileItem>());
+
+        if (Database.IsSqlite())
+        {
+            // Apply converter to all DateTimeOffset and DateTimeOffset? properties
+            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+            {
+                var properties = entityType.ClrType.GetProperties()
+                    .Where(p => p.PropertyType == typeof(DateTimeOffset) 
+                            || p.PropertyType == typeof(DateTimeOffset?));
+                
+                foreach (var property in properties)
+                {
+                    modelBuilder.Entity(entityType.Name).Property(property.Name)
+                        .HasConversion<DateTimeOffsetToBinaryConverter>();
+                }
+            }
+        }
     }
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
