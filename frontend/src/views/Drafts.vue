@@ -16,8 +16,8 @@
             :post="post"
             :blog-id="group.blog.id"
             status="draft"
-            :is-publishing="articleStore.isPublishing(post.id!)"
-            @publish="(p) => handlePublish(p, group.blog.id!)"
+            :is-publishing="articleStore.isPublishing(post.id)"
+            @publish="(p) => handlePublish(p, group.blog.id)"
           />
         </div>
       </div>
@@ -54,14 +54,14 @@ const isLoading = ref(true)
 const groupedDrafts = computed(() => {
   return [...draftsByBlog.value.entries()]
     .map(([blogId, posts]) => ({
-      blog: blogStore.blogs.find((b) => b.id === blogId)!,
+      blog: blogStore.blogs.find((b) => b.id === blogId),
       posts: posts.sort((a, b) => {
         const dateA = a.createdOn ? dayjs(a.createdOn).valueOf() : 0
         const dateB = b.createdOn ? dayjs(b.createdOn).valueOf() : 0
         return dateB - dateA
       }),
     }))
-    .filter((g) => g.blog && g.posts.length > 0)
+    .filter((g): g is { blog: NonNullable<typeof g.blog>; posts: PostResponse[] } => g.blog !== undefined && g.posts.length > 0)
 })
 
 async function handlePublish(post: PostResponse, blogId: string) {

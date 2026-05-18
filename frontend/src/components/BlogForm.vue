@@ -92,26 +92,28 @@ const blogSlugs = computed(() =>
 type CreateBlogCommand = components['schemas']['CreateBlogCommand']
 type UpdateBlogCommand = components['schemas']['UpdateBlogCommand']
 
-const schema = computed(() =>
-  z.object({
+function buildSchema(blogNamesList: string[], blogSlugsList: string[]) {
+  return z.object({
     name: z
       .string()
       .min(4)
-      .refine((value) => !blogNames.value.includes(value), {
+      .refine((value) => !blogNamesList.includes(value), {
         message: 'Blog name already exists',
       }),
     slug: z
       .string()
       .min(4)
-      .refine((value) => !blogSlugs.value.includes(value), {
+      .refine((value) => !blogSlugsList.includes(value), {
         message: 'Blog slug already exists',
       }),
     description: z.string(),
     icon: z.string().min(1),
-  }),
-)
+  })
+}
 
-type Schema = z.output<typeof schema>
+type Schema = z.infer<ReturnType<typeof buildSchema>>
+
+const schema = computed(() => buildSchema(blogNames.value, blogSlugs.value))
 
 const state = reactive<Schema>({
   name: '',
@@ -149,21 +151,22 @@ watch(
 )
 
 async function onButtonClick() {
-  if (isSubmitting.value || !props.blogId && props.mode === 'edit') return
+  if (isSubmitting.value || (props.mode === 'edit' && !props.blogId)) return
   isSubmitting.value = true
 
   const client = await BackendApiSingleton.getInstance()
 
-  if (props.mode === 'edit') {
+  if (props.mode === 'edit' && props.blogId) {
+    const blogId = props.blogId
     const updateData: UpdateBlogCommand = {
-      id: props.blogId!,
+      id: blogId,
       name: state.name,
       description: state.description,
       icon: state.icon,
     }
 
     const result = await client.PUT('/blogs/{id}', {
-      params: { path: { id: props.blogId! } },
+      params: { path: { id: blogId } },
       body: updateData,
     })
 
@@ -175,7 +178,7 @@ async function onButtonClick() {
       return
     }
 
-    const errorData = result.data as { error?: { message?: string } }
+    const errorData = result.data as { error?: { message?: string } } | undefined
     toast.add({
       title: 'Failed to update blog',
       description: errorData?.error?.message ?? 'An unexpected error occurred.',

@@ -12,11 +12,7 @@ public class GetTagsQueryHandler(CmsDbContext db) : IQueryHandler<GetTagsQuery, 
         var tags = await db.Posts
             .Where(p => p.IsPublished)
             .GroupBy(p => p.Tag)
-            .Select(g => new TagResponse
-            {
-                Tag = g.Key,
-                Count = g.Count()
-            })
+            .Select(g => new TagResponse(g.Key, g.Count()))
             .OrderByDescending(t => t.Count)
             .ToListAsync(cancellationToken);
 

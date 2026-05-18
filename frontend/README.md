@@ -47,3 +47,6 @@ npm run build
 npm run lint
 ```
 
+### Updating backend API schema
+```sh
+ NODE_TLS_REJECT_UNAUTHORIZED=0 npx openapi-typescript https://localhost:56512/openapi/v1.json -o src/services/backend/schema.ts 

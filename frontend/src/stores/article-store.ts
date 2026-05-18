@@ -46,12 +46,10 @@ export const useArticleStore = defineStore('articleStore', () => {
     const draftsByBlog = new Map<string, PostResponse[]>()
 
     const results = await Promise.all(
-      blogStore.blogs
-        .filter((blog) => blog.id)
-        .map(async (blog) => {
-          const posts = await fetchDraftsByBlog(blog.id!)
-          return { blogId: blog.id!, posts }
-        }),
+      blogStore.blogs.map(async (blog) => {
+        const posts = await fetchDraftsByBlog(blog.id)
+        return { blogId: blog.id, posts }
+      }),
     )
 
     for (const { blogId, posts } of results) {
@@ -148,22 +146,22 @@ export const useArticleStore = defineStore('articleStore', () => {
   }
 
   async function quickPublish(post: PostResponse): Promise<boolean> {
-    publishingPostIds.value.add(post.id!)
+    publishingPostIds.value.add(post.id)
     try {
       const postData: PostUpdateData = {
-        blogId: post.blogId!,
-        id: post.id!,
-        title: post.title ?? '',
-        slug: post.slug ?? '',
-        content: post.content ?? '',
-        description: post.description ?? null,
-        tag: post.tag ?? '',
-        coverImageUrl: post.coverImageUrl ?? null,
+        blogId: post.blogId,
+        id: post.id,
+        title: post.title,
+        slug: post.slug,
+        content: post.content,
+        description: post.description,
+        tag: post.tag,
+        coverImageUrl: post.coverImageUrl,
         isPublished: true,
       }
-      return await updatePost(post.blogId!, post.id!, postData)
+      return await updatePost(post.blogId, post.id, postData)
     } finally {
-      publishingPostIds.value.delete(post.id!)
+      publishingPostIds.value.delete(post.id)
     }
   }
 

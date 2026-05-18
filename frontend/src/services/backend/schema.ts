@@ -186,15 +186,15 @@ export interface components {
     schemas: {
         BlogResponse: {
             /** Format: uuid */
-            id?: string;
-            name?: string;
-            slug?: string;
-            description?: string;
-            icon?: string;
+            id: string;
+            name: string;
+            slug: string;
+            description: string;
+            icon: string;
             /** Format: date-time */
-            createdOn?: string;
+            createdOn: string;
             /** Format: date-time */
-            updatedOn?: string;
+            updatedOn: string;
         };
         CreateBlogCommand: {
             name: string;
@@ -239,22 +239,22 @@ export interface components {
         IFormFile: string;
         PostResponse: {
             /** Format: uuid */
-            id?: string;
+            id: string;
             /** Format: uuid */
-            blogId?: string;
-            title?: string;
-            slug?: string;
-            content?: string;
-            description?: null | string;
-            tag?: string;
-            coverImageUrl?: null | string;
+            blogId: string;
+            title: string;
+            slug: string;
+            content: string;
+            description: null | string;
+            tag: string;
+            coverImageUrl: null | string;
             /** Format: date-time */
-            publishedOn?: null | string;
-            isPublished?: boolean;
+            publishedOn: null | string;
+            isPublished: boolean;
             /** Format: date-time */
-            createdOn?: string;
+            createdOn: string;
             /** Format: date-time */
-            updatedOn?: string;
+            updatedOn: string;
         };
         SummarizeCommand: {
             content: string;
@@ -263,15 +263,14 @@ export interface components {
             summary: string;
         };
         TagResponse: {
-            tag?: string;
+            tag: string;
             /** Format: int32 */
-            count?: number | string;
+            count: number | string;
         };
         UpdateBlogCommand: {
             /** Format: uuid */
             id: string;
             name: string;
-            slug: string;
             description: string;
             icon: string;
         };
@@ -299,7 +298,9 @@ export type $defs = Record<string, never>;
 export interface operations {
     GetBlogs: {
         parameters: {
-            query?: never;
+            query?: {
+                slugs?: string[];
+            };
             header?: never;
             path?: never;
             cookie?: never;

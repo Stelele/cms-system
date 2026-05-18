@@ -261,7 +261,7 @@ async function insertImageFile() {
     if (match && match[1]) {
       const fileId = match[1]
       try {
-        await associateFileWithPost(fileId, existingPost.value.id!)
+        await associateFileWithPost(fileId, existingPost.value.id)
         uploadedFileIds.value.add(fileId)
       } catch (err) {
         console.warn('Failed to associate image with post:', err)
@@ -494,9 +494,9 @@ async function savePost(isPublished: boolean) {
     if (isEditing.value && existingPost.value) {
       const updateData = {
         ...postData,
-        id: existingPost.value.id!,
+        id: existingPost.value.id,
       }
-      success = await articleStore.updatePost(state.blogId.id, existingPost.value.id!, updateData)
+      success = await articleStore.updatePost(state.blogId.id, existingPost.value.id, updateData)
     } else {
       postId = await articleStore.createPost(state.blogId.id, postData)
       success = !!postId

@@ -36,7 +36,7 @@
               :post="post"
               :blog-id="blog.id"
               status="draft"
-              :is-publishing="articleStore.isPublishing(post.id!)"
+              :is-publishing="articleStore.isPublishing(post.id)"
               @publish="handlePublish"
             />
           </div>
@@ -72,7 +72,7 @@
   </div>
   <UModal title="Edit Blog" description="Update blog details" v-model:open="openEditModal">
     <template #content>
-      <BlogForm mode="edit" :blog-id="blog?.id" :initial-data="blog" @success="openEditModal = false" />
+      <BlogForm mode="edit" :blog-id="blog?.id" :initial-data="blogFormData" @success="openEditModal = false" />
     </template>
   </UModal>
 </template>
@@ -102,6 +102,16 @@ const openEditModal = ref(false)
 const blog = computed(() => {
   const slug = route.params.slug as string
   return blogStore.blogs.find((b) => b.slug === slug) ?? null
+})
+
+const blogFormData = computed(() => {
+  if (!blog.value) return undefined
+  return {
+    name: blog.value.name,
+    slug: blog.value.slug,
+    description: blog.value.description,
+    icon: blog.value.icon,
+  }
 })
 
 const draftPosts = computed(() =>
