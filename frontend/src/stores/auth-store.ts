@@ -8,7 +8,11 @@ export const useAuthStore = defineStore('authStore', () => {
   async function update() {
     const { getAccessTokenSilently } = useAuth0()
 
-    const token = await getAccessTokenSilently()
+    const token = await getAccessTokenSilently({
+      authorizationParams: {
+        audience: import.meta.env.VITE_AUTH0_AUDIENCE,
+      },
+    })
     accessToken.value = token
   }
 

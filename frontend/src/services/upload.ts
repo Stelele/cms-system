@@ -1,4 +1,4 @@
-import { useAuthStore } from '@/stores/auth-store'
+import { authFetch } from '@/services/auth-fetch'
 
 export interface FileResponse {
   id: string
@@ -11,19 +11,15 @@ export interface FileResponse {
 }
 
 export const uploadFile = async (file: File, altText?: string): Promise<FileResponse> => {
-  const authStore = useAuthStore()
   const formData = new FormData()
   formData.append('file', file)
   if (altText) {
     formData.append('altText', altText)
   }
 
-  const response = await fetch(`${import.meta.env.VITE_API_URL}/files/upload`, {
+  const response = await authFetch(`${import.meta.env.VITE_API_URL}/files/upload`, {
     method: 'POST',
     body: formData,
-    headers: {
-      Authorization: `Bearer ${authStore.accessToken}`,
-    },
   })
 
   if (!response.ok) {
@@ -35,16 +31,9 @@ export const uploadFile = async (file: File, altText?: string): Promise<FileResp
 }
 
 export const associateFileWithPost = async (fileId: string, postId: string): Promise<void> => {
-  const authStore = useAuthStore()
-
-  const response = await fetch(
+  const response = await authFetch(
     `${import.meta.env.VITE_API_URL}/files/${fileId}/posts/${postId}`,
-    {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${authStore.accessToken}`,
-      },
-    },
+    { method: 'POST' },
   )
 
   if (!response.ok && response.status !== 204) {
@@ -54,12 +43,9 @@ export const associateFileWithPost = async (fileId: string, postId: string): Pro
 }
 
 export const getFilesByPost = async (postId: string): Promise<FileResponse[]> => {
-  const authStore = useAuthStore()
-
-  const response = await fetch(`${import.meta.env.VITE_API_URL}/posts/${postId}/files`, {
+  const response = await authFetch(`${import.meta.env.VITE_API_URL}/posts/${postId}/files`, {
     method: 'GET',
     headers: {
-      Authorization: `Bearer ${authStore.accessToken}`,
       Accept: 'application/json',
     },
   })
