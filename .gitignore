@@ -6,3 +6,4 @@ nul
 **.log
 **.tmp
 **/backend-openapi.json
+**/.superpowers/*

@@ -102,6 +102,9 @@ public class R2StorageService : IR2StorageService
         if (contentType.StartsWith("video/", StringComparison.OrdinalIgnoreCase))
             return "videos";
 
+        if (contentType.StartsWith("audio/", StringComparison.OrdinalIgnoreCase))
+            return "audio";
+
         if (string.Equals(contentType, "image/gif", StringComparison.OrdinalIgnoreCase))
             return "gifs";
 

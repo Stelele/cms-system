@@ -10,6 +10,9 @@ public static partial class ImageUrlExtractor
     [GeneratedRegex(@"<img[^>]*\bsrc\s*=\s*[""']([^""']+)[""'][^>]*/?>", RegexOptions.IgnoreCase)]
     private static partial Regex HtmlImageRegex();
 
+    [GeneratedRegex(@"<audio[^>]*\bsrc\s*=\s*[""']([^""']+)[""'][^>]*>", RegexOptions.IgnoreCase)]
+    private static partial Regex HtmlAudioRegex();
+
     public static List<string> ExtractImageUrls(string? content, string? coverImageUrl, string publicBucketUrlPrefix)
     {
         var urls = new List<string>();
@@ -24,6 +27,10 @@ public static partial class ImageUrlExtractor
                     urls.Add(match.Groups[1].Value);
 
             foreach (Match match in HtmlImageRegex().Matches(content))
+                if (match.Groups[1].Value.StartsWith(publicBucketUrlPrefix))
+                    urls.Add(match.Groups[1].Value);
+
+            foreach (Match match in HtmlAudioRegex().Matches(content))
                 if (match.Groups[1].Value.StartsWith(publicBucketUrlPrefix))
                     urls.Add(match.Groups[1].Value);
         }

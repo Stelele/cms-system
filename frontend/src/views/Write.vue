@@ -124,6 +124,7 @@
             content-type="markdown"
             :placeholder="{ placeholder: 'Start writing your article...', mode: 'firstLine' }"
             :image="true"
+            :extensions="editorExtensions"
             class="min-h-[500px]"
             @update="handleEditorUpdate"
           >
@@ -198,6 +199,69 @@
                     </div>
                   </template>
                 </UPopover>
+                <UPopover
+                  :open="isAudioModalOpen"
+                  @update:open="isAudioModalOpen = $event"
+                  class="w-96"
+                >
+                  <UButton
+                    variant="ghost"
+                    size="sm"
+                    icon="i-lucide-music"
+                    @click.stop="openAudioModal(editor)"
+                  >
+                    Insert Audio
+                  </UButton>
+                  <template #content>
+                    <div class="p-4 space-y-4">
+                      <h2 class="text-lg font-semibold">Insert Audio</h2>
+                      <p class="text-sm text-muted">Enter an audio URL or select a local file</p>
+                      <div class="space-y-4">
+                        <UFormField label="Audio URL" name="audioUrl">
+                          <UInput
+                            v-model="localAudioUrl"
+                            placeholder="https://example.com/audio.mp3"
+                            class="w-full"
+                          />
+                        </UFormField>
+
+                        <UFormField label="Or Upload File" name="audioFileUpload">
+                          <UInput
+                            type="file"
+                            accept="audio/mpeg,audio/wav,audio/ogg,audio/mp4,audio/webm,audio/aac,audio/flac,audio/x-m4a,audio/m4a,.m4a"
+                            class="w-full"
+                            @change="handleAudioFileSelect"
+                          />
+                        </UFormField>
+
+                        <div v-if="selectedAudioFile" class="flex items-center gap-4">
+                          <span class="text-sm text-muted">{{ selectedAudioFile.name }}</span>
+                        </div>
+                      </div>
+                      <div class="flex justify-end gap-3 mt-4">
+                        <UButton color="neutral" variant="outline" size="sm" @click="closeAudioModal">
+                          Cancel
+                        </UButton>
+                        <UButton
+                          v-if="localAudioUrl"
+                          :loading="isAudioUploading"
+                          size="sm"
+                          @click="insertAudioUrl"
+                        >
+                          Insert from URL
+                        </UButton>
+                        <UButton
+                          v-if="selectedAudioFile"
+                          :loading="isAudioUploading"
+                          size="sm"
+                          @click="insertAudioFileHandler"
+                        >
+                          Insert File
+                        </UButton>
+                      </div>
+                    </div>
+                  </template>
+                </UPopover>
               </div>
             </div>
           </UEditor>
@@ -220,8 +284,12 @@ import { useArticleSummarizer } from '@/composables/useArticleSummarizer'
 
 import { useImageInsert } from '@/composables/useImageInsert'
 import { useImageUpload } from '@/composables/useImageUpload'
+import { useAudioInsert } from '@/composables/useAudioInsert'
+import { AudioExtension } from '@/components/editor/AudioExtension'
 import { associateFileWithPost } from '@/services/upload'
 import type { SelectMenuItem } from '@nuxt/ui/runtime/components/SelectMenu.vue.js'
+
+const editorExtensions = [AudioExtension]
 
 const route = useRoute()
 const router = useRouter()
@@ -242,6 +310,17 @@ const {
   closeModal,
   getPreviewUrl,
 } = useImageInsert()
+
+const {
+  isAudioModalOpen,
+  selectedFile: selectedAudioFile,
+  isUploading: isAudioUploading,
+  openAudioModal,
+  insertAudioUrl: insertAudioUrlFromModal,
+  handleFileSelect: handleAudioFileSelect,
+  insertAudioFile: insertAudioFileFromModal,
+  closeModal: closeAudioModal,
+} = useAudioInsert()
 
 const {
   selectedFile: coverImageFile,
@@ -276,6 +355,18 @@ const insertImageUrl = () => {
   if (localImageUrl.value) {
     insertImageUrlFromModal(localImageUrl.value)
   }
+}
+
+const localAudioUrl = ref('')
+
+const insertAudioUrl = () => {
+  if (localAudioUrl.value) {
+    insertAudioUrlFromModal(localAudioUrl.value)
+  }
+}
+
+async function insertAudioFileHandler() {
+  await insertAudioFileFromModal()
 }
 
 const isEditing = computed(() => !!route.query.edit)

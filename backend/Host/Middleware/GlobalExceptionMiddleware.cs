@@ -1,5 +1,6 @@
 using System.Text.Json;
 using FluentValidation;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
@@ -30,6 +31,12 @@ public sealed class GlobalExceptionMiddleware(RequestDelegate next)
                 "ValidationException",
                 "Validation failed",
                 validationException.Errors.Select(e => new Error(e.ErrorMessage, e.PropertyName, [])).ToList()
+            ),
+            BadHttpRequestException badRequest => (
+                StatusCodes.Status400BadRequest,
+                "BadHttpRequestException",
+                badRequest.Message,
+                []
             ),
             DbUpdateException => (
                 StatusCodes.Status400BadRequest,

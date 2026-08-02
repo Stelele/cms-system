@@ -17,9 +17,18 @@ public sealed class UploadFileCommandValidator : AbstractValidator<UploadFileCom
         "image/apng",
         "image/avif",
         "image/x-xbitmap",
+        "audio/mpeg",
+        "audio/wav",
+        "audio/ogg",
+        "audio/mp4",
+        "audio/webm",
+        "audio/aac",
+        "audio/flac",
+        "audio/x-m4a",
+        "audio/m4a",
     ];
 
-    private const long MaxFileSizeBytes = 10 * 1024 * 1024; // 10MB
+    private const long MaxFileSizeBytes = 50 * 1024 * 1024; // 50MB
 
     public UploadFileCommandValidator()
     {

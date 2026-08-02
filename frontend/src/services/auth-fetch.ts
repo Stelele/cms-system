@@ -9,6 +9,10 @@ export const authFetch = async (input: RequestInfo | URL, init?: RequestInit): P
   const makeRequest = (token: string) => {
     const headers = new Headers(init?.headers)
     headers.set('Authorization', `Bearer ${token}`)
+    const isFormData = init?.body instanceof FormData
+    if (!isFormData && !headers.has('Content-Type')) {
+      headers.set('Content-Type', 'application/json')
+    }
     return fetch(input, { ...init, headers })
   }
 
