@@ -9,15 +9,19 @@ namespace Tests;
 public class ProjectBoundaryTests
 {
     [Fact]
-    public async Task GetProjects_ExcludesDrafts()
+    // The published-only guarantee belongs to the public read, which is a
+    // separate query so the admin read can show drafts. Both sides are covered
+    // in ProjectDraftVisibilityTests; asserting it here on the admin query would
+    // re-assert the bug that made the admin UI show no projects at all.
+    public async Task GetPublicProjects_ExcludesDrafts()
     {
         using var db = new TestDb();
         var blog = db.SeedBlog("Game Dev Projects", "game-dev", "markdown", BlogKind.Project);
         db.SeedProject(blog, "Live", "live", ProjectCategory.GameDev);
         db.SeedProject(blog, "Draft", "draft", ProjectCategory.GameDev, isPublished: false);
 
-        var result = await new GetProjectsQueryHandler(db.Db)
-            .Handle(new GetProjectsQuery(null), CancellationToken.None);
+        var result = await new GetPublicProjectsQueryHandler(db.Db)
+            .Handle(new GetPublicProjectsQuery(null), CancellationToken.None);
 
         Assert.Equal(["live"], result.Select(p => p.Slug).ToArray());
     }
@@ -53,14 +57,14 @@ public class ProjectBoundaryTests
     }
 
     [Fact]
-    public async Task GetProjectBySlug_ReturnsNullForADraft()
+    public async Task GetPublicProjectBySlug_ReturnsNullForADraft()
     {
         using var db = new TestDb();
         var blog = db.SeedBlog("Game Dev Projects", "game-dev", "markdown", BlogKind.Project);
         db.SeedProject(blog, "Draft", "draft", ProjectCategory.GameDev, isPublished: false);
 
-        var result = await new GetProjectBySlugQueryHandler(db.Db)
-            .Handle(new GetProjectBySlugQuery("draft"), CancellationToken.None);
+        var result = await new GetPublicProjectBySlugQueryHandler(db.Db)
+            .Handle(new GetPublicProjectBySlugQuery("draft"), CancellationToken.None);
 
         Assert.Null(result);
     }

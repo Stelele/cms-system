@@ -17,7 +17,7 @@ public class GetProjectBySlugQueryHandler(CmsDbContext db)
     {
         var project = await db.Posts
             .OfType<Project>()
-            .Where(p => p.Slug == request.Slug && p.IsPublished)
+            .Where(p => p.Slug == request.Slug)
             .FirstOrDefaultAsync(cancellationToken);
 
         return project is null ? null : ProjectResponse.FromDomain(project);
