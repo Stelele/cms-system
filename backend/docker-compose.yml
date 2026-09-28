@@ -21,6 +21,13 @@ services:
       - R2__PublicBucketUrl={{R2_PUBLIC_BUCKET_URL}}
       - R2__BackupBucketName={{R2_BACKUP_BUCKET_NAME}}
       - R2__SyncIntervalMinutes={{R2_SYNC_INTERVAL}}
+      # CORS allowlist. These are public origins, not secrets, so they live here
+      # rather than in GitHub secrets - which means the deploy carries them and
+      # the app cannot be deployed without them. CorsOriginPolicy refuses to boot
+      # in Production when this is empty or contains a wildcard, so omitting these
+      # takes the API down rather than silently serving every origin.
+      - Cors__AllowedOrigins__0=https://giftmugweni.com
+      - Cors__AllowedOrigins__1=https://stelele.github.io
     restart: unless-stopped
 
 volumes:
