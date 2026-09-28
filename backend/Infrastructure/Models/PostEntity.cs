@@ -31,6 +31,10 @@ public class PostEntity : IEntityTypeConfiguration<Post>
         builder.Property(b => b.CoverImageUrl)
             .IsRequired(false);
 
+        builder.Property(b => b.CanonicalUrl)
+            .IsRequired(false)
+            .HasMaxLength(2048);
+
         builder.Property(b => b.PublishedOn)
             .IsRequired(false);
 

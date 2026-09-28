@@ -1,35 +1,20 @@
 using Application.Abstractions;
 using FluentValidation;
-using System.Text.Json.Serialization;
 
 namespace Application.Posts;
 
-public record CreatePostCommand : ICommand<Guid>
-{
-    [JsonPropertyName("blogId")]
-    public required Guid BlogId { get; init; }
-
-    [JsonPropertyName("title")]
-    public required string Title { get; init; }
-
-    [JsonPropertyName("slug")]
-    public required string Slug { get; init; }
-
-    [JsonPropertyName("content")]
-    public required string Content { get; init; }
-
-    [JsonPropertyName("description")]
-    public string? Description { get; init; }
-
-    [JsonPropertyName("tag")]
-    public required string Tag { get; init; }
-
-    [JsonPropertyName("coverImageUrl")]
-    public required string? CoverImageUrl { get; init; }
-
-    [JsonPropertyName("isPublished")]
-    public required bool IsPublished { get; init; }
-}
+public record CreatePostCommand(
+    Guid BlogId,
+    string Title,
+    string Slug,
+    string Content,
+    string? Description,
+    string Tag,
+    string? CoverImageUrl,
+    bool IsPublished,
+    DateTimeOffset? PublishedOn = null,
+    string? CanonicalUrl = null
+) : ICommand<Guid>;
 
 public sealed class CreatePostCommandValidator : AbstractValidator<CreatePostCommand>
 {
@@ -51,5 +36,14 @@ public sealed class CreatePostCommandValidator : AbstractValidator<CreatePostCom
 
         RuleFor(x => x.Tag)
             .NotEmpty();
+
+        RuleFor(x => x.CanonicalUrl)
+            .Must(BeAbsoluteHttpUrl)
+            .When(x => !string.IsNullOrEmpty(x.CanonicalUrl))
+            .WithMessage("CanonicalUrl must be an absolute http or https URL.");
     }
+
+    private static bool BeAbsoluteHttpUrl(string? value) =>
+        Uri.TryCreate(value, UriKind.Absolute, out var uri)
+        && (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps);
 }

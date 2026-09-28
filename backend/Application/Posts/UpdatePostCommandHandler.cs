@@ -26,12 +26,25 @@ public class UpdatePostCommandHandler(CmsDbContext db, FileReferenceService file
         post.Description = request.Description;
         post.Tag = request.Tag;
         post.CoverImageUrl = request.CoverImageUrl;
+        post.CanonicalUrl = request.CanonicalUrl;
         post.UpdatedOn = DateTimeOffset.UtcNow;
 
         if (request.IsPublished && !post.IsPublished)
+        {
             post.Publish();
+
+            if (request.PublishedOn.HasValue)
+                post.SetPublishedOn(request.PublishedOn.Value);
+        }
         else if (!request.IsPublished && post.IsPublished)
+        {
             post.Unpublish();
+        }
+        else if (request.IsPublished && request.PublishedOn.HasValue)
+        {
+            // Already published, but the date is being corrected.
+            post.SetPublishedOn(request.PublishedOn.Value);
+        }
 
         await db.SaveChangesAsync(cancellationToken);
 

@@ -13,11 +13,14 @@ public record PostResponse(
     string Tag,
     string? CoverImageUrl,
     DateTimeOffset? PublishedOn,
+    string? CanonicalUrl,
     bool IsPublished,
     DateTimeOffset CreatedOn,
     DateTimeOffset UpdatedOn
 )
 {
     public static PostResponse FromDomain(Post post) =>
-        new(post.Id, post.BlogId, post.Title, post.Slug, post.Content, post.Description, post.Tag, post.CoverImageUrl, post.PublishedOn, post.IsPublished, post.CreatedOn, post.UpdatedOn);
+        new(post.Id, post.BlogId, post.Title, post.Slug, post.Content, post.Description,
+            post.Tag, post.CoverImageUrl, post.PublishedOn, post.CanonicalUrl,
+            post.IsPublished, post.CreatedOn, post.UpdatedOn);
 }
