@@ -37,11 +37,27 @@ public class BlogContentTypeTests
         Assert.Equal(BlogContentType.Markdown, BlogContentType.OrDefault(null));
     }
 
+    [Theory]
+    [InlineData(null, BlogContentType.Markdown)]
+    [InlineData("", BlogContentType.Markdown)]
+    [InlineData("   ", BlogContentType.Markdown)]
+    [InlineData("bogus", BlogContentType.Markdown)]
+    [InlineData("html", BlogContentType.Html)]
+    [InlineData("markdown", BlogContentType.Markdown)]
+    public void OrDefault_MapsEveryInputToALegalValue(string? input, string expected)
+    {
+        Assert.Equal(expected, BlogContentType.OrDefault(input));
+    }
+
     [Fact]
     public void ContentType_RoundTripsThroughTheDatabase()
     {
         using var db = new TestDb();
         db.SeedBlog("Graphics", "graphics", BlogContentType.Html);
+
+        // Without this, Single() returns the tracked instance just saved and the
+        // assertion never reaches SQLite.
+        db.Db.ChangeTracker.Clear();
 
         Assert.Equal(BlogContentType.Html, db.Db.Blogs.Single().ContentType);
     }
