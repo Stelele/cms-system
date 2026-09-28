@@ -1,7 +1,7 @@
 import { BackendApiSingleton } from '@/services/backend'
 import type { components } from '@/services/backend/schema'
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 
 export const useBlogStore = defineStore('blogStore', () => {
   const blogs = ref<components['schemas']['BlogResponse'][]>([])
@@ -25,5 +25,12 @@ export const useBlogStore = defineStore('blogStore', () => {
     })
   }
 
-  return { blogs, update, createBlog, updateBlog }
+  const projectBlogs = computed(() => blogs.value.filter((b) => b.kind === 'Project'))
+
+  function blogBySlug(slug: string | undefined) {
+    if (!slug) return null
+    return blogs.value.find((b) => b.slug === slug) ?? null
+  }
+
+  return { blogs, projectBlogs, update, createBlog, updateBlog, blogBySlug }
 })

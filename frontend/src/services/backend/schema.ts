@@ -84,6 +84,86 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/projects": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetProjects"];
+        put?: never;
+        post: operations["CreateProject"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/projects/{slug}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetProjectBySlug"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/projects/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["UpdateProject"];
+        post?: never;
+        delete: operations["DeleteProject"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/public/projects": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetPublicProjects"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/public/projects/{slug}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetPublicProjectBySlug"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/tags": {
         parameters: {
             query?: never;
@@ -180,10 +260,63 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/public/blogs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetPublicBlogs"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/public/blogs/{id}/posts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetPublicPostsByBlog"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/public/posts/slug/{slug}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetPublicPostBySlug"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /**
+         * @default Standard
+         * @enum {unknown}
+         */
+        BlogKind: "Standard" | "Project";
         BlogResponse: {
             /** Format: uuid */
             id: string;
@@ -191,6 +324,7 @@ export interface components {
             slug: string;
             description: string;
             icon: string;
+            kind: components["schemas"]["BlogKind"];
             /** Format: date-time */
             createdOn: string;
             /** Format: date-time */
@@ -201,6 +335,7 @@ export interface components {
             slug: string;
             description: string;
             icon: string;
+            kind?: components["schemas"]["BlogKind"];
         };
         CreatePostCommand: {
             /** Format: uuid */
@@ -208,10 +343,32 @@ export interface components {
             title: string;
             slug: string;
             content: string;
-            description?: null | string;
+            description: null | string;
             tag: string;
             coverImageUrl: null | string;
             isPublished: boolean;
+            /** Format: date-time */
+            publishedOn?: null | string;
+            canonicalUrl?: null | string;
+        };
+        CreateProjectCommand: {
+            /** Format: uuid */
+            blogId: string;
+            title: string;
+            slug: string;
+            content: string;
+            description: null | string;
+            category: components["schemas"]["ProjectCategory"];
+            /** Format: int32 */
+            year: number | string;
+            stack: string[];
+            /** Format: date-time */
+            lastPushedAt: null | string;
+            links: components["schemas"]["ProjectLinkInput"][];
+            coverImageUrl: null | string;
+            isPublished: boolean;
+            /** Format: date-time */
+            publishedOn?: null | string;
         };
         FileResponse: {
             /** Format: uuid */
@@ -250,11 +407,90 @@ export interface components {
             coverImageUrl: null | string;
             /** Format: date-time */
             publishedOn: null | string;
+            canonicalUrl: null | string;
             isPublished: boolean;
             /** Format: date-time */
             createdOn: string;
             /** Format: date-time */
             updatedOn: string;
+        };
+        /** @enum {unknown} */
+        ProjectCategory: "GameDev" | "Graphics" | "BusinessCase";
+        ProjectLink: {
+            label?: string;
+            url?: string;
+        };
+        ProjectLinkInput: {
+            label: string;
+            url: string;
+        };
+        ProjectResponse: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            blogId: string;
+            slug: string;
+            title: string;
+            content: string;
+            description: null | string;
+            category: components["schemas"]["ProjectCategory"];
+            stack: string[];
+            /** Format: int32 */
+            year: number | string;
+            /** Format: date-time */
+            lastPushedAt: null | string;
+            links: components["schemas"]["ProjectLink"][];
+            coverImageUrl: null | string;
+            /** Format: date-time */
+            publishedOn: null | string;
+            canonicalUrl: null | string;
+            status: components["schemas"]["ProjectStatus"];
+        };
+        /** @enum {unknown} */
+        ProjectStatus: "Active" | "Archived";
+        ProjectSummaryResponse: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            blogId: string;
+            slug: string;
+            title: string;
+            description: null | string;
+            category: components["schemas"]["ProjectCategory"];
+            stack: string[];
+            /** Format: int32 */
+            year: number | string;
+            /** Format: date-time */
+            lastPushedAt: null | string;
+            links: components["schemas"]["ProjectLink"][];
+            coverImageUrl: null | string;
+            /** Format: date-time */
+            publishedOn: null | string;
+            status: components["schemas"]["ProjectStatus"];
+        };
+        PublicBlogResponse: {
+            /** Format: uuid */
+            id: string;
+            name: string;
+            slug: string;
+            description: string;
+            icon: string;
+            contentType: string;
+        };
+        PublicPostResponse: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            blogId: string;
+            title: string;
+            slug: string;
+            content: string;
+            description: null | string;
+            tag: string;
+            coverImageUrl: null | string;
+            /** Format: date-time */
+            publishedOn: null | string;
+            canonicalUrl: null | string;
         };
         SummarizeCommand: {
             content: string;
@@ -273,6 +509,7 @@ export interface components {
             name: string;
             description: string;
             icon: string;
+            kind?: components["schemas"]["BlogKind"];
         };
         UpdatePostCommand: {
             /** Format: uuid */
@@ -286,6 +523,30 @@ export interface components {
             tag: string;
             coverImageUrl: null | string;
             isPublished: boolean;
+            /** Format: date-time */
+            publishedOn?: null | string;
+            canonicalUrl?: null | string;
+        };
+        UpdateProjectCommand: {
+            /** Format: uuid */
+            blogId: string;
+            /** Format: uuid */
+            id: string;
+            title: string;
+            slug: string;
+            content: string;
+            description: null | string;
+            category: components["schemas"]["ProjectCategory"];
+            /** Format: int32 */
+            year: number | string;
+            stack: string[];
+            /** Format: date-time */
+            lastPushedAt: null | string;
+            links: components["schemas"]["ProjectLinkInput"][];
+            coverImageUrl: null | string;
+            isPublished: boolean;
+            /** Format: date-time */
+            publishedOn?: null | string;
         };
     };
     responses: never;
@@ -635,6 +896,222 @@ export interface operations {
             };
         };
     };
+    GetProjects: {
+        parameters: {
+            query?: {
+                category?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProjectSummaryResponse"][];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CreateProject: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateProjectCommand"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": string;
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["HttpValidationProblemDetails"];
+                };
+            };
+        };
+    };
+    GetProjectBySlug: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProjectResponse"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    UpdateProject: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateProjectCommand"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["HttpValidationProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    DeleteProject: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    GetPublicProjects: {
+        parameters: {
+            query?: {
+                category?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProjectSummaryResponse"][];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    GetPublicProjectBySlug: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProjectResponse"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     GetTags: {
         parameters: {
             query?: never;
@@ -831,6 +1308,79 @@ export interface operations {
                 content: {
                     "application/problem+json": components["schemas"]["HttpValidationProblemDetails"];
                 };
+            };
+        };
+    };
+    GetPublicBlogs: {
+        parameters: {
+            query?: {
+                slugs?: string[];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicBlogResponse"][];
+                };
+            };
+        };
+    };
+    GetPublicPostsByBlog: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicPostResponse"][];
+                };
+            };
+        };
+    };
+    GetPublicPostBySlug: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicPostResponse"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };

@@ -74,7 +74,7 @@
       </UFormField>
 
       <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
-        <UFormField label="Tag" name="tag">
+        <UFormField v-if="!isProject" label="Tag" name="tag">
           <UInput v-model="state.tag" placeholder="Category or tag" class="w-full" />
         </UFormField>
 
@@ -114,6 +114,15 @@
           </div>
         </UFormField>
       </div>
+
+      <!-- Typed project fields. A project's category is derived from its blog,
+           so the generic Tag field above is hidden rather than duplicated. -->
+      <ProjectFields
+        v-if="isProject"
+        v-model="projectFields"
+        :blog-category="selectedBlogCategory"
+        :blog-slug="selectedBlog?.slug"
+      />
 
       <div>
         <label class="mb-2 block text-sm font-medium">Content</label>
@@ -278,6 +287,11 @@ import { useToast } from '@nuxt/ui/composables'
 import * as z from 'zod'
 import { useBlogStore } from '@/stores/blog-store'
 import { useArticleStore } from '@/stores/article-store'
+import {
+  useProjectStore,
+  categoryForBlogSlug,
+  type ProjectFormData,
+} from '@/stores/project-store'
 import type { PostResponse } from '@/stores/article-store'
 import { useSettingsStore } from '@/stores/settings-store'
 import { useArticleSummarizer } from '@/composables/useArticleSummarizer'
@@ -286,6 +300,7 @@ import { useImageInsert } from '@/composables/useImageInsert'
 import { useImageUpload } from '@/composables/useImageUpload'
 import { useAudioInsert } from '@/composables/useAudioInsert'
 import { AudioExtension } from '@/components/editor/AudioExtension'
+import ProjectFields from '@/components/ProjectFields.vue'
 import { associateFileWithPost } from '@/services/upload'
 import type { SelectMenuItem } from '@nuxt/ui/runtime/components/SelectMenu.vue.js'
 
@@ -296,6 +311,7 @@ const router = useRouter()
 const toast = useToast()
 const blogStore = useBlogStore()
 const articleStore = useArticleStore()
+const projectStore = useProjectStore()
 const settingsStore = useSettingsStore()
 const { summarize: summarizeContent, isSummarizing } = useArticleSummarizer()
 
@@ -369,6 +385,20 @@ async function insertAudioFileHandler() {
   await insertAudioFileFromModal()
 }
 
+const selectedBlog = computed(() => blogStore.blogs.find((b) => b.id === state.blogId.id) ?? null)
+const isProject = computed(() => projectStore.isProjectBlog(selectedBlog.value))
+const selectedBlogCategory = computed(() => categoryForBlogSlug(selectedBlog.value?.slug))
+
+const defaultProjectFields = (): ProjectFormData => ({
+  category: selectedBlogCategory.value ?? 'GameDev',
+  year: new Date().getFullYear(),
+  stack: [],
+  lastPushedAt: null,
+  links: [],
+  status: 'Active',
+})
+const projectFields = ref<ProjectFormData>(defaultProjectFields())
+
 const isEditing = computed(() => !!route.query.edit)
 const existingPost = ref<PostResponse | null>(null)
 const editorContent = ref('')
@@ -389,7 +419,8 @@ const schema = z.object({
     .min(3, 'Slug must be at least 3 characters')
     .regex(/^[a-z0-9-]+$/, 'Slug can only contain lowercase letters, numbers, and dashes'),
   description: z.string().max(300).optional(),
-  tag: z.string().min(1, 'Tag is required'),
+  // A project's tag is its category slug, set server-side, so it is not required here.
+  tag: z.string(),
   coverImageUrl: z.string().url('Must be a valid URL').optional().or(z.literal('')),
 })
 
@@ -582,7 +613,38 @@ async function savePost(isPublished: boolean) {
     let success = false
     let postId: string | null = null
 
-    if (isEditing.value && existingPost.value) {
+    if (isProject.value) {
+      // A project is written through the project endpoints, not the post ones.
+      // The post endpoints reject a project blog and the project endpoints
+      // require the typed fields, so this is the only path that can save one.
+      const projectData = {
+        title: postData.title,
+        slug: postData.slug,
+        content: postData.content,
+        description: postData.description,
+        coverImageUrl: postData.coverImageUrl,
+        isPublished: postData.isPublished,
+        category: projectFields.value.category,
+        year: projectFields.value.year,
+        stack: projectFields.value.stack,
+        lastPushedAt: projectFields.value.lastPushedAt
+          ? new Date(projectFields.value.lastPushedAt).toISOString()
+          : null,
+        links: projectFields.value.links,
+        status: projectFields.value.status,
+      }
+
+      if (isEditing.value && existingPost.value) {
+        success = await projectStore.updateProject(
+          state.blogId.id,
+          existingPost.value.id,
+          projectData,
+        )
+      } else {
+        postId = await projectStore.createProject(state.blogId.id, projectData)
+        success = !!postId
+      }
+    } else if (isEditing.value && existingPost.value) {
       const updateData = {
         ...postData,
         id: existingPost.value.id,
@@ -669,6 +731,26 @@ onMounted(async () => {
       state.tag = post.tag ?? ''
       state.coverImageUrl = post.coverImageUrl ?? ''
       editorContent.value = post.content ?? ''
+
+      // A project needs its typed fields, which the post endpoints do not
+      // return. There is no GET /projects/{id}, so the slug the post already
+      // carries is used to fetch the full project.
+      if (projectStore.isProjectBlog(blog)) {
+        const project = await projectStore.fetchProjectBySlug(post.slug ?? '')
+        if (project) {
+          projectFields.value = {
+            category: project.category,
+            year: project.year,
+            stack: [...(project.stack ?? [])],
+            lastPushedAt: project.lastPushedAt ? project.lastPushedAt.slice(0, 10) : null,
+            links: (project.links ?? []).map((l) => ({
+              label: l.label ?? '',
+              url: l.url ?? '',
+            })),
+            status: project.status,
+          }
+        }
+      }
     }
   }
 })

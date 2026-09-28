@@ -37,6 +37,23 @@
         <IconPicker v-model="state.icon" />
       </UFormField>
 
+      <UFormField
+        label="Kind"
+        name="kind"
+        description="A project blog holds typed projects with a category, year, stack and links. The API only accepts the slugs game-dev, graphics and business-case for a project blog."
+      >
+        <USelect v-model="state.kind" :items="kindItems" value-key="value" class="w-full" />
+      </UFormField>
+
+      <UAlert
+        v-if="state.kind === 'Project' && !isRegisteredProjectSlug"
+        color="warning"
+        variant="subtle"
+        icon="i-lucide-triangle-alert"
+        title="This slug is not a project slug"
+        :description="projectSlugWarning"
+      />
+
       <div class="w-full flex justify-end">
         <UButton
           type="button"
@@ -63,7 +80,13 @@ import IconPicker from '@/components/IconPicker.vue'
 const props = defineProps<{
   mode?: 'create' | 'edit'
   blogId?: string
-  initialData?: { name: string; slug: string; description: string; icon: string }
+  initialData?: {
+    name: string
+    slug: string
+    description: string
+    icon: string
+    kind?: BlogKind
+  }
 }>()
 
 const blogStore = useBlogStore()
@@ -89,6 +112,7 @@ const blogSlugs = computed(() =>
     .map((blog) => blog.slug),
 )
 
+type BlogKind = components['schemas']['BlogKind']
 type CreateBlogCommand = components['schemas']['CreateBlogCommand']
 type UpdateBlogCommand = components['schemas']['UpdateBlogCommand']
 
@@ -108,6 +132,7 @@ function buildSchema(blogNamesList: string[], blogSlugsList: string[]) {
       }),
     description: z.string(),
     icon: z.string().min(1),
+    kind: z.enum(['Standard', 'Project']),
   })
 }
 
@@ -120,9 +145,25 @@ const state = reactive<Schema>({
   slug: '',
   description: '',
   icon: 'i-heroicons-book-open',
+  kind: 'Standard',
 })
 
 const isValid = computed(() => schema.value.safeParse(state).success)
+
+const kindItems: Array<{ label: string; value: BlogKind }> = [
+  { label: 'Standard - ordinary posts', value: 'Standard' },
+  { label: 'Project - typed projects', value: 'Project' },
+]
+
+// Mirrors ProjectBlogs on the backend. The API re-checks, so this only saves
+// the round trip and explains the rule before the user hits save.
+const registeredProjectSlugs = ['game-dev', 'graphics', 'business-case']
+const isRegisteredProjectSlug = computed(() => registeredProjectSlugs.includes(state.slug))
+const projectSlugWarning = computed(
+  () =>
+    `The API will refuse to save a project blog called "${state.slug}". ` +
+    `Use one of: ${registeredProjectSlugs.join(', ')}.`,
+)
 
 onMounted(() => {
   if (props.mode === 'edit' && props.initialData) {
@@ -130,6 +171,7 @@ onMounted(() => {
     state.slug = props.initialData.slug
     state.description = props.initialData.description
     state.icon = props.initialData.icon
+    state.kind = props.initialData.kind ?? 'Standard'
     currentBlogName.value = props.initialData.name
     currentBlogSlug.value = props.initialData.slug
   }
@@ -143,6 +185,7 @@ watch(
       state.slug = data.slug
       state.description = data.description
       state.icon = data.icon
+      state.kind = data.kind ?? 'Standard'
       currentBlogName.value = data.name
       currentBlogSlug.value = data.slug
     }
@@ -163,6 +206,7 @@ async function onButtonClick() {
       name: state.name,
       description: state.description,
       icon: state.icon,
+      kind: state.kind,
     }
 
     const result = await client.PUT('/blogs/{id}', {
@@ -191,6 +235,7 @@ async function onButtonClick() {
       slug: state.slug,
       description: state.description,
       icon: state.icon,
+      kind: state.kind,
     }
 
     const result = await client.POST('/blogs', { body: createData })

@@ -11,7 +11,7 @@
         </template>
         <template #links>
           <UButton
-            label="New Post"
+            :label="isProjectBlog ? 'New Project' : 'New Post'"
             icon="i-lucide-plus"
             color="primary"
             @click="router.push(`/write?blogId=${blog.id}`)"
@@ -58,10 +58,10 @@
 
       <EmptyState
         v-else
-        title="No posts yet"
-        description="Create your first post for this blog."
+        :title="isProjectBlog ? 'No projects yet' : 'No posts yet'"
+        :description="isProjectBlog ? 'Create your first project for this blog.' : 'Create your first post for this blog.'"
         icon="i-lucide-file-text"
-        action-label="Create Post"
+        :action-label="isProjectBlog ? 'Create Project' : 'Create Post'"
         @action="router.push(`/write?blogId=${blog.id}`)"
       />
     </template>
@@ -111,8 +111,11 @@ const blogFormData = computed(() => {
     slug: blog.value.slug,
     description: blog.value.description,
     icon: blog.value.icon,
+    kind: blog.value.kind,
   }
 })
+
+const isProjectBlog = computed(() => blog.value?.kind === 'Project')
 
 const draftPosts = computed(() =>
   allPosts.value
