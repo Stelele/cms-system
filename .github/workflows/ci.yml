@@ -183,8 +183,9 @@ jobs:
           username: ${{ secrets.DROPLET_USER }}
           key: ${{ secrets.DROPLET_SSH_KEY }}
           script: |
+            set -euo pipefail
             cd /opt/cms
-            
+
             # Stop existing container if running
             sudo docker compose -f docker-compose.yml down
 
@@ -197,7 +198,25 @@ jobs:
             # Wait for container to start
             sleep 10
 
-            # Verify container is running
-            sudo docker ps | grep cms-backend
+            # Verify the API container is actually running. compose names it
+            # cms-api-1 from the service name, not after the image, and `set -e`
+            # is what makes a failed check fail the step rather than pass
+            # silently - previously a grep that matched nothing still exited 0,
+            # so a container that never started reported a successful deploy.
+            sudo docker ps --format '{{.Names}}' | grep -qx cms-api-1
 
-            echo "Deployment complete"
+            # And that it is serving, not merely present. A container can be
+            # running and still crash-looping on a startup guard such as the
+            # CORS allowlist check.
+            for i in $(seq 1 30); do
+              if curl -fsS -o /dev/null http://localhost:8002/public/blogs; then
+                echo "Deployment complete: cms-api-1 is serving /public/blogs"
+                exit 0
+              fi
+              echo "waiting for the API to answer ($i/30)"
+              sleep 2
+            done
+
+            echo "Deployment failed: cms-api-1 never served /public/blogs" >&2
+            sudo docker logs --tail 50 cms-api-1 >&2
+            exit 1
