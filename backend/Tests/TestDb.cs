@@ -45,12 +45,42 @@ public sealed class TestDb : IDisposable
         }
     }
 
-    public Blog SeedBlog(string name, string slug, string? contentType = null)
+    public Blog SeedBlog(string name, string slug, string? contentType = null, BlogKind kind = BlogKind.Standard)
     {
         var blog = Blog.Create(name, slug, $"{name} description", "i-heroicons-book-open", contentType);
+        blog.Kind = kind;
         Db.Blogs.Add(blog);
         Db.SaveChanges();
         return blog;
+    }
+
+    public Project SeedProject(
+        Blog blog,
+        string title,
+        string slug,
+        ProjectCategory category,
+        int year = 2024,
+        List<string>? stack = null,
+        string? canonicalUrl = null,
+        DateTimeOffset? lastPushedAt = null,
+        bool isPublished = true)
+    {
+        var project = Project.Create(
+            blog.Id, title, slug, $"# {title}\n\nBody text.", $"{title} brief", category, year);
+        project.Stack = stack ?? [];
+        project.CanonicalUrl = canonicalUrl;
+        project.LastPushedAt = lastPushedAt;
+
+        if (isPublished)
+        {
+            project.Publish();
+            if (lastPushedAt is not null)
+                project.SetPublishedOn(lastPushedAt.Value);
+        }
+
+        Db.Posts.Add(project);
+        Db.SaveChanges();
+        return project;
     }
 
     /// <summary>

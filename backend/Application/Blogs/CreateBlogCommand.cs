@@ -1,4 +1,5 @@
 using Application.Abstractions;
+using Domain.Blogs;
 using FluentValidation;
 
 namespace Application.Blogs;
@@ -7,7 +8,8 @@ public record CreateBlogCommand(
     string Name,
     string Slug,
     string Description,
-    string Icon
+    string Icon,
+    BlogKind Kind = BlogKind.Standard
 ) : ICommand<Guid>;
 
 public sealed class CreateBlogCommandValidator : AbstractValidator<CreateBlogCommand>

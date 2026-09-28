@@ -1,4 +1,5 @@
 using Application.Abstractions;
+using Domain.Blogs;
 using Domain.Posts;
 using Infrastructure.Services;
 using Infrastructure.Models;
@@ -10,11 +11,13 @@ public class CreatePostCommandHandler(CmsDbContext db, FileReferenceService file
 {
     public async Task<Guid> Handle(CreatePostCommand request, CancellationToken cancellationToken)
     {
-        var blogExists = await db.Blogs
-            .AnyAsync(b => b.Id == request.BlogId, cancellationToken);
-
-        if (!blogExists)
+        var blog = await db.Blogs.FirstOrDefaultAsync(b => b.Id == request.BlogId, cancellationToken);
+        if (blog is null)
             throw new KeyNotFoundException($"Blog with ID '{request.BlogId}' not found.");
+
+        if (blog.Kind == BlogKind.Project)
+            throw new InvalidOperationException(
+                $"Blog '{blog.Slug}' holds projects. Use the project endpoints.");
 
         var slugExists = await db.Posts
             .AnyAsync(p => p.BlogId == request.BlogId && p.Slug == request.Slug, cancellationToken);

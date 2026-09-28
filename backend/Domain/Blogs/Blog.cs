@@ -16,6 +16,12 @@ public class Blog : Base
     /// </summary>
     public string? ContentType { get; set; }
 
+    /// <summary>
+    /// Standard holds ordinary posts; Project holds <see cref="Domain.Posts.Project"/>.
+    /// This decides which endpoint family may write into the blog.
+    /// </summary>
+    public BlogKind Kind { get; set; } = BlogKind.Standard;
+
     public List<Post> Posts { get; set; } = [];
 
     public static Blog Create(
