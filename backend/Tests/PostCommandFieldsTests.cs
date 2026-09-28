@@ -1,4 +1,5 @@
 using Application.Posts;
+using System.Text.Json;
 
 namespace Tests;
 
@@ -134,5 +135,87 @@ public class PostCommandFieldsTests
             "general", null, IsPublished: true, PublishedOn: null, CanonicalUrl: null);
 
         Assert.Empty(new UpdatePostCommandValidator().Validate(command).Errors);
+    }
+
+    private static readonly JsonSerializerOptions Web = new(JsonSerializerDefaults.Web);
+
+    private const string CreateWithoutIsPublished =
+        """{"blogId":"11111111-1111-1111-1111-111111111111","title":"T","slug":"t","content":"C","tag":"g","coverImageUrl":null}""";
+
+    private const string CreateComplete =
+        """{"blogId":"11111111-1111-1111-1111-111111111111","title":"T","slug":"t","content":"C","tag":"g","coverImageUrl":null,"isPublished":true}""";
+
+    [Fact]
+    public void CreatePostCommand_MissingIsPublished_Throws()
+    {
+        // Without [JsonRequired] this deserialised to IsPublished=false and
+        // silently created a draft the caller never asked for.
+        var ex = Assert.Throws<JsonException>(
+            () => JsonSerializer.Deserialize<CreatePostCommand>(CreateWithoutIsPublished, Web));
+
+        Assert.Contains("isPublished", ex.Message);
+    }
+
+    [Fact]
+    public void CreatePostCommand_CompletePayload_Deserialises()
+    {
+        var command = JsonSerializer.Deserialize<CreatePostCommand>(CreateComplete, Web);
+
+        Assert.True(command!.IsPublished);
+        Assert.Equal("T", command.Title);
+    }
+
+    [Fact]
+    public void CreatePostCommand_MissingTitle_Throws()
+    {
+        Assert.Throws<JsonException>(() => JsonSerializer.Deserialize<CreatePostCommand>(
+            """{"blogId":"11111111-1111-1111-1111-111111111111","slug":"t","content":"C","tag":"g","coverImageUrl":null,"isPublished":true}""",
+            Web));
+    }
+
+    [Fact]
+    public void CreatePostCommand_MissingCoverImageUrl_Throws()
+    {
+        // coverImageUrl was `required` but nullable: omitting it is an error,
+        // while an explicit null is fine.
+        Assert.Throws<JsonException>(() => JsonSerializer.Deserialize<CreatePostCommand>(
+            """{"blogId":"11111111-1111-1111-1111-111111111111","title":"T","slug":"t","content":"C","tag":"g","isPublished":true}""",
+            Web));
+    }
+
+    [Fact]
+    public void UpdatePostCommand_MissingIsPublished_Throws()
+    {
+        var ex = Assert.Throws<JsonException>(
+            () => JsonSerializer.Deserialize<UpdatePostCommand>(
+                """{"blogId":"11111111-1111-1111-1111-111111111111","id":"22222222-2222-2222-2222-222222222222","title":"T","slug":"t","content":"C","tag":"g","coverImageUrl":null}""",
+                Web));
+
+        Assert.Contains("isPublished", ex.Message);
+    }
+
+    [Fact]
+    public void UpdatePostCommand_CompletePayload_Deserialises()
+    {
+        var command = JsonSerializer.Deserialize<UpdatePostCommand>(
+            """{"blogId":"11111111-1111-1111-1111-111111111111","id":"22222222-2222-2222-2222-222222222222","title":"T","slug":"t","content":"C","tag":"g","coverImageUrl":null,"isPublished":false}""",
+            Web);
+
+        Assert.False(command!.IsPublished);
+        Assert.Equal(Guid.Parse("22222222-2222-2222-2222-222222222222"), command.Id);
+    }
+
+    [Fact]
+    public void PostCommands_OptionalNewFields_MayBeOmitted()
+    {
+        var create = JsonSerializer.Deserialize<CreatePostCommand>(CreateComplete, Web);
+        var update = JsonSerializer.Deserialize<UpdatePostCommand>(
+            """{"blogId":"11111111-1111-1111-1111-111111111111","id":"22222222-2222-2222-2222-222222222222","title":"T","slug":"t","content":"C","tag":"g","coverImageUrl":null,"isPublished":true}""",
+            Web);
+
+        Assert.Null(create!.PublishedOn);
+        Assert.Null(create.CanonicalUrl);
+        Assert.Null(update!.PublishedOn);
+        Assert.Null(update.CanonicalUrl);
     }
 }

@@ -24,6 +24,14 @@ public static class CorsOriginPolicy
             throw new InvalidOperationException(
                 $"{SectionName}:{OriginsKey} contains a blank entry.");
 
+        // Rejected in every environment, not just Production. A wildcard makes
+        // the public endpoints readable by any origin, and no legitimate
+        // configuration needs one - Development supplies localhost:5173 from
+        // its own file.
+        if (origins.Any(o => o.Contains('*')))
+            throw new InvalidOperationException(
+                $"{SectionName}:{OriginsKey} contains a wildcard origin, which is not permitted.");
+
         if (!environment.IsProduction())
             return origins;
 
@@ -31,10 +39,6 @@ public static class CorsOriginPolicy
             throw new InvalidOperationException(
                 $"{SectionName}:{OriginsKey} is empty in Production. Set it with container "
                 + "environment variables, for example Cors__AllowedOrigins__0=https://giftmugweni.com.");
-
-        if (origins.Any(o => o.Contains('*')))
-            throw new InvalidOperationException(
-                $"{SectionName}:{OriginsKey} contains a wildcard origin, which is not permitted in Production.");
 
         return origins;
     }

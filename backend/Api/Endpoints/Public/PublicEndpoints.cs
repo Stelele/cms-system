@@ -13,8 +13,12 @@ public static class PublicEndpoints
     /// <summary>
     /// Anonymous read surface for published content. Every endpoint here returns
     /// a Public* DTO, which structurally cannot carry IsPublished, CreatedOn or
-    /// UpdatedOn, and every underlying query filters IsPublished in its Where
-    /// clause.
+    /// UpdatedOn.
+    ///
+    /// The two post queries filter IsPublished in their Where clause as a
+    /// constant rather than a parameter, so a draft cannot reach an anonymous
+    /// caller without a code change. GetPublicBlogsQuery has no such filter and
+    /// does not need one: Blog has no publish state, so every blog is public.
     /// </summary>
     public static WebApplication MapPublicEndpoints(this WebApplication app)
     {

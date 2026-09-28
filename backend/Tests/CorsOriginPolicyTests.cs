@@ -69,4 +69,30 @@ public class CorsOriginPolicyTests
         Assert.Throws<InvalidOperationException>(
             () => CorsOriginPolicy.Resolve(Config("   "), new FakeEnvironment("Development")));
     }
+
+    [Fact]
+    public void Development_WithWildcard_Throws()
+    {
+        // A wildcard makes the public endpoints readable by any origin, so it is
+        // rejected everywhere, not only in Production.
+        var ex = Assert.Throws<InvalidOperationException>(
+            () => CorsOriginPolicy.Resolve(Config("*"), new FakeEnvironment("Development")));
+
+        Assert.Contains("wildcard", ex.Message);
+    }
+
+    [Fact]
+    public void Staging_WithWildcard_Throws()
+    {
+        Assert.Throws<InvalidOperationException>(
+            () => CorsOriginPolicy.Resolve(Config("*"), new FakeEnvironment("Staging")));
+    }
+
+    [Fact]
+    public void Staging_WithNoOrigins_IsAllowed()
+    {
+        // The empty-list check stays Production-only, so a developer machine
+        // with no configuration still starts.
+        Assert.Empty(CorsOriginPolicy.Resolve(Config(), new FakeEnvironment("Staging")));
+    }
 }

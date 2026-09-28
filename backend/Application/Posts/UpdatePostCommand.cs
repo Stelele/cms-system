@@ -5,15 +5,15 @@ using System.Text.Json.Serialization;
 namespace Application.Posts;
 
 public record UpdatePostCommand(
-    [property: JsonPropertyName("blogId")] Guid BlogId,
-    [property: JsonPropertyName("id")] Guid Id,
-    [property: JsonPropertyName("title")] string Title,
-    [property: JsonPropertyName("slug")] string Slug,
-    [property: JsonPropertyName("content")] string Content,
+    [property: JsonPropertyName("blogId"), JsonRequired] Guid BlogId,
+    [property: JsonPropertyName("id"), JsonRequired] Guid Id,
+    [property: JsonPropertyName("title"), JsonRequired] string Title,
+    [property: JsonPropertyName("slug"), JsonRequired] string Slug,
+    [property: JsonPropertyName("content"), JsonRequired] string Content,
     [property: JsonPropertyName("description")] string? Description,
-    [property: JsonPropertyName("tag")] string Tag,
-    [property: JsonPropertyName("coverImageUrl")] string? CoverImageUrl,
-    [property: JsonPropertyName("isPublished")] bool IsPublished,
+    [property: JsonPropertyName("tag"), JsonRequired] string Tag,
+    [property: JsonPropertyName("coverImageUrl"), JsonRequired] string? CoverImageUrl,
+    [property: JsonPropertyName("isPublished"), JsonRequired] bool IsPublished,
     [property: JsonPropertyName("publishedOn")] DateTimeOffset? PublishedOn = null,
     [property: JsonPropertyName("canonicalUrl")] string? CanonicalUrl = null
 ) : ICommand<bool>;
