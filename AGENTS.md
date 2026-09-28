@@ -215,6 +215,44 @@ public class CreateBlogCommandHandler(CmsDbContext db) : ICommandHandler<CreateB
 ### Backend
 - Configure in `Host` project (database, auth, etc.)
 
+### Backend — required in Production
+
+`CorsOriginPolicy.Resolve` runs at startup and **refuses to boot** rather than
+serving a permissive policy. A Production deploy missing these will crash on
+start, not silently serve every origin.
+
+| Variable | Example | Notes |
+|----------|---------|-------|
+| `Cors__AllowedOrigins__0` | `https://giftmugweni.com` | The public site, which reads published posts without a token |
+| `Cors__AllowedOrigins__1` | `https://stelele.github.io` | The admin UI. It does browser-side writes, so omitting this breaks login |
+
+Array indices continue (`__2`, `__3`, …). Two rules the guard enforces:
+
+- **A wildcard is rejected in every environment**, including Development. No
+  legitimate configuration needs one.
+- **An empty list is rejected only in Production**, so a developer machine with
+  no configuration still starts. Development gets `http://localhost:5173` from
+  `appsettings.Development.json` instead.
+
+A wildcard would let any site on the internet read published content through the
+anonymous endpoints, which is why it is refused outright rather than warned about.
+
+### Running in Production locally
+
+`Host/Properties/launchSettings.json` hard-sets
+`ASPNETCORE_ENVIRONMENT=Development` and **overrides the shell variable**, so:
+
+```bash
+# this silently runs Development
+ASPNETCORE_ENVIRONMENT=Production dotnet run --project Host/Host.csproj
+
+# this is correct
+ASPNETCORE_ENVIRONMENT=Production dotnet run --project Host/Host.csproj --no-launch-profile
+```
+
+Without `--no-launch-profile` the environment defaults to Production whenever the
+launch profile is bypassed, and the CORS guard fires on an empty allowlist.
+
 ## Key Libraries
 
 | Frontend | Backend |

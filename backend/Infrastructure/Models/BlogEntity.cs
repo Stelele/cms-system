@@ -25,6 +25,10 @@ public class BlogEntity : IEntityTypeConfiguration<Blog>
         builder.Property(b => b.Description)
             .IsRequired();
 
+        builder.Property(b => b.ContentType)
+            .IsRequired(false)
+            .HasMaxLength(16);
+
         builder.Property(b => b.CreatedOn)
             .IsRequired();
 

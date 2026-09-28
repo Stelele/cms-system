@@ -2,6 +2,7 @@ using Api.Authentication;
 using Api.Endpoints.Blogs;
 using Api.Endpoints.Files;
 using Api.Endpoints.Posts;
+using Api.Endpoints.Public;
 using Api.Endpoints.Summarize;
 using Auth0.AspNetCore.Authentication.Api;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -16,7 +17,7 @@ public static class DependancyInjection
 {
     public static WebApplication MapApi(this WebApplication app)
     {
-        app.UseCors("AllowFrontend");
+        app.UseCors(CorsOriginPolicy.PolicyName);
 
         app.UseAuthentication();
         app.UseAuthorization();
@@ -26,7 +27,8 @@ public static class DependancyInjection
             .MapPostsEndpoints()
             .MapTagsEndpoints()
             .MapFileEndpoints()
-            .MapSummarizeEndpoints();
+            .MapSummarizeEndpoints()
+            .MapPublicEndpoints();
 
         return app;
     }
@@ -93,12 +95,17 @@ public static class DependancyInjection
 
         builder.Services.AddTransient<IAuthorizationHandler, HasScopeHandler>();
 
+        var allowedOrigins = CorsOriginPolicy.Resolve(
+            builder.Configuration, builder.Environment);
+
         builder.Services.AddCors(options =>
         {
-            options.AddPolicy("AllowFrontend", policy =>
+            options.AddPolicy(CorsOriginPolicy.PolicyName, policy =>
             {
+                if (allowedOrigins.Length > 0)
+                    policy.WithOrigins(allowedOrigins);
+
                 policy
-                    .WithOrigins("*")
                     .AllowAnyHeader()
                     .AllowAnyMethod();
             });

@@ -29,10 +29,18 @@ public class CreatePostCommandHandler(CmsDbContext db, FileReferenceService file
             request.Content,
             request.Description,
             request.Tag,
-            request.CoverImageUrl);
+            request.CoverImageUrl,
+            request.CanonicalUrl);
 
         if (request.IsPublished)
+        {
             post.Publish();
+
+            // Publish() stamps UtcNow; an explicit date is an archive import
+            // correcting it, so it has to win.
+            if (request.PublishedOn.HasValue)
+                post.SetPublishedOn(request.PublishedOn.Value);
+        }
 
         await db.Posts.AddAsync(post, cancellationToken);
         await db.SaveChangesAsync(cancellationToken);
