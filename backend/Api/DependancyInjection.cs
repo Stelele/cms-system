@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
+using System.Text.Json.Serialization;
 using Microsoft.Extensions.Logging;
 
 namespace Api;
@@ -96,6 +97,13 @@ public static class DependancyInjection
             .AddPermission(Permissions.SummarizeArticles, issuer);
 
         builder.Services.AddTransient<IAuthorizationHandler, HasScopeHandler>();
+
+        // Enums cross the wire by name, not by ordinal. Without this,
+        // POST /projects needs "category": 1, and Blog.Kind needs "kind": 1 -
+        // an ordinal that silently re-points at a different value whenever the
+        // enum is reordered, and is unreadable to anyone writing a client.
+        builder.Services.ConfigureHttpJsonOptions(options =>
+            options.SerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
         var allowedOrigins = CorsOriginPolicy.Resolve(
             builder.Configuration, builder.Environment);

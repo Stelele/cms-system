@@ -1,0 +1,952 @@
+[
+  {
+    "slug": "awesome-butchery",
+    "repoName": "awesome-butchery",
+    "title": "awesome-butchery",
+    "category": "BusinessCase",
+    "year": 2026,
+    "stack": [
+      "Python"
+    ],
+    "lastPushedAt": "2026-09-19T10:25:21Z",
+    "links": [
+      {
+        "label": "Repository",
+        "url": "https://github.com/Stelele/awesome-butchery"
+      }
+    ],
+    "githubDescription": ""
+  },
+  {
+    "slug": "awesome-dashboard-scripts",
+    "repoName": "awesome_dashboard_scripts",
+    "title": "awesome_dashboard_scripts",
+    "category": "BusinessCase",
+    "year": 2026,
+    "stack": [
+      "Python"
+    ],
+    "lastPushedAt": "2026-09-19T10:25:25Z",
+    "links": [
+      {
+        "label": "Repository",
+        "url": "https://github.com/Stelele/awesome_dashboard_scripts"
+      }
+    ],
+    "githubDescription": "The scripts needed to make the awesome dashboard work like we know and love"
+  },
+  {
+    "slug": "awesome-restaurant",
+    "repoName": "awesome_restaurant",
+    "title": "awesome_restaurant",
+    "category": "BusinessCase",
+    "year": 2026,
+    "stack": [
+      "JavaScript"
+    ],
+    "lastPushedAt": "2026-09-19T10:25:29Z",
+    "links": [
+      {
+        "label": "Repository",
+        "url": "https://github.com/Stelele/awesome_restaurant"
+      }
+    ],
+    "githubDescription": "Because I never learn"
+  },
+  {
+    "slug": "background-changer",
+    "repoName": "background-changer",
+    "title": "background-changer",
+    "category": "BusinessCase",
+    "year": 2026,
+    "stack": [
+      "Dart"
+    ],
+    "lastPushedAt": "2026-09-11T04:49:08Z",
+    "links": [
+      {
+        "label": "Repository",
+        "url": "https://github.com/Stelele/background-changer"
+      }
+    ],
+    "githubDescription": "Got Tired of all the wallpaper apps with ads no functionality. Figured might as well vibe code my own. Can't be worse than the junk on the app stores"
+  },
+  {
+    "slug": "class-booking-system",
+    "repoName": "class-booking-system",
+    "title": "class-booking-system",
+    "category": "BusinessCase",
+    "year": 2026,
+    "stack": [
+      "C#"
+    ],
+    "lastPushedAt": "2026-09-28T17:06:33Z",
+    "links": [
+      {
+        "label": "Repository",
+        "url": "https://github.com/Stelele/class-booking-system"
+      }
+    ],
+    "githubDescription": ""
+  },
+  {
+    "slug": "cms-system",
+    "repoName": "cms-system",
+    "title": "cms-system",
+    "category": "BusinessCase",
+    "year": 2026,
+    "stack": [
+      "C#"
+    ],
+    "lastPushedAt": "2026-09-28T17:12:24Z",
+    "links": [
+      {
+        "label": "Repository",
+        "url": "https://github.com/Stelele/cms-system"
+      }
+    ],
+    "githubDescription": "I thought a content management system would be fun"
+  },
+  {
+    "slug": "document-convertor",
+    "repoName": "document-convertor",
+    "title": "document-convertor",
+    "category": "BusinessCase",
+    "year": 2023,
+    "stack": [
+      "JavaScript"
+    ],
+    "lastPushedAt": "2023-02-03T13:20:24Z",
+    "links": [
+      {
+        "label": "Repository",
+        "url": "https://github.com/Stelele/document-convertor"
+      }
+    ],
+    "githubDescription": ""
+  },
+  {
+    "slug": "erpnext-cashbook-reconciliation",
+    "repoName": "erpnext-cashbook-reconciliation",
+    "title": "erpnext-cashbook-reconciliation",
+    "category": "BusinessCase",
+    "year": 2026,
+    "stack": [
+      "JavaScript"
+    ],
+    "lastPushedAt": "2026-09-19T10:25:13Z",
+    "links": [
+      {
+        "label": "Repository",
+        "url": "https://github.com/Stelele/erpnext-cashbook-reconciliation"
+      }
+    ],
+    "githubDescription": "A simple script that I use to enter my transactions in the cashbook app and pass it as a draft journal entry into my erpnext instance"
+  },
+  {
+    "slug": "erpnext-dashboard",
+    "repoName": "erpnext-dashboard",
+    "title": "erpnext-dashboard",
+    "category": "BusinessCase",
+    "year": 2025,
+    "stack": [
+      "C#"
+    ],
+    "lastPushedAt": "2026-08-18T20:00:06Z",
+    "links": [
+      {
+        "label": "Repository",
+        "url": "https://github.com/Stelele/erpnext-dashboard"
+      }
+    ],
+    "githubDescription": "A dashboard to help make the erpnext Point of sale system more understandable"
+  },
+  {
+    "slug": "erpnext-market-survey",
+    "repoName": "erpnext-market-survey",
+    "title": "erpnext-market-survey",
+    "category": "BusinessCase",
+    "year": 2026,
+    "stack": [
+      "Python"
+    ],
+    "lastPushedAt": "2026-04-01T17:19:53Z",
+    "links": [
+      {
+        "label": "Repository",
+        "url": "https://github.com/Stelele/erpnext-market-survey"
+      }
+    ],
+    "githubDescription": "fun experiment to see how far I can push researching with llm models"
+  },
+  {
+    "slug": "erpnext-point-of-sale-expenses",
+    "repoName": "erpnext-point-of-sale-expenses",
+    "title": "erpnext-point-of-sale-expenses",
+    "category": "BusinessCase",
+    "year": 2026,
+    "stack": [
+      "JavaScript"
+    ],
+    "lastPushedAt": "2026-09-19T10:25:37Z",
+    "links": [
+      {
+        "label": "Repository",
+        "url": "https://github.com/Stelele/erpnext-point-of-sale-expenses"
+      }
+    ],
+    "githubDescription": "A simple app for the cashier to easily enter things like expenses from the point of sale terminal"
+  },
+  {
+    "slug": "firabasetryout",
+    "repoName": "FirabaseTryout",
+    "title": "FirabaseTryout",
+    "category": "BusinessCase",
+    "year": 2019,
+    "stack": [
+      "Java"
+    ],
+    "lastPushedAt": "2019-10-13T07:06:49Z",
+    "links": [
+      {
+        "label": "Repository",
+        "url": "https://github.com/Stelele/FirabaseTryout"
+      }
+    ],
+    "githubDescription": "With Database"
+  },
+  {
+    "slug": "firewallhackathon",
+    "repoName": "FirewallHackathon",
+    "title": "FirewallHackathon",
+    "category": "BusinessCase",
+    "year": 2019,
+    "stack": [
+      "Java"
+    ],
+    "lastPushedAt": "2019-10-12T13:04:22Z",
+    "links": [
+      {
+        "label": "Repository",
+        "url": "https://github.com/Stelele/FirewallHackathon"
+      }
+    ],
+    "githubDescription": "Android app for Team Firewall for Allan Gray Hackathon"
+  },
+  {
+    "slug": "frappe-pesepay",
+    "repoName": "frappe-pesepay",
+    "title": "frappe-pesepay",
+    "category": "BusinessCase",
+    "year": 2026,
+    "stack": [
+      "Python"
+    ],
+    "lastPushedAt": "2026-09-19T10:25:33Z",
+    "links": [
+      {
+        "label": "Repository",
+        "url": "https://github.com/Stelele/frappe-pesepay"
+      }
+    ],
+    "githubDescription": "Zimbabwe Payment Gateway Provider that gives access to PesePay allowing using Ecocash, InnBucks and Omari"
+  },
+  {
+    "slug": "frappe-radiusdesk",
+    "repoName": "frappe-radiusdesk",
+    "title": "frappe-radiusdesk",
+    "category": "BusinessCase",
+    "year": 2026,
+    "stack": [
+      "Python"
+    ],
+    "lastPushedAt": "2026-09-19T10:25:41Z",
+    "links": [
+      {
+        "label": "Repository",
+        "url": "https://github.com/Stelele/frappe-radiusdesk"
+      }
+    ],
+    "githubDescription": "simple app to generate internet vouchers to via radiusdesk api"
+  },
+  {
+    "slug": "frappe-self-host",
+    "repoName": "frappe-self-host",
+    "title": "frappe-self-host",
+    "category": "BusinessCase",
+    "year": 2026,
+    "stack": [
+      "C#"
+    ],
+    "lastPushedAt": "2026-09-10T02:46:04Z",
+    "links": [
+      {
+        "label": "Repository",
+        "url": "https://github.com/Stelele/frappe-self-host"
+      }
+    ],
+    "githubDescription": "Scripts to allow easy deployment of frappe apps in a self hosted maner"
+  },
+  {
+    "slug": "multi-agent-opencode-swarm",
+    "repoName": "multi-agent-opencode-swarm",
+    "title": "multi-agent-opencode-swarm",
+    "category": "BusinessCase",
+    "year": 2026,
+    "stack": [],
+    "lastPushedAt": "2026-07-10T18:59:28Z",
+    "links": [
+      {
+        "label": "Repository",
+        "url": "https://github.com/Stelele/multi-agent-opencode-swarm"
+      }
+    ],
+    "githubDescription": "Experimenting with multi agent workflows with opencode as the harness"
+  },
+  {
+    "slug": "papi-iot",
+    "repoName": "papi_iot",
+    "title": "papi_iot",
+    "category": "BusinessCase",
+    "year": 2020,
+    "stack": [
+      "Python"
+    ],
+    "lastPushedAt": "2024-12-07T08:39:29Z",
+    "links": [
+      {
+        "label": "Repository",
+        "url": "https://github.com/Stelele/papi_iot"
+      }
+    ],
+    "githubDescription": ""
+  },
+  {
+    "slug": "pause-audio",
+    "repoName": "Pause-Audio",
+    "title": "Pause-Audio",
+    "category": "BusinessCase",
+    "year": 2025,
+    "stack": [
+      "C#"
+    ],
+    "lastPushedAt": "2025-12-10T19:21:32Z",
+    "links": [
+      {
+        "label": "Repository",
+        "url": "https://github.com/Stelele/Pause-Audio"
+      }
+    ],
+    "githubDescription": "A simple program to detect all programs playing audio and mutes them."
+  },
+  {
+    "slug": "personal-site",
+    "repoName": "personal-site",
+    "title": "personal-site",
+    "category": "BusinessCase",
+    "year": 2024,
+    "stack": [
+      "TypeScript"
+    ],
+    "lastPushedAt": "2026-08-04T18:45:41Z",
+    "links": [
+      {
+        "label": "Repository",
+        "url": "https://github.com/Stelele/personal-site"
+      },
+      {
+        "label": "Website",
+        "url": "https://giftmugweni.com"
+      }
+    ],
+    "githubDescription": ""
+  },
+  {
+    "slug": "pesepay",
+    "repoName": "pesepay",
+    "title": "pesepay",
+    "category": "BusinessCase",
+    "year": 2026,
+    "stack": [
+      "C#"
+    ],
+    "lastPushedAt": "2026-08-08T02:37:36Z",
+    "links": [
+      {
+        "label": "Repository",
+        "url": "https://github.com/Stelele/pesepay"
+      }
+    ],
+    "githubDescription": ""
+  },
+  {
+    "slug": "pets",
+    "repoName": "pets",
+    "title": "pets",
+    "category": "BusinessCase",
+    "year": 2025,
+    "stack": [
+      "Go"
+    ],
+    "lastPushedAt": "2025-02-24T21:49:17Z",
+    "links": [
+      {
+        "label": "Repository",
+        "url": "https://github.com/Stelele/pets"
+      }
+    ],
+    "githubDescription": ""
+  },
+  {
+    "slug": "raspberrypi-infragram-camera",
+    "repoName": "raspberrypi-infragram-camera",
+    "title": "raspberrypi-infragram-camera",
+    "category": "BusinessCase",
+    "year": 2021,
+    "stack": [
+      "CSS"
+    ],
+    "lastPushedAt": "2021-11-06T23:15:12Z",
+    "links": [
+      {
+        "label": "Repository",
+        "url": "https://github.com/Stelele/raspberrypi-infragram-camera"
+      }
+    ],
+    "githubDescription": "Raspberry Pi Based Infragram Camera for Agricultural Applications"
+  },
+  {
+    "slug": "stock-reconciliation",
+    "repoName": "stock-reconciliation",
+    "title": "stock-reconciliation",
+    "category": "BusinessCase",
+    "year": 2025,
+    "stack": [
+      "JavaScript"
+    ],
+    "lastPushedAt": "2026-09-19T10:25:17Z",
+    "links": [
+      {
+        "label": "Repository",
+        "url": "https://github.com/Stelele/stock-reconciliation"
+      }
+    ],
+    "githubDescription": "This project contains a simple script designed to help reconcile stock values between your ERPNext system and your physical inventory. Its main purpose is to identify discrepancies in product sales that were not recorded through the Point of Sale (POS) module."
+  },
+  {
+    "slug": "voice-generation-site",
+    "repoName": "voice-generation-site",
+    "title": "voice-generation-site",
+    "category": "BusinessCase",
+    "year": 2025,
+    "stack": [
+      "Vue"
+    ],
+    "lastPushedAt": "2025-05-01T08:10:01Z",
+    "links": [
+      {
+        "label": "Repository",
+        "url": "https://github.com/Stelele/voice-generation-site"
+      }
+    ],
+    "githubDescription": "A voice generation website making use of Microsoft Edge's Read Aloud API"
+  },
+  {
+    "slug": "whatsapp-church-bus-bookings",
+    "repoName": "whatsapp-church-bus-bookings",
+    "title": "whatsapp-church-bus-bookings",
+    "category": "BusinessCase",
+    "year": 2024,
+    "stack": [],
+    "lastPushedAt": "2024-04-01T10:34:45Z",
+    "links": [
+      {
+        "label": "Repository",
+        "url": "https://github.com/Stelele/whatsapp-church-bus-bookings"
+      }
+    ],
+    "githubDescription": "A whatsapp bot that collects booking information about members that want to be on the church bus for the upcoming service."
+  },
+  {
+    "slug": "youtube-transcript-downloder-scripts",
+    "repoName": "youtube-transcript-downloder-scripts",
+    "title": "youtube-transcript-downloder-scripts",
+    "category": "BusinessCase",
+    "year": 2026,
+    "stack": [
+      "PowerShell"
+    ],
+    "lastPushedAt": "2026-03-29T13:36:48Z",
+    "links": [
+      {
+        "label": "Repository",
+        "url": "https://github.com/Stelele/youtube-transcript-downloder-scripts"
+      }
+    ],
+    "githubDescription": "I wanted all the transcripts for a youtube channel. Turns out youtube is kinda annoying on that front"
+  },
+  {
+    "slug": "1-bit-jam-4",
+    "repoName": "1-bit-jam-4",
+    "title": "1-bit-jam-4",
+    "category": "GameDev",
+    "year": 2024,
+    "stack": [
+      "TypeScript"
+    ],
+    "lastPushedAt": "2024-10-03T19:13:41Z",
+    "links": [
+      {
+        "label": "Repository",
+        "url": "https://github.com/Stelele/1-bit-jam-4"
+      }
+    ],
+    "githubDescription": "My game submission for the itch.io 1-BIT Jam #4 Hosted from September 26th 2024to October 11th 2024"
+  },
+  {
+    "slug": "breakout",
+    "repoName": "breakout",
+    "title": "breakout",
+    "category": "GameDev",
+    "year": 2023,
+    "stack": [],
+    "lastPushedAt": "2023-10-23T15:46:05Z",
+    "links": [
+      {
+        "label": "Repository",
+        "url": "https://github.com/Stelele/breakout"
+      }
+    ],
+    "githubDescription": "a breakout clone"
+  },
+  {
+    "slug": "combat-gods",
+    "repoName": "combat-gods",
+    "title": "combat-gods",
+    "category": "GameDev",
+    "year": 2024,
+    "stack": [
+      "TypeScript"
+    ],
+    "lastPushedAt": "2024-12-08T00:04:45Z",
+    "links": [
+      {
+        "label": "Repository",
+        "url": "https://github.com/Stelele/combat-gods"
+      }
+    ],
+    "githubDescription": ""
+  },
+  {
+    "slug": "flappy-bird",
+    "repoName": "flappy-bird",
+    "title": "flappy-bird",
+    "category": "GameDev",
+    "year": 2023,
+    "stack": [
+      "Lua"
+    ],
+    "lastPushedAt": "2023-10-22T11:38:54Z",
+    "links": [
+      {
+        "label": "Repository",
+        "url": "https://github.com/Stelele/flappy-bird"
+      }
+    ],
+    "githubDescription": "a recreation of flappy bird"
+  },
+  {
+    "slug": "fountain-of-life",
+    "repoName": "fountain-of-life",
+    "title": "fountain-of-life",
+    "category": "GameDev",
+    "year": 2026,
+    "stack": [
+      "Vue"
+    ],
+    "lastPushedAt": "2026-08-16T13:51:45Z",
+    "links": [
+      {
+        "label": "Repository",
+        "url": "https://github.com/Stelele/fountain-of-life"
+      }
+    ],
+    "githubDescription": "The fountain of life website"
+  },
+  {
+    "slug": "gameboy-emulator",
+    "repoName": "gameboy-emulator",
+    "title": "gameboy-emulator",
+    "category": "GameDev",
+    "year": 2025,
+    "stack": [],
+    "lastPushedAt": "2025-06-26T21:04:06Z",
+    "links": [
+      {
+        "label": "Repository",
+        "url": "https://github.com/Stelele/gameboy-emulator"
+      }
+    ],
+    "githubDescription": "My poor attempt at making a gameboy emulator"
+  },
+  {
+    "slug": "godot-pong",
+    "repoName": "godot-pong",
+    "title": "godot-pong",
+    "category": "GameDev",
+    "year": 2024,
+    "stack": [
+      "GDScript"
+    ],
+    "lastPushedAt": "2024-11-03T21:16:03Z",
+    "links": [
+      {
+        "label": "Repository",
+        "url": "https://github.com/Stelele/godot-pong"
+      }
+    ],
+    "githubDescription": ""
+  },
+  {
+    "slug": "handmade-combat-gods",
+    "repoName": "handmade-combat-gods",
+    "title": "handmade-combat-gods",
+    "category": "GameDev",
+    "year": 2024,
+    "stack": [
+      "TypeScript"
+    ],
+    "lastPushedAt": "2024-12-13T19:54:18Z",
+    "links": [
+      {
+        "label": "Repository",
+        "url": "https://github.com/Stelele/handmade-combat-gods"
+      }
+    ],
+    "githubDescription": "Its combat gods but made from scratch"
+  },
+  {
+    "slug": "js-ping-pong",
+    "repoName": "js-ping-pong",
+    "title": "js-ping-pong",
+    "category": "GameDev",
+    "year": 2024,
+    "stack": [
+      "JavaScript"
+    ],
+    "lastPushedAt": "2024-02-07T17:46:51Z",
+    "links": [
+      {
+        "label": "Repository",
+        "url": "https://github.com/Stelele/js-ping-pong"
+      }
+    ],
+    "githubDescription": ""
+  },
+  {
+    "slug": "ping-pong",
+    "repoName": "ping-pong",
+    "title": "ping-pong",
+    "category": "GameDev",
+    "year": 2023,
+    "stack": [
+      "Lua"
+    ],
+    "lastPushedAt": "2023-10-15T21:48:11Z",
+    "links": [
+      {
+        "label": "Repository",
+        "url": "https://github.com/Stelele/ping-pong"
+      }
+    ],
+    "githubDescription": "A recreation of the classic ping pong game"
+  },
+  {
+    "slug": "pixijs-breakout",
+    "repoName": "pixijs-breakout",
+    "title": "pixijs-breakout",
+    "category": "GameDev",
+    "year": 2024,
+    "stack": [
+      "TypeScript"
+    ],
+    "lastPushedAt": "2024-05-23T22:12:58Z",
+    "links": [
+      {
+        "label": "Repository",
+        "url": "https://github.com/Stelele/pixijs-breakout"
+      }
+    ],
+    "githubDescription": ""
+  },
+  {
+    "slug": "pixijs-flappy-bird",
+    "repoName": "pixijs-flappy-bird",
+    "title": "pixijs-flappy-bird",
+    "category": "GameDev",
+    "year": 2024,
+    "stack": [
+      "TypeScript"
+    ],
+    "lastPushedAt": "2024-05-18T16:16:37Z",
+    "links": [
+      {
+        "label": "Repository",
+        "url": "https://github.com/Stelele/pixijs-flappy-bird"
+      }
+    ],
+    "githubDescription": ""
+  },
+  {
+    "slug": "pixijs-games-template",
+    "repoName": "pixijs-games-template",
+    "title": "pixijs-games-template",
+    "category": "GameDev",
+    "year": 2024,
+    "stack": [
+      "TypeScript"
+    ],
+    "lastPushedAt": "2024-05-20T18:29:20Z",
+    "links": [
+      {
+        "label": "Repository",
+        "url": "https://github.com/Stelele/pixijs-games-template"
+      }
+    ],
+    "githubDescription": ""
+  },
+  {
+    "slug": "pixijs-pong",
+    "repoName": "pixijs-pong",
+    "title": "pixijs-pong",
+    "category": "GameDev",
+    "year": 2024,
+    "stack": [
+      "TypeScript"
+    ],
+    "lastPushedAt": "2024-05-01T11:23:46Z",
+    "links": [
+      {
+        "label": "Repository",
+        "url": "https://github.com/Stelele/pixijs-pong"
+      }
+    ],
+    "githubDescription": ""
+  },
+  {
+    "slug": "raylib-playground",
+    "repoName": "raylib-playground",
+    "title": "raylib-playground",
+    "category": "GameDev",
+    "year": 2025,
+    "stack": [
+      "Go"
+    ],
+    "lastPushedAt": "2025-03-08T17:55:44Z",
+    "links": [
+      {
+        "label": "Repository",
+        "url": "https://github.com/Stelele/raylib-playground"
+      }
+    ],
+    "githubDescription": "Just random stuff I'm making in raylib"
+  },
+  {
+    "slug": "stick-legends",
+    "repoName": "stick-legends",
+    "title": "stick-legends",
+    "category": "GameDev",
+    "year": 2025,
+    "stack": [
+      "TypeScript"
+    ],
+    "lastPushedAt": "2025-10-30T21:15:24Z",
+    "links": [
+      {
+        "label": "Repository",
+        "url": "https://github.com/Stelele/stick-legends"
+      }
+    ],
+    "githubDescription": "will this be the game I finish"
+  },
+  {
+    "slug": "web-game-engine",
+    "repoName": "web-game-engine",
+    "title": "web-game-engine",
+    "category": "GameDev",
+    "year": 2024,
+    "stack": [
+      "TypeScript"
+    ],
+    "lastPushedAt": "2024-10-28T00:24:42Z",
+    "links": [
+      {
+        "label": "Repository",
+        "url": "https://github.com/Stelele/web-game-engine"
+      }
+    ],
+    "githubDescription": ""
+  },
+  {
+    "slug": "article-11-code",
+    "repoName": "article-11-code",
+    "title": "article-11-code",
+    "category": "Graphics",
+    "year": 2024,
+    "stack": [
+      "TypeScript"
+    ],
+    "lastPushedAt": "2024-12-15T14:41:13Z",
+    "links": [
+      {
+        "label": "Repository",
+        "url": "https://github.com/Stelele/article-11-code"
+      }
+    ],
+    "githubDescription": "A simple project showing you how to play with the fragment shader writtern in WGSL"
+  },
+  {
+    "slug": "blog-webgpu-hello-world",
+    "repoName": "blog-webgpu-hello-world",
+    "title": "blog-webgpu-hello-world",
+    "category": "Graphics",
+    "year": 2024,
+    "stack": [
+      "JavaScript"
+    ],
+    "lastPushedAt": "2024-06-22T17:38:39Z",
+    "links": [
+      {
+        "label": "Repository",
+        "url": "https://github.com/Stelele/blog-webgpu-hello-world"
+      }
+    ],
+    "githubDescription": "A hello world example showing you a very very basic example of drawing a triangle using WebGPU"
+  },
+  {
+    "slug": "images-to-spritesheet",
+    "repoName": "images-to-spritesheet",
+    "title": "images-to-spritesheet",
+    "category": "Graphics",
+    "year": 2024,
+    "stack": [
+      "TypeScript"
+    ],
+    "lastPushedAt": "2024-11-26T20:54:23Z",
+    "links": [
+      {
+        "label": "Repository",
+        "url": "https://github.com/Stelele/images-to-spritesheet"
+      }
+    ],
+    "githubDescription": "A simple desktop application to covert a bunch of images into a single spritesheet image"
+  },
+  {
+    "slug": "learn-pixi-js",
+    "repoName": "learn-pixi-js",
+    "title": "learn-pixi-js",
+    "category": "Graphics",
+    "year": 2024,
+    "stack": [
+      "JavaScript"
+    ],
+    "lastPushedAt": "2024-04-17T19:06:54Z",
+    "links": [
+      {
+        "label": "Repository",
+        "url": "https://github.com/Stelele/learn-pixi-js"
+      }
+    ],
+    "githubDescription": ""
+  },
+  {
+    "slug": "manim-animations",
+    "repoName": "manim-animations",
+    "title": "manim-animations",
+    "category": "Graphics",
+    "year": 2025,
+    "stack": [
+      "Python"
+    ],
+    "lastPushedAt": "2025-04-02T05:30:58Z",
+    "links": [
+      {
+        "label": "Repository",
+        "url": "https://github.com/Stelele/manim-animations"
+      }
+    ],
+    "githubDescription": "Storing all my manim animations"
+  },
+  {
+    "slug": "shader-land",
+    "repoName": "shader-land",
+    "title": "shader-land",
+    "category": "Graphics",
+    "year": 2024,
+    "stack": [
+      "Vue"
+    ],
+    "lastPushedAt": "2025-02-08T21:25:01Z",
+    "links": [
+      {
+        "label": "Repository",
+        "url": "https://github.com/Stelele/shader-land"
+      }
+    ],
+    "githubDescription": "A shader toy clone using WebGPU"
+  },
+  {
+    "slug": "web-gpu-first-app",
+    "repoName": "web-gpu-first-app",
+    "title": "web-gpu-first-app",
+    "category": "Graphics",
+    "year": 2024,
+    "stack": [
+      "TypeScript"
+    ],
+    "lastPushedAt": "2024-05-25T19:14:21Z",
+    "links": [
+      {
+        "label": "Repository",
+        "url": "https://github.com/Stelele/web-gpu-first-app"
+      }
+    ],
+    "githubDescription": "messing around with web gpu for the first time"
+  },
+  {
+    "slug": "webgpu-shader-art",
+    "repoName": "webgpu-shader-art",
+    "title": "webgpu-shader-art",
+    "category": "Graphics",
+    "year": 2024,
+    "stack": [
+      "TypeScript"
+    ],
+    "lastPushedAt": "2024-08-23T20:20:34Z",
+    "links": [
+      {
+        "label": "Repository",
+        "url": "https://github.com/Stelele/webgpu-shader-art"
+      }
+    ],
+    "githubDescription": ""
+  },
+  {
+    "slug": "webgpu-template",
+    "repoName": "webgpu-template",
+    "title": "webgpu-template",
+    "category": "Graphics",
+    "year": 2024,
+    "stack": [
+      "TypeScript"
+    ],
+    "lastPushedAt": "2024-05-25T21:22:14Z",
+    "links": [
+      {
+        "label": "Repository",
+        "url": "https://github.com/Stelele/webgpu-template"
+      }
+    ],
+    "githubDescription": "A basic setup to allow you to run a rendering job for web gpu"
+  }
+]
