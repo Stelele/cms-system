@@ -1,4 +1,6 @@
 using Application.Abstractions;
+using Domain.Blogs;
+using Domain.Posts;
 using Infrastructure.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,6 +18,12 @@ public class UpdateBlogCommandHandler(CmsDbContext db) : ICommandHandler<UpdateB
         blog.Name = request.Name;
         blog.Description = request.Description;
         blog.Icon = request.Icon;
+
+        if (request.Kind == BlogKind.Project && !ProjectBlogs.IsProjectSlug(blog.Slug))
+            throw new InvalidOperationException(
+                $"A project blog must use one of: {string.Join(", ", ProjectBlogs.All.Select(d => d.Slug))}.");
+
+        blog.Kind = request.Kind;
         blog.UpdatedOn = DateTimeOffset.UtcNow;
 
         await db.SaveChangesAsync(cancellationToken);
