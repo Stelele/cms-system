@@ -1,4 +1,5 @@
 using Application.Abstractions;
+using Domain.Blogs;
 using Infrastructure.Models;
 using Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +14,14 @@ public class UpdatePostCommandHandler(CmsDbContext db, FileReferenceService file
             .FirstOrDefaultAsync(p => p.BlogId == request.BlogId && p.Id == request.Id, cancellationToken);
 
         if (post == null) return false;
+
+        var blog = await db.Blogs.FirstOrDefaultAsync(b => b.Id == request.BlogId, cancellationToken);
+        if (blog is null)
+            throw new KeyNotFoundException($"Blog with ID '{request.BlogId}' not found.");
+
+        if (blog.Kind == BlogKind.Project)
+            throw new InvalidOperationException(
+                $"Blog '{blog.Slug}' holds projects. Use the project endpoints.");
 
         var slugExists = await db.Posts
             .AnyAsync(p => p.BlogId == request.BlogId && p.Slug == request.Slug && p.Id != request.Id, cancellationToken);
