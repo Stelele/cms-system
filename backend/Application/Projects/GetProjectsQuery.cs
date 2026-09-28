@@ -15,9 +15,11 @@ public class GetProjectsQueryHandler(CmsDbContext db)
         GetProjectsQuery request,
         CancellationToken cancellationToken)
     {
-        // IsPublished is a constant, not a parameter, so a caller cannot opt out
-        // of it. OfType<Project> is what excludes ordinary posts.
-        var query = db.Posts.OfType<Project>().Where(p => p.IsPublished);
+        // No IsPublished filter: this is the authenticated read, and the admin
+        // UI has to be able to list and edit drafts. The published-only guarantee
+        // belongs to GetPublicProjectsQuery, which is a separate query precisely
+        // so that loosening this one cannot weaken the public route.
+        var query = db.Posts.OfType<Project>();
 
         if (request.Category is { } category)
             query = query.Where(p => p.Category == category);

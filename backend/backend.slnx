@@ -4,6 +4,7 @@
   <Project Path="Domain/Domain.csproj" />
   <Project Path="Host/Host.csproj" />
   <Project Path="Infrastructure/Infrastructure.csproj" />
+  <Project Path="Seeder/Seeder.csproj" />
   <Project Path="Shared/Shared.csproj" />
   <Project Path="Tests/Tests.csproj" />
 </Solution>

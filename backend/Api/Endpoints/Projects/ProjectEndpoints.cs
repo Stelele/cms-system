@@ -97,7 +97,7 @@ public static class ProjectEndpoints
             var filter = ParseCategory(category, out var error);
             return error is not null
                 ? Results.BadRequest(error)
-                : Results.Ok(await mediator.Send(new GetProjectsQuery(filter)));
+                : Results.Ok(await mediator.Send(new GetPublicProjectsQuery(filter)));
         })
         .WithName("GetPublicProjects")
         .WithDisplayName("GetPublicProjects")
@@ -108,7 +108,7 @@ public static class ProjectEndpoints
 
         app.MapGet("/public/projects/{slug}", async (string slug, ISender mediator) =>
         {
-            var project = await mediator.Send(new GetProjectBySlugQuery(slug));
+            var project = await mediator.Send(new GetPublicProjectBySlugQuery(slug));
             return project is not null ? Results.Ok(project) : Results.NotFound();
         })
         .WithName("GetPublicProjectBySlug")
