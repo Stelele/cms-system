@@ -66,4 +66,39 @@ public class ProjectTests
     {
         Assert.True(typeof(Post).IsAssignableFrom(typeof(Project)));
     }
+
+    [Fact]
+    public void Project_PersistsItsTypedFields()
+    {
+        using var db = new TestDb();
+        var blog = db.SeedBlog("Game Dev Projects", "game-dev", "markdown", BlogKind.Project);
+        var pushed = new DateTimeOffset(2025, 10, 30, 0, 0, 0, TimeSpan.Zero);
+        var project = db.SeedProject(
+            blog, "Stick Legends", "stick-legends", ProjectCategory.GameDev,
+            year: 2025, stack: ["TypeScript", "PixiJS"],
+            canonicalUrl: "https://github.com/Stelele/stick-legends", lastPushedAt: pushed);
+
+        db.Db.ChangeTracker.Clear();
+
+        var loaded = db.Db.Posts.OfType<Project>().Single(p => p.Id == project.Id);
+        Assert.Equal(ProjectCategory.GameDev, loaded.Category);
+        Assert.Equal(2025, loaded.Year);
+        Assert.Equal(["TypeScript", "PixiJS"], loaded.Stack);
+        Assert.Equal("https://github.com/Stelele/stick-legends", loaded.CanonicalUrl);
+        Assert.Equal(pushed, loaded.LastPushedAt);
+    }
+
+    [Fact]
+    public void Blog_KindRoundTrips()
+    {
+        using var db = new TestDb();
+        db.SeedBlog("Game Dev Projects", "game-dev", "markdown", BlogKind.Project);
+        db.SeedBlog("Random", "random");
+
+        db.Db.ChangeTracker.Clear();
+
+        Assert.Equal(BlogKind.Project, db.Db.Blogs.Single(b => b.Slug == "game-dev").Kind);
+        Assert.Equal(BlogKind.Standard, db.Db.Blogs.Single(b => b.Slug == "random").Kind);
+    }
+
 }
