@@ -90,4 +90,49 @@ public class PostCommandFieldsTests
 
         Assert.Contains(failures, f => f.PropertyName == nameof(CreatePostCommand.CanonicalUrl));
     }
+
+    [Fact]
+    public async Task Update_WithCanonicalUrl_WritesItThrough()
+    {
+        using var db = new TestDb();
+        var blog = db.SeedBlog("Archive", "archive", "html");
+        var seeded = db.SeedPost(blog, "Old", "old", isPublished: true);
+        const string canonical = "https://medium.com/@gift/old";
+
+        var handler = new UpdatePostCommandHandler(db.Db, db.FileReferenceService());
+        var ok = await handler.Handle(
+            new UpdatePostCommand(blog.Id, seeded.Id, "Old", "old", "Body", "Brief",
+                                 "general", null, IsPublished: true,
+                                 PublishedOn: null, CanonicalUrl: canonical),
+            CancellationToken.None);
+
+        Assert.True(ok);
+        db.Db.ChangeTracker.Clear();
+        Assert.Equal(canonical, db.Db.Posts.Single(p => p.Id == seeded.Id).CanonicalUrl);
+    }
+
+    [Theory]
+    [InlineData("javascript:alert(1)")]
+    [InlineData("not-a-url")]
+    [InlineData("ftp://example.com/file")]
+    public void UpdatePostCommandValidator_RejectsCanonicalUrlThatIsNotHttp(string invalid)
+    {
+        var command = new UpdatePostCommand(
+            Guid.NewGuid(), Guid.NewGuid(), "T", "t", "Body", null,
+            "general", null, IsPublished: true, PublishedOn: null, CanonicalUrl: invalid);
+
+        var failures = new UpdatePostCommandValidator().Validate(command).Errors;
+
+        Assert.Contains(failures, f => f.PropertyName == nameof(UpdatePostCommand.CanonicalUrl));
+    }
+
+    [Fact]
+    public void UpdatePostCommandValidator_AcceptsNullCanonicalUrl()
+    {
+        var command = new UpdatePostCommand(
+            Guid.NewGuid(), Guid.NewGuid(), "T", "t", "Body", null,
+            "general", null, IsPublished: true, PublishedOn: null, CanonicalUrl: null);
+
+        Assert.Empty(new UpdatePostCommandValidator().Validate(command).Errors);
+    }
 }

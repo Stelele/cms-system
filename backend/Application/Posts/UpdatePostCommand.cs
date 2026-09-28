@@ -1,20 +1,21 @@
 using Application.Abstractions;
 using FluentValidation;
+using System.Text.Json.Serialization;
 
 namespace Application.Posts;
 
 public record UpdatePostCommand(
-    Guid BlogId,
-    Guid Id,
-    string Title,
-    string Slug,
-    string Content,
-    string? Description,
-    string Tag,
-    string? CoverImageUrl,
-    bool IsPublished,
-    DateTimeOffset? PublishedOn = null,
-    string? CanonicalUrl = null
+    [property: JsonPropertyName("blogId")] Guid BlogId,
+    [property: JsonPropertyName("id")] Guid Id,
+    [property: JsonPropertyName("title")] string Title,
+    [property: JsonPropertyName("slug")] string Slug,
+    [property: JsonPropertyName("content")] string Content,
+    [property: JsonPropertyName("description")] string? Description,
+    [property: JsonPropertyName("tag")] string Tag,
+    [property: JsonPropertyName("coverImageUrl")] string? CoverImageUrl,
+    [property: JsonPropertyName("isPublished")] bool IsPublished,
+    [property: JsonPropertyName("publishedOn")] DateTimeOffset? PublishedOn = null,
+    [property: JsonPropertyName("canonicalUrl")] string? CanonicalUrl = null
 ) : ICommand<bool>;
 
 public sealed class UpdatePostCommandValidator : AbstractValidator<UpdatePostCommand>
