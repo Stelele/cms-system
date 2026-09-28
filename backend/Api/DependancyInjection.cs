@@ -2,6 +2,7 @@ using Api.Authentication;
 using Api.Endpoints.Blogs;
 using Api.Endpoints.Files;
 using Api.Endpoints.Posts;
+using Api.Endpoints.Public;
 using Api.Endpoints.Summarize;
 using Auth0.AspNetCore.Authentication.Api;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -26,7 +27,8 @@ public static class DependancyInjection
             .MapPostsEndpoints()
             .MapTagsEndpoints()
             .MapFileEndpoints()
-            .MapSummarizeEndpoints();
+            .MapSummarizeEndpoints()
+            .MapPublicEndpoints();
 
         return app;
     }
