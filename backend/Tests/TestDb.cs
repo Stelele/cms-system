@@ -45,13 +45,9 @@ public sealed class TestDb : IDisposable
         }
     }
 
-    /// <summary>
-    /// Seeds a Blog row. A later task adds a contentType parameter, once
-    /// Blog.Create accepts one; no such parameter exists at this commit.
-    /// </summary>
-    public Blog SeedBlog(string name, string slug)
+    public Blog SeedBlog(string name, string slug, string? contentType = null)
     {
-        var blog = Blog.Create(name, slug, $"{name} description", "i-heroicons-book-open");
+        var blog = Blog.Create(name, slug, $"{name} description", "i-heroicons-book-open", contentType);
         Db.Blogs.Add(blog);
         Db.SaveChanges();
         return blog;
