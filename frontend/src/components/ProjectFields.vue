@@ -141,6 +141,9 @@ const emit = defineEmits<{
 
 const stackInput = ref('')
 
+// Declared before the proxies below, which close over it.
+const local = reactive<ProjectFormData>({ ...props.modelValue, links: [...props.modelValue.links] })
+
 // UInput models are string-only, while the API types allow number | string and
 // null. These proxies keep the store types honest without loosening them.
 const yearInput = computed({
@@ -156,8 +159,6 @@ const lastPushedInput = computed({
     local.lastPushedAt = value === '' ? null : value
   },
 })
-
-const local = reactive<ProjectFormData>({ ...props.modelValue, links: [...props.modelValue.links] })
 
 watch(
   () => props.modelValue,

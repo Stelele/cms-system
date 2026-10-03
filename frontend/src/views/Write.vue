@@ -385,20 +385,6 @@ async function insertAudioFileHandler() {
   await insertAudioFileFromModal()
 }
 
-const selectedBlog = computed(() => blogStore.blogs.find((b) => b.id === state.blogId.id) ?? null)
-const isProject = computed(() => projectStore.isProjectBlog(selectedBlog.value))
-const selectedBlogCategory = computed(() => categoryForBlogSlug(selectedBlog.value?.slug))
-
-const defaultProjectFields = (): ProjectFormData => ({
-  category: selectedBlogCategory.value ?? 'GameDev',
-  year: new Date().getFullYear(),
-  stack: [],
-  lastPushedAt: null,
-  links: [],
-  status: 'Active',
-})
-const projectFields = ref<ProjectFormData>(defaultProjectFields())
-
 const isEditing = computed(() => !!route.query.edit)
 const existingPost = ref<PostResponse | null>(null)
 const editorContent = ref('')
@@ -434,6 +420,24 @@ const state = reactive<Schema>({
   tag: '',
   coverImageUrl: '',
 })
+
+// These read `state`, so they must be declared after it. `projectFields` calls
+// defaultProjectFields() immediately, which reads selectedBlogCategory, which
+// reads state - so declaring this block above `state` throws a temporal dead
+// zone ReferenceError on page setup rather than at build time.
+const selectedBlog = computed(() => blogStore.blogs.find((b) => b.id === state.blogId.id) ?? null)
+const isProject = computed(() => projectStore.isProjectBlog(selectedBlog.value))
+const selectedBlogCategory = computed(() => categoryForBlogSlug(selectedBlog.value?.slug))
+
+const defaultProjectFields = (): ProjectFormData => ({
+  category: selectedBlogCategory.value ?? 'GameDev',
+  year: new Date().getFullYear(),
+  stack: [],
+  lastPushedAt: null,
+  links: [],
+  status: 'Active',
+})
+const projectFields = ref<ProjectFormData>(defaultProjectFields())
 
 const isSaving = ref(false)
 const isPublishing = ref(false)
