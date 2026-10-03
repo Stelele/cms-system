@@ -62,11 +62,28 @@ public static class Program
         var manifest = Manifest.Load(opts.ManifestPath);
         Console.WriteLine($"manifest: {manifest.Count} projects from {opts.ManifestPath}");
 
+        // Articles live as markdown beside the manifest so the prose is
+        // reviewable in a diff and editable without touching code. A missing
+        // article falls back to the skeleton rather than silently seeding an
+        // empty body.
+        var articlesDir = Path.Combine(Path.GetDirectoryName(Path.GetFullPath(opts.ManifestPath))!, "..", "articles");
+        articlesDir = Path.GetFullPath(articlesDir);
+        var bodies = new Dictionary<string, string>();
+        if (Directory.Exists(articlesDir))
+        {
+            foreach (var f in Directory.EnumerateFiles(articlesDir, "*.md"))
+                bodies[Path.GetFileNameWithoutExtension(f)] = File.ReadAllText(f);
+        }
+        var missing = manifest.Where(e => !bodies.ContainsKey(e.Slug)).Select(e => e.Slug).ToList();
+        Console.WriteLine($"articles: {bodies.Count} found in {articlesDir}");
+        if (missing.Count > 0)
+            Console.WriteLine($"  WARNING: no article for {missing.Count} project(s), they will get a skeleton: {string.Join(", ", missing.Take(5))}");
+
         if (opts.DryRun)
         {
             Console.WriteLine("dry run: no writes performed");
             foreach (var e in manifest)
-                Console.WriteLine($"  would create {e.Slug,-34} {e.Category}");
+                Console.WriteLine($"  would {(opts.Overwrite ? "upsert" : "create")} {e.Slug,-34} {e.Category}");
             return 0;
         }
 
@@ -96,13 +113,43 @@ public static class Program
 
         var created = 0;
         var skipped = 0;
+        var updated = 0;
         foreach (var entry in manifest)
         {
             var blogId = blogIds[entry.Category];
-            if (await db.Posts.AnyAsync(p => p.BlogId == blogId && p.Slug == entry.Slug))
+            // A draft that already exists is updated rather than duplicated, so
+            // re-seeding refreshes prose and metadata without changing ids.
+            // That matters because the first seed wrote skeletons: re-running
+            // without this would leave the old bodies in place forever.
+            var existing = await db.Posts
+                .OfType<Project>()
+                .FirstOrDefaultAsync(p => p.BlogId == blogId && p.Slug == entry.Slug);
+
+            if (existing is not null)
             {
-                Console.WriteLine($"  skip {entry.Slug,-34} already present");
-                skipped++;
+                if (!opts.Overwrite)
+                {
+                    Console.WriteLine($"  skip {entry.Slug,-34} already present (use --overwrite to refresh)");
+                    skipped++;
+                    continue;
+                }
+
+                await mediatr.Send(new UpdateProjectCommand(
+                    BlogId: blogId,
+                    Id: existing.Id,
+                    Title: entry.Title,
+                    Slug: entry.Slug,
+                    Content: Body(bodies, entry),
+                    Description: entry.Description,
+                    Category: entry.Category,
+                    Year: entry.Year,
+                    Stack: entry.Stack,
+                    LastPushedAt: entry.LastPushedAt,
+                    Links: entry.Links.Select(l => new ProjectLinkInput(l.Label, l.Url)).ToList(),
+                    CoverImageUrl: null,
+                    IsPublished: existing.IsPublished));
+                updated++;
+                Console.WriteLine($"  update {entry.Slug,-34} {(bodies.ContainsKey(entry.Slug) ? "article body" : "skeleton")}");
                 continue;
             }
 
@@ -110,8 +157,8 @@ public static class Program
                 BlogId: blogId,
                 Title: entry.Title,
                 Slug: entry.Slug,
-                Content: DraftBody(entry),
-                Description: null,
+                Content: Body(bodies, entry),
+                Description: entry.Description,
                 Category: entry.Category,
                 Year: entry.Year,
                 Stack: entry.Stack,
@@ -123,9 +170,12 @@ public static class Program
             Console.WriteLine($"  draft {entry.Slug,-34} {entry.Category} {entry.Year}");
         }
 
-        Console.WriteLine($"done: {created} drafts created, {skipped} skipped");
+        Console.WriteLine($"done: {created} created, {updated} updated, {skipped} skipped");
         return 0;
     }
+
+    private static string Body(Dictionary<string, string> bodies, ManifestEntry entry) =>
+        bodies.TryGetValue(entry.Slug, out var body) ? body : DraftBody(entry);
 
     private static async Task<bool> ConfirmBlogDeletion(CmsDbContext db, IMediator mediatr, Options opts)
     {

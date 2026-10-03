@@ -15,7 +15,8 @@
         "url": "https://github.com/Stelele/awesome-butchery"
       }
     ],
-    "githubDescription": ""
+    "githubDescription": "",
+    "description": "A small ERPNext Point of Sale add-on: a per\u2013POS Profile toggle that makes clicking an item open a NumberPad quantity dialog instead of dropping qty = 1 into the cart."
   },
   {
     "slug": "awesome-dashboard-scripts",
@@ -33,7 +34,8 @@
         "url": "https://github.com/Stelele/awesome_dashboard_scripts"
       }
     ],
-    "githubDescription": "The scripts needed to make the awesome dashboard work like we know and love"
+    "githubDescription": "The scripts needed to make the awesome dashboard work like we know and love",
+    "description": "A Frappe/ERPNext app that exposes the server side of a unified company dashboard: period metrics, charts, expense breakdowns, stock levels, item creation, and a one-call purchase cycle (PO \u2192 PR \u2192 PI \u2192 Payment Entry)."
   },
   {
     "slug": "awesome-restaurant",
@@ -51,7 +53,8 @@
         "url": "https://github.com/Stelele/awesome_restaurant"
       }
     ],
-    "githubDescription": "Because I never learn"
+    "githubDescription": "Because I never learn",
+    "description": "Restaurant-style POS table management for Frappe/ERPNext v16: a visual table grid, tips, kitchen order broadcasting, draft persistence, and locking an order once the kitchen marks it Ready."
   },
   {
     "slug": "background-changer",
@@ -69,7 +72,8 @@
         "url": "https://github.com/Stelele/background-changer"
       }
     ],
-    "githubDescription": "Got Tired of all the wallpaper apps with ads no functionality. Figured might as well vibe code my own. Can't be worse than the junk on the app stores"
+    "githubDescription": "Got Tired of all the wallpaper apps with ads no functionality. Figured might as well vibe code my own. Can't be worse than the junk on the app stores",
+    "description": "A Flutter Android app that sets a new wallpaper once a day from the same four sources as KDE Plasma's Picture of the Day plugin: Simon St\u00e5lenhag, Bing, NASA APOD and Wikimedia Commons \u2014 scheduled in the background, no ads."
   },
   {
     "slug": "class-booking-system",
@@ -78,7 +82,12 @@
     "category": "BusinessCase",
     "year": 2026,
     "stack": [
-      "C#"
+      "C#",
+      "NET 10",
+      "EF Core 9",
+      "Vue 3",
+      "Nuxt UI 4",
+      "Tailwind 4"
     ],
     "lastPushedAt": "2026-09-28T17:06:33Z",
     "links": [
@@ -87,7 +96,8 @@
         "url": "https://github.com/Stelele/class-booking-system"
       }
     ],
-    "githubDescription": ""
+    "githubDescription": "",
+    "description": "A booking calendar for evening programming lessons: one teacher, two UK-based students, a single 20:30 Africa/Harare slot Mon\u2013Sat."
   },
   {
     "slug": "cms-system",
@@ -96,7 +106,12 @@
     "category": "BusinessCase",
     "year": 2026,
     "stack": [
-      "C#"
+      "C#",
+      "NET 10",
+      "EF Core 9",
+      "Auth0",
+      "Vue 3",
+      "Nuxt UI 4"
     ],
     "lastPushedAt": "2026-09-28T17:12:24Z",
     "links": [
@@ -105,7 +120,8 @@
         "url": "https://github.com/Stelele/cms-system"
       }
     ],
-    "githubDescription": "I thought a content management system would be fun"
+    "githubDescription": "I thought a content management system would be fun",
+    "description": "A personal content management system: blogs, posts, projects and files, edited in the browser and served to a public site."
   },
   {
     "slug": "document-convertor",
@@ -114,7 +130,11 @@
     "category": "BusinessCase",
     "year": 2023,
     "stack": [
-      "JavaScript"
+      "Node.js on AWS Lambda",
+      "Terraform 1.3.7",
+      "hashicorp/aws 4.51.0",
+      "Jest 29",
+      "ESLint"
     ],
     "lastPushedAt": "2023-02-03T13:20:24Z",
     "links": [
@@ -123,7 +143,8 @@
         "url": "https://github.com/Stelele/document-convertor"
       }
     ],
-    "githubDescription": ""
+    "githubDescription": "",
+    "description": "An AWS Lambda that was meant to convert uploaded documents, deployed through Terraform. It validates the request and stops there \u2014 the conversion was never written."
   },
   {
     "slug": "erpnext-cashbook-reconciliation",
@@ -132,7 +153,7 @@
     "category": "BusinessCase",
     "year": 2026,
     "stack": [
-      "JavaScript"
+      "Node.js"
     ],
     "lastPushedAt": "2026-09-19T10:25:13Z",
     "links": [
@@ -141,7 +162,8 @@
         "url": "https://github.com/Stelele/erpnext-cashbook-reconciliation"
       }
     ],
-    "githubDescription": "A simple script that I use to enter my transactions in the cashbook app and pass it as a draft journal entry into my erpnext instance"
+    "githubDescription": "A simple script that I use to enter my transactions in the cashbook app and pass it as a draft journal entry into my erpnext instance",
+    "description": "A Node script that pulls new expenses out of a SQLite cashbook database and writes them as JSON, ready to be entered into an ERPNext instance as draft journal entries."
   },
   {
     "slug": "erpnext-dashboard",
@@ -150,7 +172,12 @@
     "category": "BusinessCase",
     "year": 2025,
     "stack": [
-      "C#"
+      "C#",
+      "NET 10",
+      "EF Core 10",
+      "Vue 3",
+      "Vite",
+      "Nuxt UI 4"
     ],
     "lastPushedAt": "2026-08-18T20:00:06Z",
     "links": [
@@ -159,7 +186,8 @@
         "url": "https://github.com/Stelele/erpnext-dashboard"
       }
     ],
-    "githubDescription": "A dashboard to help make the erpnext Point of sale system more understandable"
+    "githubDescription": "A dashboard to help make the erpnext Point of sale system more understandable",
+    "description": "A business-intelligence dashboard for monitoring ERPNext metrics \u2014 sales, stock, expenses and site performance \u2014 with offline support, interactive charts and Excel export."
   },
   {
     "slug": "erpnext-market-survey",
@@ -168,7 +196,10 @@
     "category": "BusinessCase",
     "year": 2026,
     "stack": [
-      "Python"
+      "Python 3, stdlib only",
+      "Markdown",
+      "JSON",
+      "CSV"
     ],
     "lastPushedAt": "2026-04-01T17:19:53Z",
     "links": [
@@ -177,7 +208,8 @@
         "url": "https://github.com/Stelele/erpnext-market-survey"
       }
     ],
-    "githubDescription": "fun experiment to see how far I can push researching with llm models"
+    "githubDescription": "fun experiment to see how far I can push researching with llm models",
+    "description": "A research repository: 1,742 Frappe Forum topics, 830 bootstrapper podcast transcripts and 8 non-English market reports, read by 46 analytical personas to find paid opportunities in the ERPNext ecosystem."
   },
   {
     "slug": "erpnext-point-of-sale-expenses",
@@ -195,7 +227,8 @@
         "url": "https://github.com/Stelele/erpnext-point-of-sale-expenses"
       }
     ],
-    "githubDescription": "A simple app for the cashier to easily enter things like expenses from the point of sale terminal"
+    "githubDescription": "A simple app for the cashier to easily enter things like expenses from the point of sale terminal",
+    "description": "A Frappe/ERPNext app (`pos_expenses`) that adds expense posting, reprint and refund dialogs to the ERPNext Point of Sale page, so a cashier never leaves the terminal."
   },
   {
     "slug": "firabasetryout",
@@ -213,7 +246,8 @@
         "url": "https://github.com/Stelele/FirabaseTryout"
       }
     ],
-    "githubDescription": "With Database"
+    "githubDescription": "With Database",
+    "description": "A 2019 Android experiment (\"Firebase\" misspelled in the repo name) that wires a Firebase Realtime Database into the standard Android login template, plus a couple of link-hub screens."
   },
   {
     "slug": "firewallhackathon",
@@ -231,7 +265,8 @@
         "url": "https://github.com/Stelele/FirewallHackathon"
       }
     ],
-    "githubDescription": "Android app for Team Firewall for Allan Gray Hackathon"
+    "githubDescription": "Android app for Team Firewall for Allan Gray Hackathon",
+    "description": "The Android app Team Firewall built for the 2019 Allan Gray Hackathon \u2014 a single-commit project consisting of the Android login template with a Firebase Realtime Database write bolted onto the login path."
   },
   {
     "slug": "frappe-pesepay",
@@ -249,7 +284,8 @@
         "url": "https://github.com/Stelele/frappe-pesepay"
       }
     ],
-    "githubDescription": "Zimbabwe Payment Gateway Provider that gives access to PesePay allowing using Ecocash, InnBucks and Omari"
+    "githubDescription": "Zimbabwe Payment Gateway Provider that gives access to PesePay allowing using Ecocash, InnBucks and Omari",
+    "description": "A Frappe app that plugs the PesePay gateway into Frappe/ERPNext, so Zimbabwean payment methods (EcoCash, InnBucks, Omari, Zimswitch, Visa/Mastercard, PayGo) can be taken from checkout pages, Payment Requests and the POS terminal."
   },
   {
     "slug": "frappe-radiusdesk",
@@ -267,7 +303,8 @@
         "url": "https://github.com/Stelele/frappe-radiusdesk"
       }
     ],
-    "githubDescription": "simple app to generate internet vouchers to via radiusdesk api"
+    "githubDescription": "simple app to generate internet vouchers to via radiusdesk api",
+    "description": "A Frappe app that talks to the RadiusDesk (cake4) RADIUS API to sell and generate internet vouchers from ERPNext \u2014 POS sales, web checkout, and captive-portal hotspot delivery for ISP/cafe deployments."
   },
   {
     "slug": "frappe-self-host",
@@ -285,7 +322,8 @@
         "url": "https://github.com/Stelele/frappe-self-host"
       }
     ],
-    "githubDescription": "Scripts to allow easy deployment of frappe apps in a self hosted maner"
+    "githubDescription": "Scripts to allow easy deployment of frappe apps in a self hosted maner",
+    "description": "An offline-first deployment kit (\"BasaPOS\") for running Frappe/ERPNext v16 with custom apps on a single server \u2014 Linux shell pipeline, plus a Windows WSL installer, a watchdog daemon and a downloader, all in one repo."
   },
   {
     "slug": "multi-agent-opencode-swarm",
@@ -301,7 +339,8 @@
         "url": "https://github.com/Stelele/multi-agent-opencode-swarm"
       }
     ],
-    "githubDescription": "Experimenting with multi agent workflows with opencode as the harness"
+    "githubDescription": "Experimenting with multi agent workflows with opencode as the harness",
+    "description": "A suite of OpenCode skills and agent definitions that make a cheap model do the coding while an expensive model only plans, dispatches, and verifies. Six files total, all Markdown plus one JSON config \u2014 there is no executable code in the repo."
   },
   {
     "slug": "papi-iot",
@@ -319,7 +358,8 @@
         "url": "https://github.com/Stelele/papi_iot"
       }
     ],
-    "githubDescription": ""
+    "githubDescription": "",
+    "description": "A Python package for Raspberry Pi home security: face recognition from photos and video via `face_recognition`/OpenCV, Pi camera controls, and storage that syncs photos and footage to Google Cloud Storage, plus a Flask/waitress live-stream demo in `demonstration/`."
   },
   {
     "slug": "pause-audio",
@@ -328,7 +368,8 @@
     "category": "BusinessCase",
     "year": 2025,
     "stack": [
-      "C#"
+      "NET 10",
+      "NAudio 2.2.1"
     ],
     "lastPushedAt": "2025-12-10T19:21:32Z",
     "links": [
@@ -337,7 +378,8 @@
         "url": "https://github.com/Stelele/Pause-Audio"
       }
     ],
-    "githubDescription": "A simple program to detect all programs playing audio and mutes them."
+    "githubDescription": "A simple program to detect all programs playing audio and mutes them.",
+    "description": "A single-file .NET 10 console program that mutes every currently-playing Windows audio session at once, using NAudio's Core Audio API."
   },
   {
     "slug": "personal-site",
@@ -359,7 +401,8 @@
         "url": "https://giftmugweni.com"
       }
     ],
-    "githubDescription": ""
+    "githubDescription": "",
+    "description": "My personal site: a Vue 3 single-page app backed by a small Go API that scrapes old blog posts, proxies a private CMS, and deploys itself to DigitalOcean and GitHub Pages."
   },
   {
     "slug": "pesepay",
@@ -377,7 +420,8 @@
         "url": "https://github.com/Stelele/pesepay"
       }
     ],
-    "githubDescription": ""
+    "githubDescription": "",
+    "description": "A .NET library for taking payments through the PesePay gateway in Zimbabwe \u2014 EcoCash, InnBucks, Visa, MasterCard, Zimswitch, Omari and PayGo across USD and ZiG \u2014 published to NuGet as `Stelele.PesePay`."
   },
   {
     "slug": "pets",
@@ -395,7 +439,8 @@
         "url": "https://github.com/Stelele/pets"
       }
     ],
-    "githubDescription": ""
+    "githubDescription": "",
+    "description": "A tiny Go + raylib experiment: open a window, load a Tiled map, and draw it. 202 lines of Go across three files \u2014 this is a rendering scaffold, not yet a game."
   },
   {
     "slug": "raspberrypi-infragram-camera",
@@ -413,7 +458,8 @@
         "url": "https://github.com/Stelele/raspberrypi-infragram-camera"
       }
     ],
-    "githubDescription": "Raspberry Pi Based Infragram Camera for Agricultural Applications"
+    "githubDescription": "Raspberry Pi Based Infragram Camera for Agricultural Applications",
+    "description": "A Raspberry Pi camera system that produces NDVI (Normalised Difference Vegetation Index) images and video of crops, with a small Flask web UI for live viewing and GPS-tagged output. Written for an undergraduate final-year project (EEE4022S) at the University of Cape Town."
   },
   {
     "slug": "stock-reconciliation",
@@ -431,7 +477,8 @@
         "url": "https://github.com/Stelele/stock-reconciliation"
       }
     ],
-    "githubDescription": "This project contains a simple script designed to help reconcile stock values between your ERPNext system and your physical inventory. Its main purpose is to identify discrepancies in product sales that were not recorded through the Point of Sale (POS) module."
+    "githubDescription": "This project contains a simple script designed to help reconcile stock values between your ERPNext system and your physical inventory. Its main purpose is to identify discrepancies in product sales that were not recorded through the Point of Sale (POS) module.",
+    "description": "A small Node script that reconciles end-of-day stock between an ERPNext site and the shop's day-end Excel sheet, then creates a draft POS Invoice for the difference."
   },
   {
     "slug": "voice-generation-site",
@@ -449,7 +496,8 @@
         "url": "https://github.com/Stelele/voice-generation-site"
       }
     ],
-    "githubDescription": "A voice generation website making use of Microsoft Edge's Read Aloud API"
+    "githubDescription": "A voice generation website making use of Microsoft Edge's Read Aloud API",
+    "description": "A browser-based text-to-speech reader (\"Cloud Reader\") that drives Microsoft Edge's Read Aloud endpoint over WebSocket, with per-word highlighting as the audio plays."
   },
   {
     "slug": "whatsapp-church-bus-bookings",
@@ -465,7 +513,8 @@
         "url": "https://github.com/Stelele/whatsapp-church-bus-bookings"
       }
     ],
-    "githubDescription": "A whatsapp bot that collects booking information about members that want to be on the church bus for the upcoming service."
+    "githubDescription": "A whatsapp bot that collects booking information about members that want to be on the church bus for the upcoming service.",
+    "description": "A WhatsApp bot intended to collect booking details from church members who want a seat on the church bus for the upcoming service. The repository contains no code \u2014 it is scaffolding only."
   },
   {
     "slug": "youtube-transcript-downloder-scripts",
@@ -483,7 +532,8 @@
         "url": "https://github.com/Stelele/youtube-transcript-downloder-scripts"
       }
     ],
-    "githubDescription": "I wanted all the transcripts for a youtube channel. Turns out youtube is kinda annoying on that front"
+    "githubDescription": "I wanted all the transcripts for a youtube channel. Turns out youtube is kinda annoying on that front",
+    "description": "PowerShell scripts that bulk-download YouTube channel subtitles with yt-dlp and turn them into clean, timestamp-free `.txt` transcripts organised by channel."
   },
   {
     "slug": "1-bit-jam-4",
@@ -501,7 +551,8 @@
         "url": "https://github.com/Stelele/1-bit-jam-4"
       }
     ],
-    "githubDescription": "My game submission for the itch.io 1-BIT Jam #4 Hosted from September 26th 2024to October 11th 2024"
+    "githubDescription": "My game submission for the itch.io 1-BIT Jam #4 Hosted from September 26th 2024to October 11th 2024",
+    "description": "A browser game skeleton \u2014 Vite, TypeScript and PixiJS 8 \u2014 built as the entry \"Tower of Light and Shadow\" for the itch.io 1-BIT Jam #4 (26 Sep \u2013 11 Oct 2024)."
   },
   {
     "slug": "breakout",
@@ -517,7 +568,8 @@
         "url": "https://github.com/Stelele/breakout"
       }
     ],
-    "githubDescription": "a breakout clone"
+    "githubDescription": "a breakout clone",
+    "description": "A repository placeholder for a Breakout clone. **There is no source code in this repo \u2014 it is a stub.**"
   },
   {
     "slug": "combat-gods",
@@ -535,7 +587,8 @@
         "url": "https://github.com/Stelele/combat-gods"
       }
     ],
-    "githubDescription": ""
+    "githubDescription": "",
+    "description": "A 2D fighting-game prototype in the browser \u2014 PixiJS 8 and TypeScript \u2014 with a single stickman fighter standing on a ground platform."
   },
   {
     "slug": "flappy-bird",
@@ -553,7 +606,8 @@
         "url": "https://github.com/Stelele/flappy-bird"
       }
     ],
-    "githubDescription": "a recreation of flappy bird"
+    "githubDescription": "a recreation of flappy bird",
+    "description": "A Flappy Bird clone written in Lua for L\u00d6VE2D. The window title is `Fifty Bird`."
   },
   {
     "slug": "fountain-of-life",
@@ -571,7 +625,8 @@
         "url": "https://github.com/Stelele/fountain-of-life"
       }
     ],
-    "githubDescription": "The fountain of life website"
+    "githubDescription": "The fountain of life website",
+    "description": "A Vue 3 + Nuxt UI church site for Fountain of Life Family in Christ (Bulawayo, Zimbabwe) \u2014 an installable PWA with a YouTube sermon feed."
   },
   {
     "slug": "gameboy-emulator",
@@ -587,7 +642,8 @@
         "url": "https://github.com/Stelele/gameboy-emulator"
       }
     ],
-    "githubDescription": "My poor attempt at making a gameboy emulator"
+    "githubDescription": "My poor attempt at making a gameboy emulator",
+    "description": "**This repository is empty.** There are no commits and no files \u2014 nothing can be written about it from source."
   },
   {
     "slug": "godot-pong",
@@ -605,7 +661,8 @@
         "url": "https://github.com/Stelele/godot-pong"
       }
     ],
-    "githubDescription": ""
+    "githubDescription": "",
+    "description": "Two-player Pong built in Godot 4.1 with GDScript. Player 1 moves with W/S, player 2 with the arrow keys, and the ball is served with the accept key."
   },
   {
     "slug": "handmade-combat-gods",
@@ -623,7 +680,8 @@
         "url": "https://github.com/Stelele/handmade-combat-gods"
       }
     ],
-    "githubDescription": "Its combat gods but made from scratch"
+    "githubDescription": "Its combat gods but made from scratch",
+    "description": "A WebGPU renderer written from scratch in TypeScript \u2014 no game framework, just raw GPU buffers, a WGSL shader, and hand-rolled matrix math. It draws two colored rectangles at a fixed camera."
   },
   {
     "slug": "js-ping-pong",
@@ -641,7 +699,8 @@
         "url": "https://github.com/Stelele/js-ping-pong"
       }
     ],
-    "githubDescription": ""
+    "githubDescription": "",
+    "description": "An intended PixiJS ping-pong game that is, as committed, still the untouched webpack starter template."
   },
   {
     "slug": "ping-pong",
@@ -659,7 +718,8 @@
         "url": "https://github.com/Stelele/ping-pong"
       }
     ],
-    "githubDescription": "A recreation of the classic ping pong game"
+    "githubDescription": "A recreation of the classic ping pong game",
+    "description": "A classic two-player Pong clone for L\u00d6VE (Love2D), written in Lua with a virtual-resolution scaling layer and a four-state game loop."
   },
   {
     "slug": "pixijs-breakout",
@@ -677,7 +737,8 @@
         "url": "https://github.com/Stelele/pixijs-breakout"
       }
     ],
-    "githubDescription": ""
+    "githubDescription": "",
+    "description": "A Breakout-style arcade game in TypeScript and PixiJS 8, built on a scene/state architecture with bundle-based asset loading."
   },
   {
     "slug": "pixijs-flappy-bird",
@@ -695,7 +756,8 @@
         "url": "https://github.com/Stelele/pixijs-flappy-bird"
       }
     ],
-    "githubDescription": ""
+    "githubDescription": "",
+    "description": "A Flappy Bird clone (\"Fifty Bird\") in TypeScript and PixiJS 8, using the same scene/state shell as the sibling breakout project but with a complete title \u2192 countdown \u2192 play \u2192 game-over loop."
   },
   {
     "slug": "pixijs-games-template",
@@ -704,7 +766,10 @@
     "category": "GameDev",
     "year": 2024,
     "stack": [
-      "TypeScript"
+      "TypeScript 5.3",
+      "PixiJS 8.1",
+      "@pixi/sound 6.0",
+      "Webpack 5"
     ],
     "lastPushedAt": "2024-05-20T18:29:20Z",
     "links": [
@@ -713,7 +778,8 @@
         "url": "https://github.com/Stelele/pixijs-games-template"
       }
     ],
-    "githubDescription": ""
+    "githubDescription": "",
+    "description": "A small PixiJS v8 starter kit: a static `Manager` that boots the app, loads asset bundles, and keeps a scrolling parallax background on screen while the game logic is left for the next project."
   },
   {
     "slug": "pixijs-pong",
@@ -722,7 +788,10 @@
     "category": "GameDev",
     "year": 2024,
     "stack": [
-      "TypeScript"
+      "TypeScript 5.3",
+      "PixiJS 8.1",
+      "HTML5",
+      "pixi-filters 6.0"
     ],
     "lastPushedAt": "2024-05-01T11:23:46Z",
     "links": [
@@ -731,7 +800,8 @@
         "url": "https://github.com/Stelele/pixijs-pong"
       }
     ],
-    "githubDescription": ""
+    "githubDescription": "",
+    "description": "A two-player Pong in PixiJS 8 with a start screen, serve/play/win states, bitmap-style text and four WAV sound effects."
   },
   {
     "slug": "raylib-playground",
@@ -740,7 +810,9 @@
     "category": "GameDev",
     "year": 2025,
     "stack": [
-      "Go"
+      "Go 1.23.4",
+      "github.com/aquilax/go-perlin",
+      "Air"
     ],
     "lastPushedAt": "2025-03-08T17:55:44Z",
     "links": [
@@ -749,7 +821,8 @@
         "url": "https://github.com/Stelele/raylib-playground"
       }
     ],
-    "githubDescription": "Just random stuff I'm making in raylib"
+    "githubDescription": "Just random stuff I'm making in raylib",
+    "description": "A Go + raylib scratchpad holding seven small procedural-graphics experiments \u2014 cellular automata, random walks, histograms and Perlin noise \u2014 behind a single switchable draw loop."
   },
   {
     "slug": "stick-legends",
@@ -758,7 +831,9 @@
     "category": "GameDev",
     "year": 2025,
     "stack": [
-      "TypeScript"
+      "TypeScript 5.9",
+      "Vite 7",
+      "WebGPU"
     ],
     "lastPushedAt": "2025-10-30T21:15:24Z",
     "links": [
@@ -767,7 +842,8 @@
         "url": "https://github.com/Stelele/stick-legends"
       }
     ],
-    "githubDescription": "will this be the game I finish"
+    "githubDescription": "will this be the game I finish",
+    "description": "An early-stage 2D fighting-game prototype: a hand-written WebGPU renderer that loads an Aseprite spritesheet and plays its animations, in a desktop shell."
   },
   {
     "slug": "web-game-engine",
@@ -776,7 +852,8 @@
     "category": "GameDev",
     "year": 2024,
     "stack": [
-      "TypeScript"
+      "TypeScript 5.2",
+      "Vite 5"
     ],
     "lastPushedAt": "2024-10-28T00:24:42Z",
     "links": [
@@ -785,7 +862,8 @@
         "url": "https://github.com/Stelele/web-game-engine"
       }
     ],
-    "githubDescription": ""
+    "githubDescription": "",
+    "description": "A from-scratch WebGPU game engine in TypeScript \u2014 resource loading, bitmap fonts, cameras, viewports and a typed renderable hierarchy \u2014 proven out by one demo scene."
   },
   {
     "slug": "article-11-code",
@@ -794,7 +872,10 @@
     "category": "Graphics",
     "year": 2024,
     "stack": [
-      "TypeScript"
+      "TypeScript 5.6",
+      "Vite 5.4",
+      "WebGPU",
+      "WGSL"
     ],
     "lastPushedAt": "2024-12-15T14:41:13Z",
     "links": [
@@ -803,7 +884,8 @@
         "url": "https://github.com/Stelele/article-11-code"
       }
     ],
-    "githubDescription": "A simple project showing you how to play with the fragment shader writtern in WGSL"
+    "githubDescription": "A simple project showing you how to play with the fragment shader writtern in WGSL",
+    "description": "Sample code for a blog article: a minimal WebGPU app drawing one fullscreen triangle and animating a fragment shader with a time uniform."
   },
   {
     "slug": "blog-webgpu-hello-world",
@@ -812,7 +894,11 @@
     "category": "Graphics",
     "year": 2024,
     "stack": [
-      "JavaScript"
+      "Plain JavaScript",
+      "WebGPU",
+      "WGSL",
+      "Raw HTML",
+      "CSS"
     ],
     "lastPushedAt": "2024-06-22T17:38:39Z",
     "links": [
@@ -821,7 +907,8 @@
         "url": "https://github.com/Stelele/blog-webgpu-hello-world"
       }
     ],
-    "githubDescription": "A hello world example showing you a very very basic example of drawing a triangle using WebGPU"
+    "githubDescription": "A hello world example showing you a very very basic example of drawing a triangle using WebGPU",
+    "description": "A four-file, no-build WebGPU example that draws one RGB triangle on a full-viewport canvas. Written as companion code for a blog post."
   },
   {
     "slug": "images-to-spritesheet",
@@ -830,7 +917,12 @@
     "category": "Graphics",
     "year": 2024,
     "stack": [
-      "TypeScript"
+      "Electron 33",
+      "Forge",
+      "Vue 3",
+      "Vite 5",
+      "TypeScript",
+      "skia-canvas"
     ],
     "lastPushedAt": "2024-11-26T20:54:23Z",
     "links": [
@@ -839,7 +931,8 @@
         "url": "https://github.com/Stelele/images-to-spritesheet"
       }
     ],
-    "githubDescription": "A simple desktop application to covert a bunch of images into a single spritesheet image"
+    "githubDescription": "A simple desktop application to covert a bunch of images into a single spritesheet image",
+    "description": "An Electron + Vue 3 app that walks a folder of PNGs, auto-crops transparent edges, bin-packs them into one sheet, and writes it plus a TexturePacker-style JSON manifest."
   },
   {
     "slug": "learn-pixi-js",
@@ -848,7 +941,12 @@
     "category": "Graphics",
     "year": 2024,
     "stack": [
-      "JavaScript"
+      "pixi.js 7.4.0",
+      "webpack 5",
+      "ts-loader",
+      "TypeScript 5.3",
+      "webpack-dev-server 5",
+      "npm-run-all"
     ],
     "lastPushedAt": "2024-04-17T19:06:54Z",
     "links": [
@@ -857,7 +955,8 @@
         "url": "https://github.com/Stelele/learn-pixi-js"
       }
     ],
-    "githubDescription": ""
+    "githubDescription": "",
+    "description": "A minimal PixiJS v7 sandbox: one 640\u00d7480 stage with a single sprite (`clampy.png`) centred on it, wrapped in a webpack + TypeScript dev setup."
   },
   {
     "slug": "manim-animations",
@@ -866,7 +965,10 @@
     "category": "Graphics",
     "year": 2025,
     "stack": [
-      "Python"
+      "Manim \u2265 0.19.0",
+      "Python \u2265 3.13",
+      "pyopengl",
+      "pyopengl-accelerate"
     ],
     "lastPushedAt": "2025-04-02T05:30:58Z",
     "links": [
@@ -875,7 +977,8 @@
         "url": "https://github.com/Stelele/manim-animations"
       }
     ],
-    "githubDescription": "Storing all my manim animations"
+    "githubDescription": "Storing all my manim animations",
+    "description": "A uv-managed Manim project holding a single scene that animates a short lesson about what a function is \u2014 text, a box, arrows in and out, and shapes transforming into other shapes."
   },
   {
     "slug": "shader-land",
@@ -893,7 +996,8 @@
         "url": "https://github.com/Stelele/shader-land"
       }
     ],
-    "githubDescription": "A shader toy clone using WebGPU"
+    "githubDescription": "A shader toy clone using WebGPU",
+    "description": "A ShaderToy-style playground: Vue 3 frontend with Monaco WGSL editor and WebGPU fragment-shader renderer, plus a Go/SQLite API storing shaders and authenticating writes with Clerk."
   },
   {
     "slug": "web-gpu-first-app",
@@ -902,7 +1006,9 @@
     "category": "Graphics",
     "year": 2024,
     "stack": [
-      "TypeScript"
+      "TypeScript 5.4 +",
+      "WebGPU",
+      "WGSL"
     ],
     "lastPushedAt": "2024-05-25T19:14:21Z",
     "links": [
@@ -911,7 +1017,8 @@
         "url": "https://github.com/Stelele/web-gpu-first-app"
       }
     ],
-    "githubDescription": "messing around with web gpu for the first time"
+    "githubDescription": "messing around with web gpu for the first time",
+    "description": "A Conway's Game of Life on the GPU: a compute shader steps a 32\u00d732 grid every 500 ms, drawn as instanced quads."
   },
   {
     "slug": "webgpu-shader-art",
@@ -929,7 +1036,8 @@
         "url": "https://github.com/Stelele/webgpu-shader-art"
       }
     ],
-    "githubDescription": ""
+    "githubDescription": "",
+    "description": "A browser playground of WGSL fragment shaders rendered as a 1024\u00d71024 instanced grid on WebGPU \u2014 shadertoy-style pieces (\"katas\"), smiley faces, palettes, patterns \u2014 kept animating by a per-frame time uniform."
   },
   {
     "slug": "webgpu-template",
@@ -947,6 +1055,7 @@
         "url": "https://github.com/Stelele/webgpu-template"
       }
     ],
-    "githubDescription": "A basic setup to allow you to run a rendering job for web gpu"
+    "githubDescription": "A basic setup to allow you to run a rendering job for web gpu",
+    "description": "A minimal WebGPU starter for TypeScript: one canvas, one grid shader, one draw call \u2014 the seed project the shader-art playground grew out of."
   }
 ]
