@@ -7,3 +7,6 @@ nul
 **.tmp
 **/backend-openapi.json
 **/.superpowers/*
+# browser-check local state: nothing here is a secret, but keep env files out
+frontend/.env.browser-check
+frontend/.browser-check/*.local

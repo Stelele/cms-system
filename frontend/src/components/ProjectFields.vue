@@ -160,9 +160,28 @@ const lastPushedInput = computed({
   },
 })
 
+// Equal by value, including links. Without this the component loops: it emits,
+// the parent replaces the ref, the props watcher writes a fresh `links` array
+// into `local`, the deep watch fires and emits again, forever. That showed up as
+// "Maximum recursive updates exceeded in <Write>" and, worse, meant values
+// loaded from the CMS were overwritten before they could stick.
+function sameAsLocal(value: ProjectFormData): boolean {
+  return (
+    value.category === local.category &&
+    String(value.year) === String(local.year) &&
+    value.lastPushedAt === local.lastPushedAt &&
+    value.status === local.status &&
+    value.stack.length === local.stack.length &&
+    value.stack.every((item, i) => item === local.stack[i]) &&
+    value.links.length === local.links.length &&
+    value.links.every((l, i) => l.label === local.links[i]?.label && l.url === local.links[i]?.url)
+  )
+}
+
 watch(
   () => props.modelValue,
   (value) => {
+    if (sameAsLocal(value)) return
     Object.assign(local, value)
     local.links = value.links.map((l) => ({ ...l }))
   },
