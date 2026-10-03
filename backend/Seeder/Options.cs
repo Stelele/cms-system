@@ -13,7 +13,8 @@ public sealed record ManifestEntry(
     List<string> Stack,
     DateTimeOffset? LastPushedAt,
     List<ManifestLink> Links,
-    string GitHubDescription);
+    string GitHubDescription,
+    string? Description = null);
 
 public sealed record ManifestLink(string Label, string Url);
 
@@ -67,7 +68,8 @@ public sealed record Options(
     string PublicBucketUrl,
     string? MediatrLicenseKey,
     bool DryRun,
-    bool DeleteLegacyProjectsBlog)
+    bool DeleteLegacyProjectsBlog,
+    bool Overwrite)
 {
     public static Options? Parse(string[] args)
     {
@@ -75,6 +77,7 @@ public sealed record Options(
         string? license = null;
         var dryRun = false;
         var deleteLegacy = false;
+        var overwrite = false;
 
         for (var i = 0; i < args.Length; i++)
         {
@@ -84,6 +87,7 @@ public sealed record Options(
                 case "--manifest" when i + 1 < args.Length: manifest = args[++i]; break;
                 case "--public-bucket-url" when i + 1 < args.Length: bucketUrl = args[++i]; break;
                 case "--mediatr-license" when i + 1 < args.Length: license = args[++i]; break;                case "--dry-run": dryRun = true; break;
+                case "--overwrite": overwrite = true; break;
                 case "--delete-legacy-projects-blog": deleteLegacy = true; break;
                 case "--help" or "-h": PrintHelp(); return null;
                 default:
@@ -112,7 +116,7 @@ public sealed record Options(
             return null;
         }
 
-        return new Options(connection, manifest, bucketUrl ?? "https://media.invalid", license, dryRun, deleteLegacy);
+        return new Options(connection, manifest, bucketUrl ?? "https://media.invalid", license, dryRun, deleteLegacy, overwrite);
     }
 
     private static void PrintHelp() => Console.WriteLine(
@@ -124,6 +128,8 @@ public sealed record Options(
           --public-bucket-url <url>                         used only to resolve media paths
           --mediatr-license <key>                           if the MediatR build needs it
           --dry-run                                         validate and print, write nothing
+          --overwrite                                       update drafts that already exist instead of
+                                                           skipping them, so re-seeding refreshes prose
           --delete-legacy-projects-blog                     delete the empty legacy 'projects' blog
 
         Every project is created unpublished, so nothing seeded here is publicly visible.
