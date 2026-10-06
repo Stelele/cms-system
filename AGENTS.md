@@ -10,7 +10,7 @@ it points at for the work in hand.
 
     git -C ~/Documents/code-projects/hivemind pull   # or: hm pull
 
-Board: https://github.com/Stelele/hivemind — 33 ratified rules, each with an ADR
+Board: https://github.com/Stelele/hivemind — 48 ratified rules, each with an ADR
 recording why and what it costs.
 
 Everything below is specific to this project.
@@ -93,71 +93,15 @@ dotnet test
 
 ### Frontend (Vue/TypeScript)
 
-#### TypeScript Conventions
-- Use explicit types for function parameters and return values
-- Prefer `type` over `interface` for simple type aliases
-- Use `zod` for runtime validation with OpenAPI-generated types
-- Import types explicitly: `import type { Foo } from './foo'`
-
-```typescript
-// Good
-const fetchBlogs = async (): Promise<BlogResponse[]> => {
-  const { data } = await client.GET('/blogs')
-  return data ?? []
-}
-
-// Avoid
-const fetchBlogs = async () => {
-  const { data } = await client.GET('/blogs')
-  return data ?? []
-}
-```
-
-#### Vue Component Conventions
-- Use `<script setup lang="ts">` for all components
-- Import components using path aliases (`@/components/...`)
-- Define reactive state using `ref()` or `reactive()`
-- Use Pinia stores for shared state management
-
-```vue
-<script setup lang="ts">
-import { ref, computed } from 'vue'
-import { useBlogStore } from '@/stores/blog-store'
-
-const blogStore = useBlogStore()
-const localState = ref('')
-</script>
-```
-
-#### Naming Conventions
-- Components: PascalCase (`NewBlogForm.vue`)
-- Files/Variables: camelCase (`blogStore.ts`, `accessToken`)
-- Constants: UPPER_SNAKE_CASE
-- CSS classes: Tailwind utility classes preferred
-
-#### Import Order
-1. Vue/Pinia imports
-2. Type imports (`import type`)
-3. External library imports
-4. Internal imports (path aliases)
-5. Relative imports
-
 #### API Client Pattern
-- Use singleton pattern for API client (`BackendApiSingleton`)
-- Leverage openapi-fetch with generated types from `schema.ts`
-- Always handle null data cases: `data ?? []`
+The real client — `BackendApiSingleton` — is documented in `frontend/AGENTS.md`; go there
+for the implementation instead of a generic description here. The underlying rule is board
+ADR 0039.
 
 ### Backend (C#)
 
 #### Architecture Pattern
 - **Clean Architecture layers**: Api → Application → Domain/Infrastructure
-
-#### Naming Conventions
-- Namespaces: PascalCase (`Application.Blogs`)
-- Classes: PascalCase (`CreateBlogCommand`, `BlogEndpoints`)
-- Records for DTOs and Commands/Queries
-- Files match class names (`CreateBlogCommand.cs`)
-- Method parameters: camelCase
 
 #### Project Conventions
 ```csharp

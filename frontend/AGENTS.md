@@ -8,7 +8,7 @@ it points at for the work in hand.
 
     git -C ~/Documents/code-projects/hivemind pull   # or: hm pull
 
-Board: https://github.com/Stelele/hivemind — 33 ratified rules, each with an ADR
+Board: https://github.com/Stelele/hivemind — 48 ratified rules, each with an ADR
 recording why and what it costs.
 
 Everything below is specific to this project.
@@ -46,101 +46,6 @@ npm run lint
 
 # Format code with Prettier
 npm run format
-```
-
-## TypeScript Conventions
-
-### Explicit Types
-Always use explicit types for function parameters and return values:
-```typescript
-// Good
-const fetchBlogs = async (): Promise<BlogResponse[]> => {
-  const { data } = await client.GET('/blogs')
-  return data ?? []
-}
-```
-
-### Type Imports
-Use `import type` for type-only imports to avoid runtime overhead:
-```typescript
-import type { components } from '@/services/backend/schema'
-```
-
-### Zod for Validation
-Use Zod schemas for form validation and runtime type checking:
-```typescript
-import * as z from 'zod'
-
-const schema = z.object({
-  name: z.string().min(4),
-  slug: z.string().min(4),
-  description: z.string(),
-})
-type Schema = z.output<typeof schema>
-```
-
-## Vue Component Conventions
-
-### Component Structure
-Vue components should follow this structure (enforced by ESLint):
-1. `<template>` - HTML template at the top
-2. `<script setup lang="ts">` - Composition API script below template
-3. `<style>` - Styles at the very bottom (if needed)
-
-```vue
-<template>
-  <div class="example">
-    {{ message }}
-  </div>
-</template>
-
-<script setup lang="ts">
-import { ref, computed } from 'vue'
-import { useBlogStore } from '@/stores/blog-store'
-
-const blogStore = useBlogStore()
-const localState = ref('')
-</script>
-
-<style scoped>
-.example {
-  color: red;
-}
-</style>
-```
-
-### Script Setup
-Use `<script setup lang="ts">` for all components:
-```vue
-<script setup lang="ts">
-import { ref, computed } from 'vue'
-import { useBlogStore } from '@/stores/blog-store'
-
-const blogStore = useBlogStore()
-const localState = ref('')
-</script>
-```
-
-### State Management (Pinia)
-Use Pinia stores for shared state. Define stores using the composition API:
-```typescript
-// stores/blog-store.ts
-import { BackendApiSingleton } from '@/services/backend'
-import type { components } from '@/services/backend/schema'
-import { defineStore } from 'pinia'
-import { ref } from 'vue'
-
-export const useBlogStore = defineStore('blogStore', () => {
-  const blogs = ref<components['schemas']['BlogResponse'][]>([])
-
-  async function update() {
-    const client = await BackendApiSingleton.getInstance()
-    const { data } = await client.GET('/blogs')
-    blogs.value = data ?? []
-  }
-
-  return { blogs, update }
-})
 ```
 
 ## API Client Pattern
@@ -190,26 +95,6 @@ if (error) {
 // Use data
 const blogs = data ?? []
 ```
-
-## Naming Conventions
-
-| Type | Convention | Example |
-|------|-----------|---------|
-| Components | PascalCase | `NewBlogForm.vue` |
-| Stores | camelCase + store suffix | `blog-store.ts`, `useBlogStore` |
-| Types | PascalCase | `BlogResponse`, `CreateBlogCommand` |
-| Variables | camelCase | `accessToken`, `blogList` |
-| Constants | UPPER_SNAKE_CASE | `MAX_RETRY_COUNT` |
-| CSS Classes | Tailwind utilities | `class="w-full h-full grid"` |
-
-## Import Order
-
-Always order imports as follows:
-1. Vue/Pinia imports (`ref`, `reactive`, `defineStore`)
-2. Type imports (`import type`)
-3. External library imports (`zod`, `vue-router`)
-4. Path alias imports (`@/stores/...`, `@/components/...`)
-5. Relative imports (`./utils`, `../types`)
 
 ## Vue Router
 

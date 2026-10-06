@@ -8,7 +8,7 @@ it points at for the work in hand.
 
     git -C ~/Documents/code-projects/hivemind pull   # or: hm pull
 
-Board: https://github.com/Stelele/hivemind — 33 ratified rules, each with an ADR
+Board: https://github.com/Stelele/hivemind — 48 ratified rules, each with an ADR
 recording why and what it costs.
 
 Everything below is specific to this project.
@@ -279,17 +279,6 @@ public static class ApplicationServiceExtensions
     }
 }
 ```
-
-## Naming Conventions
-
-| Type | Convention | Example |
-|------|-----------|---------|
-| Namespaces | PascalCase | `Application.Blogs` |
-| Classes | PascalCase | `CreateBlogCommand`, `BlogEndpoints` |
-| Records | PascalCase | `CreateBlogCommand`, `BlogResponse` |
-| Methods | PascalCase | `Handle`, `MapBlogsEndpoints` |
-| Parameters | camelCase | `request`, `cancellationToken` |
-| Files | Match class name | `CreateBlogCommand.cs` |
 
 ## Project References
 
