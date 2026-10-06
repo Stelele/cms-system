@@ -2,6 +2,19 @@
 
 This is a full-stack CMS system with a Vue/TypeScript frontend and .NET backend.
 
+## Shared conventions
+
+Cross-project decisions, code style, stack choices, testing expectations and workflow live
+in the hivemind board. **Read `core/INDEX.md` before coding**, then only the 2-3 core files
+it points at for the work in hand.
+
+    git -C ~/Documents/code-projects/hivemind pull   # or: hm pull
+
+Board: https://github.com/Stelele/hivemind — 33 ratified rules, each with an ADR
+recording why and what it costs.
+
+Everything below is specific to this project.
+
 ## Project Structure
 
 ```
@@ -137,9 +150,7 @@ const localState = ref('')
 ### Backend (C#)
 
 #### Architecture Pattern
-- **CQRS with MediatR**: Commands, Queries, and their Handlers
 - **Clean Architecture layers**: Api → Application → Domain/Infrastructure
-- **Minimal APIs** for HTTP endpoints
 
 #### Naming Conventions
 - Namespaces: PascalCase (`Application.Blogs`)
@@ -252,14 +263,3 @@ ASPNETCORE_ENVIRONMENT=Production dotnet run --project Host/Host.csproj --no-lau
 
 Without `--no-launch-profile` the environment defaults to Production whenever the
 launch profile is bypassed, and the CORS guard fires on an empty allowlist.
-
-## Key Libraries
-
-| Frontend | Backend |
-|----------|---------|
-| Vue 3 + Composition API | .NET 10 |
-| Pinia (state management) | MediatR (CQRS) |
-| Vue Router | FluentValidation |
-| @nuxt/ui (components) | Entity Framework Core |
-| openapi-fetch | Minimal APIs |
-| Zod (validation) | Auth0 JWT |

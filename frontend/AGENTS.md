@@ -1,14 +1,17 @@
 # Frontend Development Guide
 
-## Tech Stack
-- **Vue 3** with Composition API (`<script setup lang="ts">`)
-- **TypeScript** for type safety
-- **Vite** for build tooling
-- **Pinia** for state management
-- **Vue Router** for routing
-- **@nuxt/ui** for UI components
-- **openapi-fetch** for API communication
-- **Zod** for runtime validation
+## Shared conventions
+
+Cross-project decisions, code style, stack choices, testing expectations and workflow live
+in the hivemind board. **Read `core/INDEX.md` before coding**, then only the 2-3 core files
+it points at for the work in hand.
+
+    git -C ~/Documents/code-projects/hivemind pull   # or: hm pull
+
+Board: https://github.com/Stelele/hivemind — 33 ratified rules, each with an ADR
+recording why and what it costs.
+
+Everything below is specific to this project.
 
 ## Project Structure
 
@@ -269,6 +272,4 @@ VITE_API_URL=http://localhost:5000
 
 ## Testing
 
-No test framework is currently configured. When adding tests:
-- Use Vitest for unit tests
-- Use Playwright for E2E tests
+No test framework is currently configured in this project.
